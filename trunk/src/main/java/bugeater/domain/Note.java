@@ -33,7 +33,7 @@ public class Note
 	}
 	
 	@Id @GeneratedValue
-	@Column(name="issue_status_change_id")
+	@Column(name="note_id")
 	private Long id;
 	public Long getId()
 	{

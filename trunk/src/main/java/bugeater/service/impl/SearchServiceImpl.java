@@ -1,5 +1,6 @@
 package bugeater.service.impl;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -49,14 +50,16 @@ public class SearchServiceImpl implements SearchService
 	 * @param path
 	 */
 	/* Spring injected */
+	private String indexDir;
 	public void setIndexDirectory(String path)
 	{
-		try {
-			writer = new IndexWriter(path, new SimpleAnalyzer(), true);
-			searcher = new IndexSearcher(path);
-		} catch (IOException ioe) {
-			logger.error(ioe);
-		}
+		this.indexDir = path;
+//		try {
+//			writer = new IndexWriter(path, new SimpleAnalyzer(), true);
+//			searcher = new IndexSearcher(path);
+//		} catch (IOException ioe) {
+//			logger.error(ioe);
+//		}
 	}
 	
 	/* Spring injected */
@@ -65,16 +68,40 @@ public class SearchServiceImpl implements SearchService
 	{
 		this.issueDao = dao;
 	}
+	
 	private QueryParser issueParser;
+	
 	/* Spring injected */
 	private NoteDao noteDao;
 	public void setNoteDao(NoteDao dao)
 	{
 		this.noteDao = dao;
 	}
+	
+	private Searcher getSearcher()
+		throws IOException
+	{
+		Searcher searcher = new IndexSearcher(indexDir);
+		return searcher;
+	}
+	
+	private IndexWriter getWriter()
+		throws IOException
+	{
+		boolean createNew = false;
+		File testfile = new File(new File(indexDir), "initialized");
+		if (! testfile.exists()) {
+			testfile.createNewFile();
+			createNew = true;
+		}
+		IndexWriter writer =
+			new IndexWriter(indexDir, new SimpleAnalyzer(), createNew);
+		return writer;
+	}
+	
 	private QueryParser noteParser;
-	private Searcher searcher;
-	private IndexWriter writer;
+//	private Searcher searcher;
+//	private IndexWriter writer;
 
 	/**
 	 * @see bugeater.service.SearchService#searchByIssueSummary(java.lang.String)
@@ -86,6 +113,7 @@ public class SearchServiceImpl implements SearchService
 				issueParser = new QueryParser("summary", new SimpleAnalyzer());
 			}
 			Query q = issueParser.parse(queryText);
+			Searcher searcher = getSearcher();
 			Hits hits = searcher.search(q);
 			Hit hit;
 			List<ISearchResult<Issue>> list =
@@ -94,6 +122,7 @@ public class SearchServiceImpl implements SearchService
 				hit = (Hit)iter.next();
 				list.add(new IssueSearchResult(hit).setIssueDao(issueDao));
 			}
+			searcher.close();
 			return list;
 		} catch (IOException ioe) {
 			logger.error(ioe);
@@ -114,6 +143,7 @@ public class SearchServiceImpl implements SearchService
 				noteParser = new QueryParser("text", new SimpleAnalyzer());
 			}
 			Query q = noteParser.parse(queryText);
+			Searcher searcher = getSearcher();
 			Hits hits = searcher.search(q);
 			Hit hit;
 			List<ISearchResult<Note>> list =
@@ -122,6 +152,7 @@ public class SearchServiceImpl implements SearchService
 				hit = (Hit)iter.next();
 				list.add(new NoteSearchResult(hit).setNoteDao(noteDao));
 			}
+			searcher.close();
 			return list;
 		} catch (IOException ioe) {
 			logger.error(ioe);
@@ -158,11 +189,20 @@ public class SearchServiceImpl implements SearchService
 						)
 				);
 			try {
-				writer.addDocument(doc);
+				index(doc);
 			} catch (IOException ioe) {
 				logger.error(ioe);
 			}
 		}
+	}
+	
+	private void index(Document doc)
+		throws IOException
+	{
+		IndexWriter writer = getWriter();
+		writer.addDocument(doc);
+		writer.optimize();
+		writer.close();
 	}
 
 	/**
@@ -191,7 +231,7 @@ public class SearchServiceImpl implements SearchService
 						)
 				);
 			try {
-				writer.addDocument(doc);
+				index(doc);
 			} catch (IOException ioe) {
 				logger.error(ioe);
 			}

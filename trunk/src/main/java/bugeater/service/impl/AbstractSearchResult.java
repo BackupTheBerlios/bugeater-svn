@@ -22,29 +22,21 @@ abstract class AbstractSearchResult<T> implements ISearchResult<T>
 	AbstractSearchResult(Hit hit)
 	{
 		super();
-		this.hit = hit;
-	}
-
-	private Hit hit;
-	/**
-	 * Returns the hit returned by lucene.
-	 */
-	protected Hit getHit()
-	{
-		return hit;
+		try {
+			objectid = Long.parseLong(hit.getDocument().get("id"));
+			score = hit.getScore();
+		} catch (IOException ioe) {
+			logger.error(ioe);
+		}
 	}
 	
 	/**
 	 * @see bugeater.service.ISearchResult#getScore()
 	 */
+	private float score;
 	public float getScore()
 	{
-		try {
-			return hit.getScore();
-		} catch (IOException ioe) {
-			logger.error(ioe);
-			return 0;
-		}
+		return score;
 	}
 	
 	/**
@@ -57,16 +49,12 @@ abstract class AbstractSearchResult<T> implements ISearchResult<T>
 	 */
 	public abstract T getObject();
 	
+	private Long objectid;
 	/**
 	 * @see bugeater.service.ISearchResult#getObjectId()
 	 */
 	public Long getObjectId()
 	{
-		try {
-			return Long.parseLong(hit.getDocument().get("id"));
-		} catch (IOException ioe) {
-			logger.error(ioe);
-			return null;
-		}
+		return objectid;
 	}
 }
