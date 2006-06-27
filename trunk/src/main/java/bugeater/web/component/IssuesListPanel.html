@@ -1,0 +1,22 @@
+<html xmlns:wicket="http://wicket.sourceforge.net/">
+	<body>
+		<wicket:panel>
+			<table>
+				<tr>
+					<th>Summary</th><th>Priority</th>
+					<th>Status</th><th>Watch</th>
+				</tr>
+				<tr wicket:id="issueList">
+					<td>
+						<a wicket:id="viewIssueLink">
+							<span wicket:id="summaryLabel"></span>
+						</a>
+					</td>
+					<td wicket:id="priorityLabel"></td>
+					<td wicket:id="statusLabel"></td>
+					<td align="center" wicket:id="watchIssueLink"></td>
+				</tr>
+			</table>
+		</wicket:panel>
+	</body>
+</html>

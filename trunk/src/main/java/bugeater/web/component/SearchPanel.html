@@ -1,0 +1,87 @@
+<html xmlns:wicket="http://wicket.sourceforge.net/">
+	<body>
+		<wicket:panel>
+	        <form wicket:id="searchForm">
+		        <p>
+		        	<strong>Search for issues with matches:</strong>
+		        	<table>
+		        		<tr>
+		        			<td>
+					        	<input type="text" wicket:id="searchText"/>
+					        </td>
+					        <td>
+					        	<input
+					        		type="submit" wicket:id="textSearch"
+					        		value="Search for Matches"
+					        	/>
+					        </td>
+						</tr>
+					</table>
+		        </p>
+		        <p>
+		        	<strong>Search for issues by current status:</strong>
+		        	<table>
+		        		<tr>
+		        			<td><strong>Status:</strong></td>
+		        			<td>
+					        	<select wicket:id="status">
+					        		<value>Open</value>
+					        		<value>Testing</value>
+					        	</select>
+					        </td>
+						</tr>
+						<tr>
+							<td/>
+							<td>
+					        	<input
+					        		type="submit" wicket:id="statusSearch"
+					        		value="Search by Status"
+					        	/>
+							</td>
+						</tr>
+						<tr>
+							<td></td>
+							<td>
+					        	<a href="#" wicket:id="pendingIssuesLink">
+					        		Show all pending issues
+					        	</a>
+							</td>
+						</tr>
+					</table>
+		        </p>
+		        <p>
+		        	<strong>Search for issues by status change:</strong>
+		        	<table>
+		        		<tr>
+		        			<td><strong>Status:</strong></td>
+		        			<td>
+					        	<select wicket:id="statusChanged">
+					        		<value>Open</value>
+					        		<value>Testing</value>
+					        	</select>
+					        </td>
+						</tr>
+						<tr>
+							<td><strong>Changed By:</strong></td>
+							<td>
+					        	<select wicket:id="changedBy">
+					        		<value>Open</value>
+					        		<value>Testing</value>
+					        	</select>
+							</td>
+						</tr>
+						<tr>
+							<td/>
+							<td>
+					        	<input
+					        		type="submit" wicket:id="statusChangeSearch"
+					        		value="Search by Status"
+					        	/>
+							</td>
+						</tr>
+					</table>
+		        </p>
+			</form>
+		</wicket:panel>
+	</body>
+</html>

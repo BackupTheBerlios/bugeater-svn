@@ -1,0 +1,32 @@
+<!--
+	The base page for the TimeClock application.  This class can be used to
+	provide site-wide look and feel to the pages.
+-->
+<html xmlns:wicket="http://wicket.sourceforge.net/">
+    <head>
+        <title>Software Development Issue Tracking Tool</title>
+        <link rel="stylesheet" type="text/css"
+              href="/TimeClock/css/style.css"
+        />
+    </head>
+    <body>
+    	<!-- This should be done with CSS rather than using a table -->
+    	<table width="100%">
+    		<tr>
+    			<td><a href="#" wicket:id="homeLink">My Issues</a></td>
+    			<td><a href="#" wicket:id="searchLink">Search Issues</a></td>
+    			<td><a href="#" wicket:id="addLink">Report an Issue</a></td>
+    			<td>
+    				<form wicket:id="issueByIDForm">
+    					<strong>Issue ID:</strong>
+    					<input wicket:id="issueByIDField" type="text"/>
+    					<input type="submit" value="View Issue"/>
+    				</form>
+    			</td>
+    			<td><a href="#" wicket:id="adminLink">Administration</a></td>
+    			<td><a href="#" wicket:id="logoutLink">Log Out</a></td>
+    		</tr>
+    	</table>
+       	<wicket:child/>
+    </body>
+</html>

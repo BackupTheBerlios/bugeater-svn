@@ -1,0 +1,181 @@
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>bugeater</groupId>
+  <artifactId>bugeater</artifactId>
+  <name>Bug Tracking Webapp</name>
+  <packaging>war</packaging>
+  <version>0.0.1</version>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-eclipse-plugin</artifactId>
+        <configuration>
+          <projectnatures>
+            <java.lang.String>
+              org.eclipse.jdt.core.javanature
+            </java.lang.String>
+            <java.lang.String>
+              wicketbench.wicketnature
+            </java.lang.String>
+          </projectnatures>
+          <buildcommands>
+            <java.lang.String>
+              org.eclipse.jdt.core.javabuilder
+            </java.lang.String>
+            <java.lang.String>
+              wicketbench.associatedMarkupAuditor
+            </java.lang.String>
+          </buildcommands>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>quickstart/**</exclude>
+          </excludes>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <repositories>
+    <repository>
+    	<id>Maven</id>
+    	<url>http://www.ibiblio.org/maven/</url>
+    </repository>
+	<repository>
+		<!-- Wicket's repo is slower, but it has new releases of wicket
+             before maven's repo does. -->
+		<id>Wicket</id>
+		<url>http://wicketframework.org/maven2</url>
+	</repository>
+  </repositories>
+  <dependencies>
+
+  	<!-- Required Dependencies -->
+    <dependency>
+    	<groupId>commons-collections</groupId>
+    	<artifactId>commons-collections</artifactId>
+    	<version>2.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.0.4</version>
+    </dependency>
+	<dependency>
+		<groupId>org.hibernate</groupId>
+		<artifactId>hibernate</artifactId>
+		<version>3.2.0.cr2</version>
+	</dependency>
+	<dependency>
+		<groupId>org.hibernate</groupId>
+		<artifactId>hibernate-annotations</artifactId>
+		<version>3.2.0.cr1</version>
+	</dependency>
+        <dependency>
+            <groupId>lucene</groupId>
+            <artifactId>lucene</artifactId>
+            <version>1.9.1</version>
+            <type>jar</type>
+        </dependency>
+<!--
+        <dependency>
+            <groupId>lucene</groupId>
+            <artifactId>lucene-highlighter</artifactId>
+            <version>1.4.3</version>
+            <type>jar</type>
+        </dependency>
+-->
+    <dependency>
+      <groupId>javax.mail</groupId>
+      <artifactId>mail</artifactId>
+      <version>1.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring</artifactId>
+      <version>2.0-m4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-hibernate3</artifactId>
+      <version>2.0-m4</version>
+    </dependency>
+	<!-- main wicket framework api -->
+    <dependency>
+        <groupId>wicket</groupId>
+        <artifactId>wicket</artifactId>
+        <version>2.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+        <groupId>wicket</groupId>
+        <artifactId>wicket-auth-roles</artifactId>
+        <version>2.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+        <groupId>wicket</groupId>
+        <artifactId>wicket-extensions</artifactId>
+        <version>2.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+        <groupId>wicket</groupId>
+        <artifactId>wicket-spring</artifactId>
+        <version>2.0-SNAPSHOT</version>
+    </dependency>
+
+    <!-- Testing Dependencies needed only for testing and debugging -->
+    <dependency>
+      <groupId>commons-dbcp</groupId>
+      <artifactId>commons-dbcp</artifactId>
+      <version>1.2.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>jetty</groupId>
+      <artifactId>jetty</artifactId>
+      <version>4.2.9</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>jetty</groupId>
+      <artifactId>jasper-runtime</artifactId>
+      <version>4.2.20RC0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>jetty</groupId>
+      <artifactId>jasper-compiler</artifactId>
+      <version>4.2.20RC0</version>
+      <scope>test</scope>
+    </dependency>
+	<!-- Provides a simple JNDI provider for use during testing.  Jetty does
+	     not provide an implementation of EJB. -->
+    <dependency>
+      <groupId>mockejb</groupId>
+      <artifactId>mockejb</artifactId>
+      <version>0.6-beta2</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Provided Dependencies (will be provided by the servlet container)-->
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.3</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>resin</groupId>
+      <artifactId>resin</artifactId>
+      <version>3.0.15</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+</project>

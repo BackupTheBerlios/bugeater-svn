@@ -1,0 +1,18 @@
+<html xmlns:wicket="http://wicket.sourceforge.net/">
+	<body>
+		<wicket:panel>
+			<h3>Attachments:</h3>
+			<ul>
+				<li wicket:id="attachmentsList">
+					<a wicket:id="downloadLink">
+						<span wicket:id="attachmentLabel"></span>
+					</a>
+				</li>
+			</ul>
+			<form wicket:id="addForm">
+				<input wicket:id="attachmentFile" type="file"/>
+				<input type="submit" value="Attach"/>
+			</form>
+		</wicket:panel>
+	</body>
+</html>

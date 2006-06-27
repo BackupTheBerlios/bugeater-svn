@@ -1,0 +1,57 @@
+<html xmlns:wicket="http://wicket.sourceforge.net/">
+    <body>
+        <wicket:extend>
+        	<p>
+        		Here, you may administer releases for the project
+        		<span wicket:id="projectLabel">foo</span>:
+        	</p>
+	    	<h3>Releases:</h3>
+	    	<table>
+	    		<tr>
+	    			<th>Version #</th>
+	    			<th>Scheduled Release Date</th>
+	    			<th>Actual Release Date</th>
+	    		</tr>
+	    		<tr wicket:id="releaseList">
+	    			<td>
+	    				<a href="#" wicket:id="editReleaseLink">
+		    				<span wicket:id="versionLabel"></span>
+		    			</a>
+	    			</td>
+	    			<td wicket:id="scheduledDateLabel"></td>
+	    			<td wicket:id="actualDateLabel"></td>
+	    		</tr>
+	    	</table>
+        	<form wicket:id="form">
+        		<p wicket:id="instructions">
+        			Add a release:
+        		</p>
+    	    	<p wicket:id="formFeedback"></p>
+    	    	<table>
+    	    		<tr>
+    	    			<td><strong>Version Number:</strong></td>
+    	    			<td>
+    	    				<input type="text" wicket:id="versionNumber">
+    	    				</input>
+    	    			</td>
+    	    			<td><strong>Scheduled Release Date:</strong></td>
+    	    			<td>
+    	    				<input type="text" wicket:id="scheduledReleaseDate"/>
+    	    				<span wicket:id="scheduledReleaseDatePicker"/>
+    	    			</td>
+    	    			<span wicket:id="actualWicketDateInput">
+	    	    			<td><strong>Scheduled Release Date:</strong></td>
+	    	    			<td>
+	    	    				<input type="text" wicket:id="actualReleaseDate"/>
+	    	    				<span wicket:id="actualReleaseDatePicker"/>
+	    	    			</td>
+	    	    		</span>
+    	    			<td>
+							<input type="submit" wicket:id="submit" value="Add Release"></input>
+						</td>
+					</tr>
+				</table>
+    	    </form>
+		</wicket:extend>
+	</body>
+</html>

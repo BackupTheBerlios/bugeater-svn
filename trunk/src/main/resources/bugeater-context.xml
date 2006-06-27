@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<!--
+	This is the configuration file for Spring.  It tells spring how to
+	initialize hibernate and what beans it is to provide in Context.
+-->
+<beans>
+    <!--
+    	Configurer that replaces ${...} placeholders with values from
+    	properties files.
+    -->
+    <bean
+    	id="propertyConfigurer"
+    	class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
+    >
+        <property name="locations">
+        	<!-- The properties files to look in for keys -->
+            <list>
+                <value>classpath:configure.properties</value>
+            </list>
+        </property>
+    </bean>
+   
+
+	<!-- JDBC Data Source Config -->
+<!--
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName">
+			<value>${jdbc.driver}</value>
+		</property>
+		<property name="url"><value>${jdbc.url}</value></property>
+		<property name="username">
+			<value>${jdbc.username}</value>
+		</property>
+		<property name="password">
+			<value>${jdbc.password}</value>
+		</property>
+	</bean>
+-->
+
+	
+	<!-- JNDI Data Source Config -->
+	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName">
+			<value>${datasource.jndiName}</value>
+		</property>
+		<property name="cache"><value>true</value></property>
+		<property name="lookupOnStartup"><value>true</value></property>
+	</bean>
+
+	<!-- Hibernate Configuration -->
+
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+        <property name="dataSource"><ref local="dataSource"/></property>
+        <property name="annotatedClasses">
+            <list>
+				<value>bugeater.domain.Attachment</value>
+				<value>bugeater.domain.Issue</value>
+				<value>bugeater.domain.IssueStatusChange</value>
+				<value>bugeater.domain.LookupValue</value>
+				<value>bugeater.domain.Note</value>
+				<value>bugeater.domain.ReleaseVersion</value>
+				<!--
+				 If the user provides his own implementation of the
+				 authentication and user services, the following
+				 declaration is not needed.
+				-->
+				<value>bugeater.simpleuser.User</value>
+            </list>
+        </property>
+		
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+                <prop key="show_sql">true</prop>
+                <prop key="use_outer_join">true</prop>
+            </props>
+        </property>
+        
+        <property name="schemaUpdate"><value>true</value></property>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+        <property name="sessionFactory"><ref bean="sessionFactory"/></property>
+    </bean>
+    
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
+    
+    <bean id="transactionInterceptor" class="org.springframework.transaction.interceptor.TransactionInterceptor">
+        <property name="transactionManager" ref="transactionManager"/>
+        <property name="transactionAttributeSource">
+            <bean class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource"/>
+        </property>
+    </bean>
+    
+    <bean class="org.springframework.transaction.interceptor.TransactionAttributeSourceAdvisor">
+        <property name="transactionInterceptor" ref="transactionInterceptor"/>
+    </bean>
+
+
+	<!-- Configuration of DAOs -->
+	
+    <bean id="attachmentDao" class="bugeater.hibernate.AttachmentDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+	
+    <bean id="issueDao" class="bugeater.hibernate.IssueDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+	
+    <bean id="lookupValueDao" class="bugeater.hibernate.LookupValueDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+	
+    <bean id="noteDao" class="bugeater.hibernate.NoteDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+	
+    <bean id="releaseVersionDao" class="bugeater.hibernate.ReleaseVersionDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+	<!-- Configuration of Services -->
+
+	<!--
+		The user may modify this bean entry and provide an implemention of the
+		bugeater.service.UserService interface.
+	  -->
+    <bean id="userService" class="bugeater.simpleuser.UserServiceImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+	<!--
+		The user may modify this bean entry and provide an implemention of the
+		bugeater.service.AuthenticationService interface.
+	  -->
+    <bean id="authenticationService" class="bugeater.simpleuser.AuthenticationServiceImpl">
+        <property name="userService" ref="userService"/>
+    </bean>
+
+    <bean id="searchService" class="bugeater.service.impl.SearchServiceImpl">
+    	<property name="indexDirectory">
+    		<value>${lucene.indexdir}</value>
+    	</property>
+        <property name="issueDao" ref="issueDao"/>
+        <property name="noteDao" ref="noteDao"/>
+    </bean>
+	
+    <bean id="mailService" class="bugeater.service.impl.MailServiceImpl">
+		<property name="mailServer"><value>${mail.server}</value></property>
+    </bean>
+	
+    <bean id="attachmentService" class="bugeater.service.impl.AttachmentServiceImpl">
+        <property name="attachmentDao" ref="attachmentDao"/>
+        <property name="attachmentDir">
+        	<value>${attachments.dir}</value>
+        </property>
+    </bean>
+	
+    <bean id="issueService" class="bugeater.service.impl.IssueServiceImpl">
+        <property name="issueDao" ref="issueDao"/>
+		<property name="lookupValueDao" ref="lookupValueDao"/>
+		<property name="mailService" ref="mailService"/>
+		<property name="searchService" ref="searchService"/>
+		<property name="userService" ref="userService"/>
+    </bean>
+
+    <bean id="noteService" class="bugeater.service.impl.NoteServiceImpl">
+		<property name="mailService" ref="mailService"/>
+        <property name="noteDao" ref="noteDao"/>
+		<property name="searchService" ref="searchService"/>
+		<property name="userService" ref="userService"/>
+    </bean>
+	
+    <bean id="releaseVersionService" class="bugeater.service.impl.ReleaseVersionServiceImpl">
+        <property name="releaseVersionDao" ref="releaseVersionDao"/>
+    </bean>
+
+</beans>
