@@ -1,6 +1,7 @@
 package bugeater.service;
 
 import javax.mail.Message;
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 /**
@@ -15,6 +16,11 @@ public interface MailService
 	 * @return A new message.
 	 */
 	public MimeMessage createEmptyMessage();
+	
+	/**
+	 * Returns the email address which all emails should come from.
+	 */
+	public InternetAddress getFromAddress();
 	
 	/**
 	 * Sends an email message asynchronously.  This method does not block.

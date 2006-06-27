@@ -148,6 +148,9 @@
     </bean>
 	
     <bean id="mailService" class="bugeater.service.impl.MailServiceImpl">
+    	<property name="fromAddressString">
+    		<value>bugeater@localhost.localdomain</value>
+    	</property>
 		<property name="mailServer"><value>${mail.server}</value></property>
     </bean>
 	

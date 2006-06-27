@@ -8,6 +8,8 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import org.apache.commons.logging.Log;
@@ -35,6 +37,20 @@ public class MailServiceImpl implements MailService
 	// MEMBERS
 	
 	private static final Log logger = LogFactory.getLog(MailServiceImpl.class);
+	
+	private InternetAddress fromAddress;
+	public InternetAddress getFromAddress()
+	{
+		return fromAddress;
+	}
+	public void setFromAddressString(String s)
+	{
+		try {
+			fromAddress = new InternetAddress(s);
+		} catch (AddressException ae) {
+			logger.error(ae);
+		}
+	}
 	
 	/**
 	 * A thread that will be used to deliver emails.
@@ -75,7 +91,12 @@ public class MailServiceImpl implements MailService
 	 */
 	public void queueMessage(Message message)
 	{
-		getMailServiceThread().queueMessage(message);
+		try {
+			message.setFrom(getFromAddress());
+			getMailServiceThread().queueMessage(message);
+		} catch (MessagingException me) {
+			logger.error(me);
+		}
 	}
 
 	/**

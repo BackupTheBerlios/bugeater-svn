@@ -68,7 +68,7 @@ public class IssueDaoImpl extends AbstractHibernateDao<Issue>
 			}
 			sb.append(status.ordinal());
 		}
-		sb.append(" ) order by i.priority");
+		sb.append(" ) order by i.priority desc");
 		
 		return (List<Issue>)getSession()
 			.createSQLQuery(sb.toString())
@@ -98,7 +98,7 @@ public class IssueDaoImpl extends AbstractHibernateDao<Issue>
 			}
 			sb.append(status.ordinal());
 		}
-		sb.append(" ) order by i.priority");
+		sb.append(" ) order by i.priority desc");
 		
 		return (List<Issue>)getSession()
 			.createSQLQuery(sb.toString())
@@ -141,7 +141,7 @@ public class IssueDaoImpl extends AbstractHibernateDao<Issue>
 			}
 			sb.append(status.ordinal());
 		}
-		sb.append(" ) order by i.priority");
+		sb.append(" ) order by i.priority desc");
 		
 		return (List<Issue>)getSession()
 			.createSQLQuery(sb.toString())
