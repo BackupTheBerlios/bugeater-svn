@@ -25,6 +25,7 @@ import bugeater.web.component.IssueAttachmentsPanel;
 import bugeater.web.component.WatchIssueLink;
 import bugeater.web.component.util.NullableChoiceRenderer;
 import bugeater.web.model.AssignableUsersModel;
+import bugeater.web.model.RadeoxModel;
 import bugeater.web.model.ReleaseVersionsListModel;
 import bugeater.web.model.IssueModel;
 import bugeater.web.model.IssueNotesListModel;
@@ -315,8 +316,8 @@ public class ViewIssuePage extends BugeaterPage
 					label = new Label(item, "statusChange", "");
 				}
 				new Label(
-						item, "text", note.getText()
-					).setEscapeModelStrings(true);
+						item, "text", new RadeoxModel(note.getText())
+					).setEscapeModelStrings(false);
 			}
 		}.setRenderBodyOnly(true);
 		
