@@ -172,7 +172,10 @@ public class ViewIssuePage extends BugeaterPage
 			}
 		}.setEnabled(canEditIssue);
 		
-		new DropDownChoice<IUserBean>(this, "assignedTo", new AssignedUserModel(model), new AssignableUsersModel())
+		DropDownChoice choice = new DropDownChoice<IUserBean>(
+				this, "assignedTo", new AssignedUserModel(model),
+				new AssignableUsersModel()
+			)
 		{
 			private static final long serialVersionUID = 1L;
 
@@ -191,11 +194,13 @@ public class ViewIssuePage extends BugeaterPage
 			@Override
 			protected void onSelectionChanged(Object newSelection)
 			{
-				IssueService iService =
-					(IssueService)((BugeaterApplication)Application.get())
-					.getSpringContextLocator().getSpringContext()
-					.getBean("issueService");
-				iService.save(model.getObject());
+				if (newSelection != null) {
+					IssueService iService =
+						(IssueService)((BugeaterApplication)Application.get())
+						.getSpringContextLocator().getSpringContext()
+						.getBean("issueService");
+					iService.save(model.getObject());
+				}
 			}
 
 			/**
@@ -206,7 +211,10 @@ public class ViewIssuePage extends BugeaterPage
 			{
 				return true;
 			}
-		}.setEnabled(canEditIssue);
+		};
+		choice.setChoiceRenderer(new NullableChoiceRenderer());
+		choice.setEnabled(canEditIssue);
+		choice.setNullValid(true);
 		
 		final IModel<IssueStatus>newStatusModel = new Model<IssueStatus>(model.getObject().getCurrentStatus());
 		new DropDownChoice<IssueStatus>(this, "currentStatus", newStatusModel, Arrays.<IssueStatus>asList(IssueStatus.values()))
@@ -236,7 +244,7 @@ public class ViewIssuePage extends BugeaterPage
 			}
 		}.setEnabled(canEditIssue);
 
-		DropDownChoice choice = new DropDownChoice<ReleaseVersion>(
+		choice = new DropDownChoice<ReleaseVersion>(
 				this, "releaseVersion",
 				new ReleaseVersionsListModel(
 						new PropertyModel<String>(model, "project"), true,

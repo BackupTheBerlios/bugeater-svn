@@ -9,6 +9,7 @@ import bugeater.bean.IUserBean;
 import bugeater.domain.Issue;
 import bugeater.domain.IssueStatus;
 import bugeater.domain.IssueStatusChange;
+import bugeater.domain.ReleaseVersion;
 
 /**
  * An interface that defines the API that a service class that deals with
@@ -100,4 +101,11 @@ public interface IssueService
 	 * @param watcherUserID The unique ID of the user doing the watching.
 	 */
 	public List<Issue>getPendingWatchedIssues(String watcherUserID);
+	
+	/**
+	 * Gets all issues that are scheduled for the given release.
+	 * 
+	 * @param status The status to search for.
+	 */
+	public List<Issue>getIssuesByReleaseVersion(ReleaseVersion version);
 }

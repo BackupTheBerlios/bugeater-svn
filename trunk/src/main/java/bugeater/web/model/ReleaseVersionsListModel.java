@@ -24,6 +24,14 @@ public class ReleaseVersionsListModel
 	private static final long serialVersionUID = 1L;;
 	
 	/**
+	 * Returns all versions for all projects.
+	 */
+	public ReleaseVersionsListModel(SortOrder order)
+	{
+		this((String)null, order);
+	}
+	
+	/**
 	 * A convenience method that will wrap the project string in a model.
 	 */
 	public ReleaseVersionsListModel(String project, SortOrder order)
@@ -72,7 +80,14 @@ public class ReleaseVersionsListModel
 			if (includeNull) {
 				list.add(null);
 			}
-			if (projectModel.getObject() != null) {
+			if (projectModel.getObject() == null) {
+				ReleaseVersionService service =
+					(ReleaseVersionService)
+					((BugeaterApplication)Application.get())
+					.getSpringContextLocator().getSpringContext()
+					.getBean("releaseVersionService");
+				list.addAll(service.loadAll(sortOrder));
+			} else {
 				ReleaseVersionService service =
 					(ReleaseVersionService)
 					((BugeaterApplication)Application.get())

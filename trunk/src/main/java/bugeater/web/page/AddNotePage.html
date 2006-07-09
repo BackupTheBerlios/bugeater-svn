@@ -3,14 +3,17 @@
         <wicket:extend>
         	<form wicket:id="addNoteForm">
 	        	<p>
-	        		Enter the note text below:
+	        		Enter the note text below.  The note is entered using wiki
+	        		style formatting.
+   					<a href="static/note_formatting.html" target="_blank">
+   						Click here for note formatting help.
+   					</a>
 	        	</p>
     	    	<p wicket:id="formFeedback"></p>
-				<textarea rows="15" wicket:id="text"></textarea>
+				<textarea cols="100" rows="15" wicket:id="text"></textarea>
 				<p/>
 	        	<input type="submit" value="Create"/>
     	    </form>
-    	    <a href="static/note_formatting.html" target="_blank">Note Formating Help</a>
 		</wicket:extend>
 	</body>
 </html>

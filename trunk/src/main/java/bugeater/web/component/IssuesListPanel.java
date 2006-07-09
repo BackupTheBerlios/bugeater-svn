@@ -56,6 +56,7 @@ public class IssuesListPanel extends Panel<List<Issue>>
 					}
 				};
 				new Label(link, "summaryLabel", i.getSummary());
+				new Label(item, "projectLabel", i.getProject());
 				new Label(item, "priorityLabel", i.getPriority().toString());
 				new Label(item, "statusLabel", i.getCurrentStatus().toString());
 				new WatchIssueLink(item, "watchIssueLink", i);

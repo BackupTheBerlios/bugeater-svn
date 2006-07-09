@@ -13,6 +13,7 @@ import bugeater.domain.IssueStatus;
 import bugeater.domain.IssueStatusChange;
 import bugeater.domain.LookupValue;
 import bugeater.domain.Note;
+import bugeater.domain.ReleaseVersion;
 
 import bugeater.service.IssueService;
 import bugeater.service.MailService;
@@ -259,5 +260,13 @@ public class IssueServiceImpl implements IssueService
 	{
 		issueDao.save(i);
 		searchService.indexIssue(i);
+	}
+
+	/**
+	 * @see bugeater.service.IssueService#getIssuesByReleaseVersion(bugeater.domain.ReleaseVersion)
+	 */
+	public List<Issue> getIssuesByReleaseVersion(ReleaseVersion version)
+	{
+		return issueDao.getIssuesByReleaseVersion(version);
 	}
 }

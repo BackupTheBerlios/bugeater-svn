@@ -77,6 +77,7 @@ public class AssignableUsersModel extends AbstractDetachableModel<List<IUserBean
 						}
 					}
 			);
+			list.add(0, null);
 		}
 	}
 

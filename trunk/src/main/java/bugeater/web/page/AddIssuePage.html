@@ -12,7 +12,8 @@
         			<tr>
         				<td><strong>Summary:</strong></td>
         				<td colspan="5">
-        					<input type="text" wicket:id="summary"></input>
+        					<input size="100" type="text" wicket:id="summary">
+        					</input>
         				</td>
 	        		</tr>
         			<tr>
@@ -43,9 +44,19 @@
         				</td>
 	        		</tr>
         			<tr>
-        				<td><strong>Description:</strong></td>
+        				<td valign="top">
+        					<strong>Description:</strong><br/>
+        					The description is entered using wiki style
+        					formatting.
+        					<a
+        						href="static/note_formatting.html"
+        						target="_blank"
+        					>
+        						Click here for description formatting help.
+        					</a>
+        				</td>
         				<td colspan="5">
-        					<textarea rows="15" wicket:id="description">
+        					<textarea cols="100" rows="15" wicket:id="description">
         					</textarea>
         				</td>
 	        		</tr>
@@ -57,7 +68,6 @@
 	        		</tr>
     	    	</table>
     	    </form>
-    	    <a href="static/note_formatting.html" target="_blank">Description Formatting Help</a>
 		</wicket:extend>
 	</body>
 </html>

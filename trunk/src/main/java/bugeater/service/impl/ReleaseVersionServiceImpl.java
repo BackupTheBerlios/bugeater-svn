@@ -30,6 +30,14 @@ public class ReleaseVersionServiceImpl implements ReleaseVersionService
 	}
 
 	/**
+	 * @see bugeater.service.ReleaseVersionService#loadAll(bugeater.service.SortOrder)
+	 */
+	public List<ReleaseVersion> loadAll(SortOrder order)
+	{
+		return rvDao.loadAll(order);
+	}
+
+	/**
 	 * @see bugeater.service.ReleaseVersionService#loadAll(java.lang.String, bugeater.service.SortOrder)
 	 */
 	public List<ReleaseVersion> loadAll(String project, SortOrder order)

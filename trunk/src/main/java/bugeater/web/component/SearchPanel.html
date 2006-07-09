@@ -1,86 +1,100 @@
 <html xmlns:wicket="http://wicket.sourceforge.net/">
+	<head>
+	<wicket:head>
+		<link rel="stylesheet" type="text/css"
+              href="css/searchpanel.css"
+        />
+	</wicket:head>
+	</head>
 	<body>
 		<wicket:panel>
 	        <form wicket:id="searchForm">
-		        <p>
-		        	<strong>Search for issues with matches:</strong>
-		        	<table>
-		        		<tr>
-		        			<td>
-					        	<input type="text" wicket:id="searchText"/>
-					        </td>
-					        <td>
-					        	<input
-					        		type="submit" wicket:id="textSearch"
-					        		value="Search for Matches"
-					        	/>
-					        </td>
-						</tr>
-					</table>
-		        </p>
-		        <p>
-		        	<strong>Search for issues by current status:</strong>
-		        	<table>
-		        		<tr>
-		        			<td><strong>Status:</strong></td>
-		        			<td>
-					        	<select wicket:id="status">
-					        		<value>Open</value>
-					        		<value>Testing</value>
-					        	</select>
-					        </td>
-						</tr>
-						<tr>
-							<td/>
-							<td>
-					        	<input
-					        		type="submit" wicket:id="statusSearch"
-					        		value="Search by Status"
-					        	/>
-							</td>
-						</tr>
-						<tr>
-							<td></td>
-							<td>
-					        	<a href="#" wicket:id="pendingIssuesLink">
-					        		Show all pending issues
-					        	</a>
-							</td>
-						</tr>
-					</table>
-		        </p>
-		        <p>
-		        	<strong>Search for issues by status change:</strong>
-		        	<table>
-		        		<tr>
-		        			<td><strong>Status:</strong></td>
-		        			<td>
-					        	<select wicket:id="statusChanged">
-					        		<value>Open</value>
-					        		<value>Testing</value>
-					        	</select>
-					        </td>
-						</tr>
-						<tr>
-							<td><strong>Changed By:</strong></td>
-							<td>
-					        	<select wicket:id="changedBy">
-					        		<value>Open</value>
-					        		<value>Testing</value>
-					        	</select>
-							</td>
-						</tr>
-						<tr>
-							<td/>
-							<td>
-					        	<input
-					        		type="submit" wicket:id="statusChangeSearch"
-					        		value="Search by Status"
-					        	/>
-							</td>
-						</tr>
-					</table>
-		        </p>
+	        	<table cellspacing="0">
+	        	
+	        		<tr>
+	        			<td colspan="2" class="searchcelltopleftright">
+				        	<strong>Search for issues by text:</strong>
+				        </td>
+						<td colspan="2" class="searchcelltopleftright">
+				        	<strong>Search for issues by current status:</strong>
+				        </td>
+				    </tr>
+				    <tr>
+				    	<td class="searchcellleft">
+				        	<input type="text" wicket:id="searchText"/>
+				        </td>
+				        <td class="searchcellright">
+				        	<input
+				        		type="submit" wicket:id="textSearch"
+				        		value="Search for Matches"
+				        	/>
+				        </td>
+		        		<td class="searchcellleft"><strong>Status:</strong></td>
+	        			<td class="searchcellright">
+				        	<select wicket:id="status"></select>
+				        </td>
+					</tr>
+					<tr>
+						<td class="searchcellbottomleft">&nbsp;</td>
+						<td class="searchcellbottomright">&nbsp;</td>
+						<td class="searchcellbottomleftright" colspan="2">
+				        	<a href="#" wicket:id="pendingIssuesLink">
+				        		Show all pending issues
+				        	</a>
+						</td>
+					</tr>
+					
+					<tr>
+						<td class="searchcelltopleftright" colspan="2">
+				        	<strong>Search for issues by release version:</strong>
+				        </td>
+				        <td class="searchcelltopleftright" colspan="2">
+				           	<strong>Search for issues by assignee:</strong>
+				        </td>
+				    </tr>
+				    <tr>
+	        			<td class="searchcellbottomleft">
+	        				<strong>Release Version:</strong>
+	        			</td>
+	        			<td class="searchcellbottomright">
+				        	<select wicket:id="release"></select>
+				        </td>
+	        			<td class="searchcellbottomleft">
+	        				<strong>Assignee:</strong>
+	        			</td>
+	        			<td class="searchcellbottomright">
+				        	<select wicket:id="assignee"></select>
+				        </td>
+					</tr>
+					
+					<tr>
+						<td class="searchcelltopleftright" colspan="4">
+				        	<strong>Search for issues by status change:</strong>
+				        </td>
+				    </tr>
+	        		<tr>
+	        			<td class="searchcellleft"><strong>Status:</strong></td>
+	        			<td>
+				        	<select wicket:id="statusChanged"></select>
+				        </td>
+						<td><strong>Changed By:</strong></td>
+						<td class="searchcellright">
+				        	<select wicket:id="changedBy"></select>
+						</td>
+					</tr>
+					<tr>
+						<td class="searchcellbottomleft">&nbsp;</td>
+						<td class="searchcellbottom">&nbsp;</td>
+						<td class="searchcellbottom">&nbsp;</td>
+						<td class="searchcellbottomright">
+				        	<input
+				        		type="submit" wicket:id="statusChangeSearch"
+				        		value="Search by Status"
+				        	/>
+						</td>
+					</tr>
+					
+				</table>
 			</form>
 		</wicket:panel>
 	</body>

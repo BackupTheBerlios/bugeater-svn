@@ -23,6 +23,20 @@ public class ReleaseVersionDaoImpl extends AbstractHibernateDao<ReleaseVersion>
 	}
 
 	/**
+	 * @see bugeater.dao.ReleaseVersionDao#loadAll(bugeater.service.SortOrder)
+	 */
+	@SuppressWarnings("unchecked")
+	public List<ReleaseVersion> loadAll(SortOrder order)
+	{
+		return (List<ReleaseVersion>)getSession().createQuery(
+				"select rv " +
+				"from ReleaseVersion rv " +
+				"order by rv.project " + order.getSqlToken() +
+				"         , rv.versionNumber " + order.getSqlToken()
+			).list();
+	}
+
+	/**
 	 * @see bugeater.dao.ReleaseVersionDao#loadAll(java.lang.String, bugeater.service.SortOrder)
 	 */
 	@SuppressWarnings("unchecked")

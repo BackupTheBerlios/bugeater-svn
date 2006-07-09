@@ -13,6 +13,11 @@ import bugeater.service.SortOrder;
 public interface ReleaseVersionDao
 {
 	/**
+	 * A list of releases for all projects.
+	 */
+	public List<ReleaseVersion>loadAll(SortOrder order);
+
+	/**
 	 * A list of releases for the project.
 	 */
 	public List<ReleaseVersion>loadAll(String project, SortOrder order);

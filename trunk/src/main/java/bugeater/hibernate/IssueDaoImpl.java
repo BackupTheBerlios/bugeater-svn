@@ -7,6 +7,7 @@ import bugeater.bean.IUserBean;
 import bugeater.dao.IssueDao;
 import bugeater.domain.Issue;
 import bugeater.domain.IssueStatus;
+import bugeater.domain.ReleaseVersion;
 
 /**
  * An implementation of the bugeater.dao.IssueDao interface.
@@ -24,6 +25,24 @@ public class IssueDaoImpl extends AbstractHibernateDao<Issue>
 	public IssueDaoImpl()
 	{
 		super(Issue.class);
+	}
+	
+	/**
+	 * @see bugeater.dao.IssueDao#getIssuesByReleaseVersion(ReleaseVersion)
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Issue>getIssuesByReleaseVersion(ReleaseVersion version)
+	{
+		if (version == null) {
+			return Collections.<Issue>emptyList();
+		}
+		return (List<Issue>)getSession()
+			.createQuery(
+					"select i " +
+					"from Issue i " +
+					"where i.releaseVersion = :version " +
+					"order by i.priority desc"
+			).setParameter("version", version).list();
 	}
 
 	/**
