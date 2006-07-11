@@ -2,33 +2,78 @@
 	The base page for the TimeClock application.  This class can be used to
 	provide site-wide look and feel to the pages.
 -->
-<html xmlns:wicket="http://wicket.sourceforge.net/">
+<html xmlns:wicket="http://wicket.sourceforge.net/" xml:lang="en" lang="en">
     <head>
         <title>Software Development Issue Tracking Tool</title>
-        <link rel="stylesheet" type="text/css"
-              href="css/style.css"
-        />
+		<meta
+			http-equiv="content-type"
+			content="application/xhtml+xml; charset=UTF-8"
+		/>
+		<meta name="description" content="Description goes here" />
+		<meta
+			name="author" style="Ganesh Gunasegaran"
+			content="Philip A. Chapman"
+		 />
+		<link
+			rel="stylesheet" type="text/css" href="css/default.css"
+			media="screen, tv, projection" title="Default"
+		/>
+		<link
+			rel="alternative stylesheet" type="text/css" href="css/large.css"
+			media="screen, projection, tv" title="Larger Fonts"
+		/>
+		<link
+			rel="alternative stylesheet" type="text/css" href="css/print.css"
+			media="screen" title="Print Preview"
+		/>
+		<link
+			rel="stylesheet" type="text/css" href="css/handheld.css"
+			media="handheld" title="Small Layout"
+		/>
+		<link
+			rel="stylesheet" type="text/css" href="css/print.css" media="print"
+		/>
     </head>
     <body>
-    	<hr/>
-    	<!-- This should be done with CSS rather than using a table -->
-    	<table width="100%">
-    		<tr>
-    			<td><a href="#" wicket:id="homeLink">My Issues</a></td>
-    			<td><a href="#" wicket:id="searchLink">Search Issues</a></td>
-    			<td><a href="#" wicket:id="addLink">Report an Issue</a></td>
-    			<td>
-    				<form wicket:id="issueByIDForm">
-    					<strong>Issue ID:</strong>
-    					<input wicket:id="issueByIDField" type="text"/>
-    					<input type="submit" value="View Issue"/>
-    				</form>
-    			</td>
-    			<td><a href="#" wicket:id="adminLink">Administration</a></td>
-    			<td><a href="#" wicket:id="logoutLink">Log Out</a></td>
-    		</tr>
-    	</table>
-    	<hr/>
-       	<wicket:child/>
+		<div id="header">
+			<div id="header_bar">
+				<span class="title"><a wicket:id="bugeaterLink">Bugeater</a></span>
+				<span class="top_menu">
+                	<a href="#" wicket:id="homeLink">My Issues</a>
+                	<a href="#" wicket:id="addLink">Report an Issue</a>
+                	<a href="#" wicket:id="adminLink">Administration</a>
+                	<a href="#" wicket:id="logoutLink">Log Out</a>
+				</span>
+			</div>
+		</div>
+
+	    <div id="page">    
+    	    <div id="wrapper"> 
+        	    <div id="content">
+            	    <div id="path">
+           	    		<form wicket:id="issueByIDForm">
+							<strong>Issue ID:</strong>
+							<input wicket:id="issueByIDField" type="text"/>
+							<input type="submit" value="View Issue"/>
+						</form>
+	                </div>    
+		    	    <div id="main">
+    		            <div id="left">
+        		        	<wicket:child/>
+	            	    </div>
+	           	    	<div id="right">
+	               	    	<div id="right_menu">
+	               	    		<span wicket:id="searchPanel"></span>
+	    		            </div>
+    	        	    </div>
+	        		</div>   
+		      	</div>
+    
+				<div id="footer">
+		        	Bugeater version 0.0.2 is open source software.  See more
+		        	information at <a href="#">the bugeater project site</a>.
+    			</div>
+			</div>
+		</div>
     </body>
 </html>

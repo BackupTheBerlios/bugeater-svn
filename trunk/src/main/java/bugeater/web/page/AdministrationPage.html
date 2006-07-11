@@ -2,11 +2,9 @@
     <body>
         <wicket:extend>
         	<form wicket:id="addForm">
-	        	<p>
-	        		Here, you may administer lookup lists:
-	        	</p>
+	        	<h1>Here, you may administer lookup lists:</h1>
     	    	<p wicket:id="formFeedback"></p>
-    	    	<h3>Categories:</h3>
+    	    	<h2>Categories:</h2>
     	    	<ul>
     	    		<li wicket:id="categoryList">
     	    			<span wicket:id="categoryLabel"></span>
@@ -15,7 +13,7 @@
 				<input type="text" wicket:id="categoryField"></input>
 				<input type="submit" wicket:id="addCategoryBtn" value="Add Category"></input>
 				<p/>
-    	    	<h3>Projects (Click the link to view and edit releases):</h3>
+    	    	<h2>Projects (Click the link to view and edit releases):</h2>
     	    	<ul>
     	    		<li wicket:id="projectList">
     	    			<a href="#" wicket:id="editReleaseLink">

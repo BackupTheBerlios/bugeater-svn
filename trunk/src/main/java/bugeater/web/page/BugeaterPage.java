@@ -7,6 +7,7 @@ import bugeater.domain.Issue;
 import bugeater.service.IssueService;
 import bugeater.service.SecurityRole;
 import bugeater.web.BugeaterApplication;
+import bugeater.web.component.SearchPanel;
 
 import wicket.Application;
 import wicket.MarkupContainer;
@@ -83,8 +84,8 @@ public abstract class BugeaterPage<T> extends WebPage<T>
 	
 	private final void init()
 	{
+		new PageLink(this, "bugeaterLink", Home.class);
 		new PageLink(this, "homeLink", Home.class);
-		new PageLink(this, "searchLink", SearchPage.class);
 		new PageLink(this, "addLink", AddIssuePage.class);
 		new Link(this, "logoutLink")
 		{
@@ -98,6 +99,7 @@ public abstract class BugeaterPage<T> extends WebPage<T>
 		};
 		new IssueByIDForm(this, "issueByIDForm");
 		new AdministrationLink(this, "adminLink");
+		new SearchPanel(this, "searchPanel");
 	}
 	
 	private class IssueByIDForm extends Form

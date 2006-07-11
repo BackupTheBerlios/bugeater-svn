@@ -1,100 +1,42 @@
 <html xmlns:wicket="http://wicket.sourceforge.net/">
-	<head>
-	<wicket:head>
-		<link rel="stylesheet" type="text/css"
-              href="css/searchpanel.css"
-        />
-	</wicket:head>
-	</head>
 	<body>
 		<wicket:panel>
 	        <form wicket:id="searchForm">
-	        	<table cellspacing="0">
-	        	
-	        		<tr>
-	        			<td colspan="2" class="searchcelltopleftright">
-				        	<strong>Search for issues by text:</strong>
-				        </td>
-						<td colspan="2" class="searchcelltopleftright">
-				        	<strong>Search for issues by current status:</strong>
-				        </td>
-				    </tr>
-				    <tr>
-				    	<td class="searchcellleft">
-				        	<input type="text" wicket:id="searchText"/>
-				        </td>
-				        <td class="searchcellright">
-				        	<input
-				        		type="submit" wicket:id="textSearch"
-				        		value="Search for Matches"
-				        	/>
-				        </td>
-		        		<td class="searchcellleft"><strong>Status:</strong></td>
-	        			<td class="searchcellright">
-				        	<select wicket:id="status"></select>
-				        </td>
-					</tr>
-					<tr>
-						<td class="searchcellbottomleft">&nbsp;</td>
-						<td class="searchcellbottomright">&nbsp;</td>
-						<td class="searchcellbottomleftright" colspan="2">
-				        	<a href="#" wicket:id="pendingIssuesLink">
-				        		Show all pending issues
-				        	</a>
-						</td>
-					</tr>
-					
-					<tr>
-						<td class="searchcelltopleftright" colspan="2">
-				        	<strong>Search for issues by release version:</strong>
-				        </td>
-				        <td class="searchcelltopleftright" colspan="2">
-				           	<strong>Search for issues by assignee:</strong>
-				        </td>
-				    </tr>
-				    <tr>
-	        			<td class="searchcellbottomleft">
-	        				<strong>Release Version:</strong>
-	        			</td>
-	        			<td class="searchcellbottomright">
-				        	<select wicket:id="release"></select>
-				        </td>
-	        			<td class="searchcellbottomleft">
-	        				<strong>Assignee:</strong>
-	        			</td>
-	        			<td class="searchcellbottomright">
-				        	<select wicket:id="assignee"></select>
-				        </td>
-					</tr>
-					
-					<tr>
-						<td class="searchcelltopleftright" colspan="4">
-				        	<strong>Search for issues by status change:</strong>
-				        </td>
-				    </tr>
-	        		<tr>
-	        			<td class="searchcellleft"><strong>Status:</strong></td>
-	        			<td>
-				        	<select wicket:id="statusChanged"></select>
-				        </td>
-						<td><strong>Changed By:</strong></td>
-						<td class="searchcellright">
-				        	<select wicket:id="changedBy"></select>
-						</td>
-					</tr>
-					<tr>
-						<td class="searchcellbottomleft">&nbsp;</td>
-						<td class="searchcellbottom">&nbsp;</td>
-						<td class="searchcellbottom">&nbsp;</td>
-						<td class="searchcellbottomright">
-				        	<input
-				        		type="submit" wicket:id="statusChangeSearch"
-				        		value="Search by Status"
-				        	/>
-						</td>
-					</tr>
-					
-				</table>
+	        	<h2>Search for issues:</h2>
+    			<div class="searchBlock">
+    				<strong>By text:</strong>
+		        	<input type="text" wicket:id="searchText"/>
+		        	<input
+		        		type="submit" wicket:id="textSearch"
+		        		value="Search for Matches"
+		        	/>
+		        </div>
+	        	<div class="searchBlock">
+	        		<strong>By current status:</strong>
+		        	<select wicket:id="status"></select>
+					<a href="#" wicket:id="pendingIssuesLink">
+		        		Show all pending issues
+		        	</a>
+		        </div>
+				<div class="searchBlock">
+					<strong>By release version:</strong>
+		        	<select wicket:id="release"></select>
+	        	</div>
+				<div class="searchBlock">
+					<strong>By assignee:</strong>
+		        	<select wicket:id="assignee"></select>
+	        	</div>
+		    	<div class="searchBlock">
+		    		<strong>By status change:</strong>
+			    	<em>Status:</em>
+			    	<select wicket:id="statusChanged"></select><br/>
+			        <em>Changed By:</em>
+					<select wicket:id="changedBy"></select><br/>
+		        	<input
+		        		type="submit" wicket:id="statusChangeSearch"
+		        		value="Search by Status"
+		        	/>
+	        	</div>
 			</form>
 		</wicket:panel>
 	</body>

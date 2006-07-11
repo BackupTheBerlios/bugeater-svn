@@ -23,6 +23,7 @@ import wicket.markup.html.form.Form;
 import wicket.markup.html.form.PasswordTextField;
 import wicket.markup.html.form.TextField;
 import wicket.markup.html.form.validation.FormComponentFeedbackBorder;
+import wicket.markup.html.link.PageLink;
 
 import wicket.model.IModel;
 import wicket.model.Model;
@@ -55,6 +56,7 @@ public class LoginPage extends WebPage
 	public LoginPage()
 	{
 		super();
+		new PageLink(this, "bugeaterLink", Home.class);
 		new LoginForm(this, "form");
 	}
 	

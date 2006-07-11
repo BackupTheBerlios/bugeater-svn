@@ -81,9 +81,6 @@ public class Home extends BugeaterPage
 				);
 		label.setVisible(assignable);
 		listPanel.setVisible(assignable);
-		new SearchPanel(this, "searchPanel");
-		
-		new PageLink(this, "newIssueLink", AddIssuePage.class);
 	}
 
 	/**
