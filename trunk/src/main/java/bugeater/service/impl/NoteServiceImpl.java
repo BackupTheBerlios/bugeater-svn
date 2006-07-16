@@ -76,7 +76,7 @@ public class NoteServiceImpl implements NoteService
 		noteDao.save(n);
 		searchService.indexNote(n);
 		if (isnew && n.getId() != null) {
-			EmailHelper.emailNotePosted(mailService, userService, n);
+			mailService.emailNotePosted(userService, n);
 		}
 	}
 }

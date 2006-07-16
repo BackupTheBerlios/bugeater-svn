@@ -1,19 +1,13 @@
 package bugeater.web.component;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import bugeater.bean.IUserBean;
 import bugeater.domain.Issue;
 import bugeater.domain.IssueStatus;
-import bugeater.domain.Note;
 import bugeater.domain.ReleaseVersion;
-import bugeater.service.ISearchResult;
 import bugeater.service.IssueService;
-import bugeater.service.SearchService;
 import bugeater.service.SortOrder;
 import bugeater.web.BugeaterApplication;
 import bugeater.web.model.AssignableUsersModel;
@@ -28,7 +22,6 @@ import wicket.markup.html.form.Button;
 import wicket.markup.html.form.DropDownChoice;
 import wicket.markup.html.form.Form;
 import wicket.markup.html.form.IChoiceRenderer;
-import wicket.markup.html.form.TextField;
 import wicket.markup.html.link.Link;
 import wicket.markup.html.panel.Panel;
 import wicket.model.AbstractDetachableModel;
@@ -64,29 +57,7 @@ class SearchForm extends Form
 	public SearchForm(MarkupContainer parent, String id)
 	{
 		super(parent, id);
-		
-		// Search by text
-		new TextField<String>(
-				this, "searchText", searchTextModel = new Model<String>()
-			);
-		new Button(this, "textSearch")
-		{
-			private static final long serialVersionUID = 1L;
-			public void onSubmit()
-			{
-				setResponsePage(
-						new IssuesListPage(
-								new TextSearchModel(
-										searchTextModel.getObject()
-									),
-								"Issues which match the text \"" +
-								searchTextModel.getObject() +
-								"\":"
-							)
-					);
-			}
-		};
-		
+
 		// Search by current status
 		new DropDownChoice<IssueStatus>(
 				this, "status", new Model<IssueStatus>(),
@@ -277,7 +248,6 @@ class SearchForm extends Form
 	}
 	
 	private IModel<IssueStatus>searchStatusChangeModel;
-	private IModel<String>searchTextModel;
 	private IModel<IUserBean>searchUserModel;
 }
 
@@ -462,90 +432,6 @@ class StatusChangeSearchModel extends AbstractDetachableModel<List<Issue>>
 				.getSpringContextLocator().getSpringContext()
 				.getBean("issueService");
 			list = service.getIssuesByStatusChange(issueStatus, userBean);
-		}
-	}
-
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onDetach()
-	 */
-	@Override
-	protected void onDetach()
-	{
-		list = null;
-	}
-
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onGetObject()
-	 */
-	@Override
-	protected List<Issue> onGetObject()
-	{
-		return list;
-	}
-
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onSetObject(T)
-	 */
-	@Override
-	protected void onSetObject(List<Issue> object)
-	{
-		// not implemented
-	}
-}
-
-/**
- * A model which will provide a list of issues based on text search criteria.
- */
-class TextSearchModel extends AbstractDetachableModel<List<Issue>>
-{
-	private static final long serialVersionUID = 1L;
-	
-	TextSearchModel(String text)
-	{
-		super();
-		SearchService service =
-			(SearchService)((BugeaterApplication)Application.get())
-			.getSpringContextLocator().getSpringContext()
-			.getBean("searchService");
-		List<ISearchResult<Issue>>iResults = service.searchByIssueSummary(text);
-		List<ISearchResult<Note>>nResults = service.searchByNoteText(text);
-		Set <Long>iSet = new HashSet<Long>();
-		for (ISearchResult<Issue> result : iResults) {
-			iSet.add(result.getObjectId());
-		}
-		for (ISearchResult<Note> result : nResults) {
-			iSet.add(result.getObject().getIssue().getId());
-		}
-		ids = iSet.toArray(new Long[iSet.size()]);
-	}
-	
-	private Long[] ids;
-	private List<Issue>list;
-	
-	/**
-	 * @see wicket.model.AbstractDetachableModel#getNestedModel()
-	 */
-	@Override
-	public IModel getNestedModel()
-	{
-		return null;
-	}
-
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onAttach()
-	 */
-	@Override
-	protected void onAttach()
-	{
-		if (list == null) {
-			IssueService service =
-				(IssueService)((BugeaterApplication)Application.get())
-				.getSpringContextLocator().getSpringContext()
-				.getBean("issueService");
-			list = new ArrayList<Issue>();
-			for (Long id : ids) {
-				list.add(service.load(id));
-			}
 		}
 	}
 

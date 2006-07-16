@@ -7,9 +7,11 @@ import bugeater.domain.Issue;
 import bugeater.domain.Priority;
 import bugeater.service.IssueService;
 import bugeater.service.SecurityRole;
+import bugeater.web.BugeaterConstants;
 import bugeater.web.BugeaterSession;
 
 import wicket.MarkupContainer;
+import wicket.PageParameters;
 import wicket.Session;
 import wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import wicket.markup.html.form.DropDownChoice;
@@ -98,7 +100,12 @@ public class AddIssuePage extends BugeaterPage
 		protected void onSubmit()
 		{
 			Issue issue = issueService.createIssue(issueBean);
-			setResponsePage(new ViewIssuePage(issue));
+			PageParameters params = new PageParameters();
+			params.add(
+					BugeaterConstants.PARAM_NAME_ISSUE_ID,
+					String.valueOf(issue.getId())
+				);
+			setResponsePage(ViewIssuePage.class, params);
 		}
 	}
 }

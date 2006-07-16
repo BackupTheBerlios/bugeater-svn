@@ -4,6 +4,9 @@ import javax.mail.Message;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import bugeater.domain.Issue;
+import bugeater.domain.Note;
+
 /**
  * A service to send email messages.
  * 
@@ -21,6 +24,28 @@ public interface MailService
 	 * Returns the email address which all emails should come from.
 	 */
 	public InternetAddress getFromAddress();
+	
+	/**
+	 * Generates an email concerning the posting of a new note to an issue and
+	 * sends it to all the related issue's watchers.
+	 * @param userService The service that can be used to get user (watcher)
+	 *                    email addresses.
+	 * @param note The note being reported on.
+	 */
+	public void emailNotePosted(
+			UserService userService, Note note
+		);
+
+	/**
+	 * Generates an email concering the status change of a note.  The email is
+	 * sent to all the issue's watchers.
+	 * @param userService The service that can be used to get user (watcher)
+	 *                    email addresses.
+	 * @param issue The issue being reported on.
+	 */
+	public void emailStatusChange(
+			UserService userService, Issue issue
+		);
 	
 	/**
 	 * Sends an email message asynchronously.  This method does not block.

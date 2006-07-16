@@ -37,17 +37,20 @@
     <body>
 		<div id="header">
 			<div id="header_bar">
-				<!--<img src="images/logo_small.png"/>-->
-				<span class="title"><a wicket:id="bugeaterLink">Bugeater</a></span>
+	    		<img align="left" src="/bugeater/images/logo_small.png"/>
+				<span class="title">
+					<a wicket:id="bugeaterLink">Bugeater</a>
+				</span>
 				<span class="top_menu">
                 	<a href="#" wicket:id="homeLink">My Issues</a>
                 	<a href="#" wicket:id="addLink">Report an Issue</a>
+                	<a href="#" wicket:id="searchLink">Search for Issues</a>
                 	<a href="#" wicket:id="adminLink">Administration</a>
+                	<a href="#" wicket:id="loginLink">Log In</a>
                 	<a href="#" wicket:id="logoutLink">Log Out</a>
 				</span>
 			</div>
 		</div>
-
 	    <div id="page">    
     	    <div id="wrapper"> 
         	    <div id="content">
@@ -55,7 +58,16 @@
            	    		<form wicket:id="issueByIDForm">
 							<strong>Issue ID:</strong>
 							<input wicket:id="issueByIDField" type="text"/>
-							<input type="submit" value="View Issue"/>
+							<input
+								wicket:id="issueByID" type="submit"
+								value="View Issue"
+							/>
+		    				<strong>Text:</strong>
+				        	<input type="text" wicket:id="searchText"/>
+		        			<input
+		        				type="submit" wicket:id="textSearch"
+				        		value="Search for Matches"
+				        	/>
 						</form>
 	                </div>    
 		    	    <div id="main">
@@ -64,14 +76,17 @@
 	            	    </div>
 	           	    	<div id="right">
 	               	    	<div id="right_menu">
-	               	    		<span wicket:id="searchPanel"></span>
+	               	    		<ul>
+	               	    			<li>- <a wicket:id="aboutLink">About Bugeater</a></li>
+	               	    			<li>- <a wicket:id="usageLink">Using Bugeater</a></li>
+	               	    		</ul>
 	    		            </div>
     	        	    </div>
 	        		</div>   
 		      	</div>
     
 				<div id="footer">
-		        	Bugeater version 0.0.2 is open source software.  See more
+		        	Bugeater version 0.1.0 is open source software.  See more
 		        	information at <a href="#">the bugeater project site</a>.
     			</div>
 			</div>

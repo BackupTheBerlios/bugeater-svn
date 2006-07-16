@@ -18,12 +18,10 @@ import wicket.Application;
 import wicket.MarkupContainer;
 import wicket.Session;
 
-import wicket.markup.html.WebPage;
 import wicket.markup.html.form.Form;
 import wicket.markup.html.form.PasswordTextField;
 import wicket.markup.html.form.TextField;
 import wicket.markup.html.form.validation.FormComponentFeedbackBorder;
-import wicket.markup.html.link.PageLink;
 
 import wicket.model.IModel;
 import wicket.model.Model;
@@ -38,7 +36,7 @@ import wicket.spring.injection.SpringBean;
  * 
  * @author pchapman
  */
-public class LoginPage extends WebPage
+public class LoginPage extends BugeaterPage
 {
 	private static final long serialVersionUID = 1L;
 	private static final Log logger = LogFactory.getLog(LoginPage.class);
@@ -56,7 +54,6 @@ public class LoginPage extends WebPage
 	public LoginPage()
 	{
 		super();
-		new PageLink(this, "bugeaterLink", Home.class);
 		new LoginForm(this, "form");
 	}
 	

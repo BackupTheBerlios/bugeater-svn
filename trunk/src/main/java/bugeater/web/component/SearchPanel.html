@@ -3,40 +3,29 @@
 		<wicket:panel>
 	        <form wicket:id="searchForm">
 	        	<h2>Search for issues:</h2>
-    			<div class="searchBlock">
-    				<strong>By text:</strong>
-		        	<input type="text" wicket:id="searchText"/>
-		        	<input
-		        		type="submit" wicket:id="textSearch"
-		        		value="Search for Matches"
-		        	/>
-		        </div>
-	        	<div class="searchBlock">
-	        		<strong>By current status:</strong>
-		        	<select wicket:id="status"></select>
-					<a href="#" wicket:id="pendingIssuesLink">
-		        		Show all pending issues
-		        	</a>
-		        </div>
-				<div class="searchBlock">
-					<strong>By release version:</strong>
-		        	<select wicket:id="release"></select>
-	        	</div>
-				<div class="searchBlock">
-					<strong>By assignee:</strong>
-		        	<select wicket:id="assignee"></select>
-	        	</div>
-		    	<div class="searchBlock">
-		    		<strong>By status change:</strong>
-			    	<em>Status:</em>
-			    	<select wicket:id="statusChanged"></select><br/>
-			        <em>Changed By:</em>
-					<select wicket:id="changedBy"></select><br/>
-		        	<input
-		        		type="submit" wicket:id="statusChangeSearch"
-		        		value="Search by Status"
-		        	/>
-	        	</div>
+
+        		<h3>By current status:</h3>
+	        	<select wicket:id="status"></select>
+	        	or
+				<a href="#" wicket:id="pendingIssuesLink">
+	        		Show all pending issues
+	        	</a>
+
+				<h3>By release version:</h3>
+	        	<select wicket:id="release"></select>
+
+				<h3>By assignee:</h3>
+	        	<select wicket:id="assignee"></select>
+
+	    		<h3>By status change:</h3>
+		    	<em>Status:</em>
+		    	<select wicket:id="statusChanged"></select><br/>
+		        <em>Changed By:</em>
+				<select wicket:id="changedBy"></select><br/>
+	        	<input
+	        		type="submit" wicket:id="statusChangeSearch"
+	        		value="Search by Status"
+	        	/>
 			</form>
 		</wicket:panel>
 	</body>

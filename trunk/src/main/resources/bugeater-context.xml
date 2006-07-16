@@ -147,6 +147,11 @@
         <property name="noteDao" ref="noteDao"/>
     </bean>
 	
+	<!--
+		This implementation of the MailService is dependent on wicket classes.
+		This implementation would not be appropriate for non-wicket
+		applications.
+	-->
     <bean id="mailService" class="bugeater.service.impl.MailServiceImpl">
     	<property name="fromAddressString">
     		<value>bugeater@localhost.localdomain</value>

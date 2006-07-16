@@ -189,7 +189,7 @@ public class IssueServiceImpl implements IssueService
 		IssueStatusChange isc =
 			changeStatusImpl(issue, userBean, newStatus, note);
 		issueDao.save(issue);
-		EmailHelper.emailStatusChange(mailService, userService, issue);
+		mailService.emailStatusChange(userService, issue);
 		return isc;
 	}
 

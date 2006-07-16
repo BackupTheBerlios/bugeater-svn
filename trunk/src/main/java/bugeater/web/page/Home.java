@@ -11,7 +11,6 @@ import bugeater.service.SecurityRole;
 
 import bugeater.web.BugeaterSession;
 import bugeater.web.component.IssuesListPanel;
-import bugeater.web.component.SearchPanel;
 import bugeater.web.model.UserIssuesListModel;
 
 import wicket.PageMap;
@@ -20,7 +19,6 @@ import wicket.Session;
 import wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 
 import wicket.markup.html.basic.Label;
-import wicket.markup.html.link.PageLink;
 import wicket.model.ResourceModel;
 
 import wicket.spring.injection.SpringBean;

@@ -29,7 +29,10 @@ import wicket.util.string.StringValueConversionException;
  * 
  * @author pchapman
  */
-@AuthorizeInstantiation({SecurityRole.USER})
+@AuthorizeInstantiation({
+	SecurityRole.ADMINISTRATOR, SecurityRole.DEVELOPER,
+	SecurityRole.MANAGER, SecurityRole.TESTER
+})
 public class AddNotePage extends BugeaterPage<Issue>
 {
 	private static final long serialVersionUID = 1L;
@@ -151,7 +154,12 @@ public class AddNotePage extends BugeaterPage<Issue>
 						newStatus, textModel.getObject()
 					);
 			}
-			setResponsePage(new ViewIssuePage(AddNotePage.this.getModel()));
+			PageParameters params = new PageParameters();
+			params.add(
+					BugeaterConstants.PARAM_NAME_ISSUE_ID,
+					String.valueOf(AddNotePage.this.getModelObject().getId())
+				);
+			setResponsePage(ViewIssuePage.class, params);
 		}
 	}
 }

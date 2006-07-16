@@ -3,11 +3,13 @@ package bugeater.service.impl;
 import java.util.LinkedList;
 import java.util.Properties;
 import java.util.Queue;
+import java.util.ResourceBundle;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.Message.RecipientType;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -15,10 +17,20 @@ import javax.mail.internet.MimeMessage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import wicket.Application;
+import wicket.PageParameters;
+
+import bugeater.domain.Issue;
+import bugeater.domain.Note;
 import bugeater.service.MailService;
+import bugeater.service.UserService;
+import bugeater.web.BugeaterApplication;
+import bugeater.web.BugeaterConstants;
+import bugeater.web.page.ViewIssuePage;
 
 /**
- * An implementation of the MailService.
+ * An implementation of the MailService.  This particular implementation relies
+ * on wicket classes and would not be appropriate for non-wicket applications.
  * 
  * @author pchapman
  */
@@ -77,6 +89,20 @@ public class MailServiceImpl implements MailService
 	}
 
 	// METHODS
+	
+	/**
+	 * A helper method for the helper method createTextDescription that will
+	 * add a descriptive row to the text description.
+	 */
+	private static void addRow(
+			StringBuilder builder, ResourceBundle resource,
+			String resourceKey, String value
+		)
+	{
+		builder.append(resource.getString(resourceKey));
+		builder.append(": ");
+		builder.append(value);
+	}
 
 	/**
 	 * Creates a new empty message to be filled in, then queued for sending.
@@ -84,6 +110,105 @@ public class MailServiceImpl implements MailService
 	public MimeMessage createEmptyMessage()
 	{
 		return new MimeMessage(getMailServiceThread().getSession());
+	}
+
+	/**
+	 * A helper method that will create a text summary of the issue.
+	 */
+	private String createTextDescription(Issue issue)
+	{
+		StringBuilder sb = new StringBuilder();
+		
+		ResourceBundle resource = ResourceBundle.getBundle(getClass().getName());
+		
+		PageParameters params = new PageParameters();
+		params.add(
+				BugeaterConstants.PARAM_NAME_ISSUE_ID,
+				String.valueOf(issue.getId())
+			);
+		
+		sb.append("To view the complete issue, browse to ");
+		BugeaterApplication app = (BugeaterApplication)Application.get();
+		sb.append(app.buildFullyQualifiedPath(ViewIssuePage.class, params));
+		sb.append("\n\n");
+		
+		addRow(sb, resource, "issue.id", issue.getId().toString());
+		sb.append('\n');
+		addRow(sb, resource, "issue.summary", issue.getSummary());
+		sb.append('\n');
+		addRow(sb, resource, "issue.project", issue.getProject());
+		sb.append('\n');
+		addRow(sb, resource, "issue.category", issue.getCategory());
+		sb.append('\n');
+		addRow(sb, resource, "issue.priority", issue.getPriority().toString());
+		sb.append('\n');
+		addRow(sb, resource, "issue.currentStatus", issue.getCurrentStatus().toString());
+		
+		return sb.toString();
+	}
+	
+	public void emailStatusChange(
+			UserService userService, Issue issue
+		)
+	{
+		ResourceBundle resource = ResourceBundle.getBundle(getClass().getName());
+		
+		StringBuilder sb = new StringBuilder(resource.getString("issue.status_changed.body"));
+		sb.append('\n');
+		sb.append(createTextDescription(issue));
+
+		emailToWatchers(
+				userService,
+				resource.getString("issue.status_changed.subject"),
+				sb.toString(), issue
+			);
+	}
+	
+	public void emailNotePosted(UserService userService, Note note)
+	{
+		ResourceBundle resource = ResourceBundle.getBundle(getClass().getName());
+		
+		StringBuilder sb = new StringBuilder(resource.getString("note.posted.body"));
+		sb.append("\n\nIssue: ");
+		sb.append(createTextDescription(note.getIssue()));
+		sb.append("\n\nNew Note: ");
+		sb.append(note.getText());
+
+		emailToWatchers(
+				userService, resource.getString("note.posted.subject"),
+				sb.toString(), note.getIssue()
+			);
+	}
+
+	/**
+	 * A helper method that will build and email from the subject and text.
+	 * The email will then be sent to all the watchers of the issue.
+	 * @param mailService The mail service that will deliver the email.
+	 * @param userService A service that will allow user info to be retrieved.
+	 * @param subject The subject of the email message.
+	 * @param text The text of the email message.
+	 * @param i The issue for which all watchers will be notified.
+	 */
+	private void emailToWatchers(
+			UserService userService, String subject, String text, Issue i
+		)
+	{
+		try {
+			MimeMessage msg = createEmptyMessage();
+			msg.setSubject(subject);
+			msg.setText(text);
+			for (String watcherid : i.getWatchers()) {
+				msg.addRecipient(
+						RecipientType.TO,
+						new InternetAddress(
+								userService.getUserById(watcherid).getEmail()
+							)
+					);
+			}
+			queueMessage(msg);
+		} catch (MessagingException me) {
+			logger.error(me);
+		}
 	}
 	
 	/**

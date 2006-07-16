@@ -9,6 +9,7 @@ import bugeater.web.page.ViewIssuePage;
 import wicket.MarkupContainer;
 import wicket.PageParameters;
 import wicket.markup.html.basic.Label;
+import wicket.markup.html.link.BookmarkablePageLink;
 import wicket.markup.html.link.Link;
 import wicket.markup.html.list.ListItem;
 import wicket.markup.html.list.ListView;
@@ -42,19 +43,15 @@ public class IssuesListPanel extends Panel<List<Issue>>
 			{
 				Issue i = item.getModelObject();
 				final Long issueid = i.getId();
-				Link link = new Link(item, "viewIssueLink")
-				{
-					private static final long serialVersionUID = 1L;
-					public void onClick()
-					{
-						PageParameters params = new PageParameters();
-						params.add(
-								BugeaterConstants.PARAM_NAME_ISSUE_ID,
-								issueid.toString()
-							);
-						setResponsePage(ViewIssuePage.class, params);
-					}
-				};
+				PageParameters params = new PageParameters();
+				params.add(
+						BugeaterConstants.PARAM_NAME_ISSUE_ID,
+						issueid.toString()
+					);
+				Link link =
+					new BookmarkablePageLink(
+							item, "viewIssueLink", ViewIssuePage.class, params
+						);
 				new Label(link, "summaryLabel", i.getSummary());
 				new Label(item, "projectLabel", i.getProject());
 				new Label(item, "priorityLabel", i.getPriority().toString());

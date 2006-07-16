@@ -34,18 +34,23 @@
     	    				<input type="text" wicket:id="versionNumber">
     	    				</input>
     	    			</td>
+    	    		</tr>
+    	    		<tr>
     	    			<td><strong>Scheduled Release Date:</strong></td>
     	    			<td>
     	    				<input type="text" wicket:id="scheduledReleaseDate"/>
     	    				<span wicket:id="scheduledReleaseDatePicker"/>
     	    			</td>
-    	    			<span wicket:id="actualWicketDateInput">
+    	    		</tr>
+    	    		<tr wicket:id="actualWicketDateInput">
 	    	    			<td><strong>Scheduled Release Date:</strong></td>
 	    	    			<td>
 	    	    				<input type="text" wicket:id="actualReleaseDate"/>
 	    	    				<span wicket:id="actualReleaseDatePicker"/>
 	    	    			</td>
-	    	    		</span>
+	    	    	</tr>
+	    	    	<tr>
+	    	    		<td/>
     	    			<td>
 							<input type="submit" wicket:id="submit" value="Add Release"></input>
 						</td>

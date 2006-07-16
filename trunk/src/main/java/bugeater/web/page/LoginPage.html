@@ -1,90 +1,35 @@
 <html xmlns:wicket="http://wicket.sourceforge.net/" xml:lang="en" lang="en">
-    <head>
-        <title>Software Development Issue Tracking Tool</title>
-		<meta
-			http-equiv="content-type"
-			content="application/xhtml+xml; charset=UTF-8"
-		/>
-		<meta name="description" content="Description goes here" />
-		<meta
-			name="author" style="Ganesh Gunasegaran"
-			content="Philip A. Chapman"
-		 />
-		<link
-			rel="stylesheet" type="text/css" href="css/default.css"
-			media="screen, tv, projection" title="Default"
-		/>
-		<link
-			rel="alternative stylesheet" type="text/css" href="css/large.css"
-			media="screen, projection, tv" title="Larger Fonts"
-		/>
-		<link
-			rel="alternative stylesheet" type="text/css" href="css/print.css"
-			media="screen" title="Print Preview"
-		/>
-		<link
-			rel="stylesheet" type="text/css" href="css/handheld.css"
-			media="handheld" title="Small Layout"
-		/>
-		<link
-			rel="stylesheet" type="text/css" href="css/print.css" media="print"
-		/>
-    </head>
     <body>
-		<div id="header">
-			<div id="header_bar">
-				<span class="title"><a wicket:id="bugeaterLink">Bugeater</a></span>
-				<span class="top_menu"></span>
-			</div>
-		</div>
-
-	    <div id="page">    
-    	    <div id="wrapper"> 
-        	    <div id="content">
-            	    <div id="path">&nbsp;</div>
-		    	    <div id="main">
-    		            <div id="left">
-        		        	<h1>You must log in to access Bugeater.</h1>
-					    	<form wicket:id="form">
-					    		<p wicket:id="feedback"></p>
-						    	<table>
-									<tr>
-										<td align="right"><strong>Username:</strong></td>
-										<td>
-											<input wicket:id="username" type="text" size="30"/>
-										</td>
-									</tr>
-									<tr>
-										<td align="right"><strong>Password:</strong></td>
-										<td>
-											<input
-												wicket:id="password" type="password"
-												value="password" size="30"
-											/>
-										</td>
-									</tr>
-									<tr>
-										<td></td>
-										<td>
-											<input
-												type="submit" name="submit" value="Sign In"
-											/>
-										</td>
-									</tr>
-						    	</table>
-						    </form>
-	            	    </div>
-	           	    	<div id="right">
-	               	    	<div id="right_menu"></div>
-    	        	    </div>
-	        		</div>   
-		      	</div>
-    
-				<div id="footer">
-		        	Bugeater version 0.0.2 is open source software.  See more
-		        	information at <a href="#">the bugeater project site</a>.
-    			</div>
-			</div>
-		</div>
+    	<wicket:extend>
+        	<h1>You must log in to access Bugeater.</h1>
+	    	<form wicket:id="form">
+	    		<p wicket:id="feedback"></p>
+		    	<table>
+					<tr>
+						<td align="right"><strong>Username:</strong></td>
+						<td>
+							<input wicket:id="username" type="text" size="30"/>
+						</td>
+					</tr>
+					<tr>
+						<td align="right"><strong>Password:</strong></td>
+						<td>
+							<input
+								wicket:id="password" type="password"
+								value="password" size="30"
+							/>
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>
+							<input
+								type="submit" name="submit" value="Sign In"
+							/>
+						</td>
+					</tr>
+		    	</table>
+		    </form>
+		</wicket:extend>
     </body>
 </html>

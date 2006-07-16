@@ -8,6 +8,7 @@ package bugeater.web;
 public interface BugeaterConstants
 {
 	public static final String PARAM_NAME_ATTACHMENT_ID = "attachment.id";
+	public static final String PARAM_NAME_CONTENT_URL = "content.url";
 	public static final String PARAM_NAME_ISSUE_ID = "issue.id";
 	public static final String PARAM_NAME_ISSUE_STATUS = "issue.status";
 	public static final String PARAM_NAME_PROJECT = "project";
