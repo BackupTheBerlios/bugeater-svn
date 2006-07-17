@@ -78,6 +78,14 @@ public class BugeaterApplication extends AnnotSpringWebApplication
 			Class<? extends Page>pageClass, PageParameters pageParameters
 		)
 	{
+		WebRequestCycle cycle = (WebRequestCycle)RequestCycle.get();
+		return
+			getServerPath() +
+			cycle.urlFor(null, pageClass, pageParameters);
+	}
+	
+	private String getServerPath()
+	{
 		StringBuilder sb = new StringBuilder();
 		WebRequestCycle cycle = (WebRequestCycle)RequestCycle.get();
 		HttpServletRequest req = ((WebRequest)cycle.getRequest()).getHttpServletRequest();
@@ -91,8 +99,15 @@ public class BugeaterApplication extends AnnotSpringWebApplication
 			sb.append(':');
 			sb.append(req.getServerPort());
 		}
-		sb.append(cycle.urlFor(null, pageClass, pageParameters));
 		return sb.toString();
+	}
+	
+	public String getServerContextPath()
+	{
+		WebRequestCycle cycle = (WebRequestCycle)RequestCycle.get();
+		HttpServletRequest req = ((WebRequest)cycle.getRequest()).getHttpServletRequest();
+		return
+			getServerPath() + req.getContextPath();
 	}
 
 	/**
@@ -119,6 +134,7 @@ public class BugeaterApplication extends AnnotSpringWebApplication
         getSecuritySettings().setUnauthorizedComponentInstantiationListener(
         		new BugeaterUnauthorizedComponentInstantiationListener()
         	);
+        
         
         // Mount pages
         mountBookmarkablePage("/addissue", AddIssuePage.class);

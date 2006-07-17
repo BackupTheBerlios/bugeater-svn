@@ -109,7 +109,8 @@ public class WatchIssueLink extends Panel<Issue>
 		public String getObject()
 		{
 			return
-				"images/" + (watchedModel.getObject() ? "no" : "") +
+				((BugeaterApplication)Application.get()).getServerContextPath() +
+				"/images/" + (watchedModel.getObject() ? "no" : "") +
 				"watch.png";
 		}
 
