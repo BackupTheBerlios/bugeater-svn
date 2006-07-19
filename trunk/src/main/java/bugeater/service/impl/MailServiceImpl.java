@@ -93,7 +93,7 @@ public class MailServiceImpl implements MailService
 	{
 		return notifyAddress;
 	}
-	public void setNoficationEmailAddressString(String s)
+	public void setNotificationEmailAddressString(String s)
 	{
 		try {
 			notifyAddress = new InternetAddress(s);
