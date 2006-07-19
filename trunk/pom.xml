@@ -73,20 +73,18 @@
 		<artifactId>hibernate-annotations</artifactId>
 		<version>3.2.0.cr1</version>
 	</dependency>
-        <dependency>
-            <groupId>lucene</groupId>
-            <artifactId>lucene</artifactId>
-            <version>1.9.1</version>
-            <type>jar</type>
-        </dependency>
-<!--
-        <dependency>
-            <groupId>lucene</groupId>
-            <artifactId>lucene-highlighter</artifactId>
-            <version>1.4.3</version>
-            <type>jar</type>
-        </dependency>
--->
+    <dependency>
+        <groupId>lucene</groupId>
+        <artifactId>lucene</artifactId>
+        <version>1.9.1</version>
+        <type>jar</type>
+    </dependency>
+    <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>1.2.13</version>
+        <type>jar</type>
+    </dependency>
     <dependency>
       <groupId>javax.mail</groupId>
       <artifactId>mail</artifactId>
@@ -161,6 +159,12 @@
       <artifactId>mockejb</artifactId>
       <version>0.6-beta2</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+    	<groupId>postgresql</groupId>
+    	<artifactId>postgresql</artifactId>
+    	<version>8.1-407.jdbc3</version>
+    	<scope>test</scope>
     </dependency>
 
     <!-- Provided Dependencies (will be provided by the servlet container)-->

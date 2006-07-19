@@ -26,6 +26,12 @@ public interface MailService
 	public InternetAddress getFromAddress();
 	
 	/**
+	 * Returns the internet address that should be notified of all notes and
+	 * status changes, or null if there is none.
+	 */
+	public InternetAddress getNotificationEmailAddress();
+	
+	/**
 	 * Generates an email concerning the posting of a new note to an issue and
 	 * sends it to all the related issue's watchers.
 	 * @param userService The service that can be used to get user (watcher)

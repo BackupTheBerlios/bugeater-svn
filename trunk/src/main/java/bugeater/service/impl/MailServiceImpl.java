@@ -87,6 +87,20 @@ public class MailServiceImpl implements MailService
 	{
 		this.serverName = serverName;
 	}
+	
+	private InternetAddress notifyAddress;
+	public InternetAddress getNotificationEmailAddress()
+	{
+		return notifyAddress;
+	}
+	public void setNoficationEmailAddressString(String s)
+	{
+		try {
+			notifyAddress = new InternetAddress(s);
+		} catch (AddressException ae) {
+			logger.error(ae);
+		}
+	}
 
 	// METHODS
 	
@@ -153,7 +167,9 @@ public class MailServiceImpl implements MailService
 	{
 		ResourceBundle resource = ResourceBundle.getBundle(getClass().getName());
 		
-		StringBuilder sb = new StringBuilder(resource.getString("issue.status_changed.body"));
+		StringBuilder sb = new StringBuilder(
+				resource.getString("issue.status_changed.body")
+			);
 		sb.append('\n');
 		sb.append(createTextDescription(issue));
 
@@ -205,7 +221,13 @@ public class MailServiceImpl implements MailService
 							)
 					);
 			}
-			queueMessage(msg);
+			InternetAddress notify = getNotificationEmailAddress();
+			if (notify != null) {
+				msg.addRecipient(RecipientType.TO, getNotificationEmailAddress());
+			}
+			if (msg.getRecipients(RecipientType.TO).length > 0) {
+				queueMessage(msg);
+			}
 		} catch (MessagingException me) {
 			logger.error(me);
 		}

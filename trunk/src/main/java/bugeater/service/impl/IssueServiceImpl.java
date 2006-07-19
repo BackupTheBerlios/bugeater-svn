@@ -241,6 +241,7 @@ public class IssueServiceImpl implements IssueService
 
 		searchService.indexIssue(i);
 		searchService.indexNote(i.getStatusChanges().get(0).getNote());
+		mailService.emailStatusChange(userService, i);
 
 		return i;
 	}
