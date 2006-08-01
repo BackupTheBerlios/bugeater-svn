@@ -28,6 +28,24 @@ public class IssueDaoImpl extends AbstractHibernateDao<Issue>
 	}
 	
 	/**
+	 * @see bugeater.dao.IssueDao#getIssuesByProject(String)
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Issue>getIssuesByProject(String project)
+	{
+		if (project == null) {
+			return Collections.<Issue>emptyList();
+		}
+		return (List<Issue>)getSession()
+			.createQuery(
+					"select i " +
+					"from Issue i " +
+					"where i.project = :project " +
+					"order by currentStatus, i.priority desc"
+			).setParameter("project", project).list();
+	}
+	
+	/**
 	 * @see bugeater.dao.IssueDao#getIssuesByReleaseVersion(ReleaseVersion)
 	 */
 	@SuppressWarnings("unchecked")

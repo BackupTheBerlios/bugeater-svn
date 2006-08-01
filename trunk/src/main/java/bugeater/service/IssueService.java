@@ -97,6 +97,13 @@ public interface IssueService
 	public List<Issue>getIssuesByCurrentStatus(IssueStatus status);
 	
 	/**
+	 * Gets all issues related to a particular project.
+	 * 
+	 * @param status The status to search for.
+	 */
+	public List<Issue>getIssuesByProject(String project);
+	
+	/**
 	 * A list of issues being watched by the user with the given unique ID.
 	 * @param watcherUserID The unique ID of the user doing the watching.
 	 */

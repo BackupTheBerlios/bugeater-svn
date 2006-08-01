@@ -30,6 +30,13 @@ public interface IssueDao
 		);
 	
 	/**
+	 * Gets all issues related to a particular project.
+	 * 
+	 * @param status The status to search for.
+	 */
+	public List<Issue>getIssuesByProject(String project);
+	
+	/**
 	 * Gets all issues that are scheduled for the given release.
 	 * 
 	 * @param status The status to search for.

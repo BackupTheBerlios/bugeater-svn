@@ -5,7 +5,15 @@
         	<table>
         		<tr>
         			<td><strong>ID:</strong></td>
-        			<td wicket:id="id"></td>
+        			<td>
+        				<!--
+        					Make the issue ID a link so that people can easily
+							link to this issue
+						-->
+        				<a href="#" wicket:id="idlink">
+        					<span wicket:id="id"></span>
+        				</a>
+        			</td>
         			<td><strong>Opened:</strong></td>
         			<td wicket:id="openTime"></td>
         		</tr>

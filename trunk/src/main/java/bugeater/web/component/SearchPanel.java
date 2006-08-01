@@ -27,6 +27,7 @@ import wicket.markup.html.panel.Panel;
 import wicket.model.AbstractDetachableModel;
 import wicket.model.IModel;
 import wicket.model.Model;
+import wicket.spring.injection.SpringBean;
 
 /**
  * A panel which allows the user to provide search criteria for finding issues.
@@ -54,6 +55,14 @@ public class SearchPanel extends Panel
 class SearchForm extends Form
 {
 	private static final long serialVersionUID = 1L;
+	
+	@SpringBean
+	private IssueService issueService;
+	public void setIssueService(IssueService service)
+	{
+		this.issueService = service;
+	}
+
 	public SearchForm(MarkupContainer parent, String id)
 	{
 		super(parent, id);
@@ -173,6 +182,46 @@ class SearchForm extends Form
 					}
 				}
 		);
+		
+		
+		// Search by project
+		new DropDownChoice<String>(
+				this, "project",
+				new Model<String>(null),
+				issueService.getProjectsList()
+			)
+		{
+			private static final long serialVersionUID = 1L;
+			
+			/**
+			 * @see wicket.markup.html.form.DropDownChoice#wantOnSelectionChangedNotifications()
+			 */
+			@Override
+			protected boolean wantOnSelectionChangedNotifications()
+			{
+				return true;
+			}
+
+			/**
+			 * @see wicket.markup.html.form.DropDownChoice#onSelectionChanged(java.lang.Object)
+			 */
+			@Override
+			protected void onSelectionChanged(Object newSelection)
+			{
+				if (newSelection != null) {
+					setResponsePage(
+							new IssuesListPage(
+									new ProjectSearchModel(
+											newSelection.toString()
+										),
+									"Issues for the project " +
+										newSelection.toString() +
+										":"
+								)
+						);
+				}
+			}
+		};
 		
 		// Search by assignee
 		new DropDownChoice<IUserBean>(
@@ -502,6 +551,76 @@ class ReleaseVersionSearchModel extends AbstractDetachableModel<List<Issue>>
 				.getSpringContextLocator().getSpringContext()
 				.getBean("issueService");
 			list = service.getIssuesByReleaseVersion(releaseVersion.getObject());
+		}
+	}
+
+	/**
+	 * @see wicket.model.AbstractDetachableModel#onDetach()
+	 */
+	@Override
+	protected void onDetach()
+	{
+		list = null;
+	}
+
+	/**
+	 * @see wicket.model.AbstractDetachableModel#onGetObject()
+	 */
+	@Override
+	protected List<Issue> onGetObject()
+	{
+		return list;
+	}
+
+	/**
+	 * @see wicket.model.AbstractDetachableModel#onSetObject(T)
+	 */
+	@Override
+	protected void onSetObject(List<Issue> object)
+	{
+		// not implemented
+	}
+}
+
+/**
+ * A model which will provide a list of issues based on project.
+ * 
+ * @author pchapman
+ */
+class ProjectSearchModel extends AbstractDetachableModel<List<Issue>>
+{
+	private static final long serialVersionUID = 1L;
+	
+	ProjectSearchModel(String project)
+	{
+		super();
+		this.project = project;
+	}
+	
+	private List<Issue>list;
+	private String project;
+	
+	/**
+	 * @see wicket.model.AbstractDetachableModel#getNestedModel()
+	 */
+	@Override
+	public IModel getNestedModel()
+	{
+		return null;
+	}
+
+	/**
+	 * @see wicket.model.AbstractDetachableModel#onAttach()
+	 */
+	@Override
+	protected void onAttach()
+	{
+		if (list == null) {
+			IssueService service =
+				(IssueService)((BugeaterApplication)Application.get())
+				.getSpringContextLocator().getSpringContext()
+				.getBean("issueService");
+			list = service.getIssuesByProject(project);
 		}
 	}
 

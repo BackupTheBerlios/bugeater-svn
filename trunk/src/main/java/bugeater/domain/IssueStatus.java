@@ -7,6 +7,10 @@ package bugeater.domain;
  */
 public enum IssueStatus
 {
+	// *** WARNING, The order of these enumerations are important as that is
+	// *** how class members with this enumeration as a type are stored in the
+	// *** database.  If new values are added, make *sure* you add them to the
+	// *** end.
 	Open("Open"),
 	Active("Active"),
 	Testing("Testing"),

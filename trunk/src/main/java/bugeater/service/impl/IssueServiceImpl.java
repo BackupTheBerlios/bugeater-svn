@@ -64,6 +64,14 @@ public class IssueServiceImpl implements IssueService
 	}
 	
 	/**
+	 * @see bugeater.service.IssueService#getIssuesByProject(String)
+	 */
+	public List<Issue>getIssuesByProject(String project)
+	{
+		return issueDao.getIssuesByProject(project);
+	}
+	
+	/**
 	 * @see bugeater.service.IssueService#getIssuesByStatusChange(IssueStatus, IUserBean)
 	 */
 	public List<Issue>getIssuesByStatusChange(

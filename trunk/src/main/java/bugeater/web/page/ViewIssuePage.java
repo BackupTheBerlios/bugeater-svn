@@ -37,6 +37,7 @@ import wicket.Session;
 import wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import wicket.markup.html.basic.Label;
 import wicket.markup.html.form.DropDownChoice;
+import wicket.markup.html.link.BookmarkablePageLink;
 import wicket.markup.html.link.Link;
 import wicket.markup.html.list.ListItem;
 import wicket.markup.html.list.ListView;
@@ -129,7 +130,17 @@ public class ViewIssuePage extends BugeaterPage
 		
 		setModel(new CompoundPropertyModel(model));
 
-		new Label(this, "id");
+		// Make the issue ID a bookmarkable link so that people can easily
+		// link to this issue
+		PageParameters params = new PageParameters();
+		params.add(
+				BugeaterConstants.PARAM_NAME_ISSUE_ID,
+				model.getObject().getId().toString()
+			);
+		Link link = new BookmarkablePageLink(
+				this, "idlink", ViewIssuePage.class, params
+			);
+		new Label(link, "id");
 		final DateFormat dateFormat = DateFormat.getDateTimeInstance();
 		
 		new Label(
