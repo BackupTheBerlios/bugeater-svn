@@ -67,9 +67,7 @@ public class IssueModel extends AbstractDetachableModel<Issue>
 	{
 		if (issue == null && issueid != null) {
 			IssueService iService =
-				(IssueService)((BugeaterApplication)Application.get())
-				.getSpringContextLocator().getSpringContext()
-				.getBean("issueService");
+				(IssueService)((BugeaterApplication)Application.get()).getSpringBean("issueService");
 			issue = iService.load(issueid);
 		}
 	}

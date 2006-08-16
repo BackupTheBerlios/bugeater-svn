@@ -172,9 +172,7 @@ public abstract class BugeaterPage<T> extends WebPage<T>
 					try {
 						long l = Long.parseLong(idModel.getObject());
 						IssueService svc = 
-							(IssueService)((BugeaterApplication)Application.get())
-							.getSpringContextLocator().getSpringContext()
-							.getBean("issueService");
+							(IssueService)((BugeaterApplication)Application.get()).getSpringBean("issueService");
 						Issue i = svc.load(l);
 						if (i != null && i.getId() != null) {
 							setResponsePage(new ViewIssuePage(i));

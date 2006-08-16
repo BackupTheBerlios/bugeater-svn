@@ -26,9 +26,7 @@ public class TextSearchModel extends AbstractDetachableModel<List<Issue>>
 	{
 		super();
 		SearchService service =
-			(SearchService)((BugeaterApplication)Application.get())
-			.getSpringContextLocator().getSpringContext()
-			.getBean("searchService");
+			(SearchService)((BugeaterApplication)Application.get()).getSpringBean("searchService");
 		List<ISearchResult<Issue>>iResults = service.searchByIssueSummary(text);
 		List<ISearchResult<Note>>nResults = service.searchByNoteText(text);
 		Set <Long>iSet = new HashSet<Long>();
@@ -61,9 +59,7 @@ public class TextSearchModel extends AbstractDetachableModel<List<Issue>>
 	{
 		if (list == null) {
 			IssueService service =
-				(IssueService)((BugeaterApplication)Application.get())
-				.getSpringContextLocator().getSpringContext()
-				.getBean("issueService");
+				(IssueService)((BugeaterApplication)Application.get()).getSpringBean("issueService");
 			list = new ArrayList<Issue>();
 			for (Long id : ids) {
 				list.add(service.load(id));

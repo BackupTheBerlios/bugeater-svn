@@ -67,9 +67,7 @@ public class ReleaseVersionModel extends AbstractDetachableModel<ReleaseVersion>
 	{
 		if (releaseVersion == null && releaseVersionid != null) {
 			ReleaseVersionService iService =
-				(ReleaseVersionService)((BugeaterApplication)Application.get())
-				.getSpringContextLocator().getSpringContext()
-				.getBean("releaseVersionService");
+				(ReleaseVersionService)((BugeaterApplication)Application.get()).getSpringBean("releaseVersionService");
 			releaseVersion = iService.load(releaseVersionid);
 		}
 	}

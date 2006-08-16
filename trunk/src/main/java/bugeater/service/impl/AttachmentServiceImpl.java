@@ -73,8 +73,8 @@ public class AttachmentServiceImpl implements AttachmentService
 				new FileInputStream(new File(attachment.getStorageName()));
 			copy(inStream, outStream);
 			outStream.close();
-			outStream = null;
 			retValue = outStream.toByteArray();
+			outStream = null;
 		} finally {
 			if (inStream != null) {
 				try { inStream.close(); } catch (IOException ioe2) {}

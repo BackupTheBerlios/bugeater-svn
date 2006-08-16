@@ -52,9 +52,7 @@ public class AssignableUsersModel extends AbstractDetachableModel<List<IUserBean
 	{
 		if (list == null) {
 			UserService service =
-				(UserService)((BugeaterApplication)Application.get())
-				.getSpringContextLocator().getSpringContext()
-				.getBean("userService");
+				(UserService)((BugeaterApplication)Application.get()).getSpringBean("userService");
 			Set<IUserBean>set = new HashSet<IUserBean>();
 			Set<IUserBean>s = null;
 			s = service.getUsersByRole(SecurityRole.Developer);

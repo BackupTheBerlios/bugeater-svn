@@ -1,5 +1,6 @@
 package bugeater.web;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import bugeater.web.page.AddIssuePage;
@@ -9,6 +10,7 @@ import bugeater.web.page.StaticContentPage;
 import bugeater.web.page.ViewIssuePage;
 
 import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import wicket.ISessionFactory;
 import wicket.Page;
@@ -16,10 +18,11 @@ import wicket.PageParameters;
 import wicket.RequestCycle;
 
 import wicket.authorization.strategies.role.annotations.AnnotationsRoleAuthorizationStrategy;
+import wicket.protocol.http.WebApplication;
 import wicket.protocol.http.WebRequest;
 import wicket.protocol.http.WebRequestCycle;
 import wicket.settings.IRequestCycleSettings;
-import wicket.spring.injection.AnnotSpringWebApplication;
+import wicket.spring.injection.SpringComponentInjector;
 
 import wicket.util.time.Duration;
 
@@ -28,7 +31,7 @@ import wicket.util.time.Duration;
  * 
  * @author pchapman
  */
-public class BugeaterApplication extends AnnotSpringWebApplication
+public class BugeaterApplication extends WebApplication
 {
 	/**
 	 * Creates a new instance.  This should only be called from wicket.  There
@@ -38,14 +41,12 @@ public class BugeaterApplication extends AnnotSpringWebApplication
 	{
 		super();
 	}
+	
+	private ApplicationContext applicationContext;
     
-	/**
-	 * @see wicket.spring.injection.annot.AnnotSpringWebApplication#internalGetApplicationContext()
-	 * @return
-	 */
-    ApplicationContext getApplicationContext()
+    public Object getSpringBean(String name)
     {
-    	return internalGetApplicationContext();
+    	return applicationContext.getBean(name);
     }
 
 	/**
@@ -116,6 +117,13 @@ public class BugeaterApplication extends AnnotSpringWebApplication
 	@Override
 	protected void init()
 	{
+		// Set up Spring
+        ServletContext servletContext = getServletContext();
+        applicationContext =
+        	WebApplicationContextUtils.getRequiredWebApplicationContext(
+        			servletContext
+        		);
+		addComponentInstantiationListener(new SpringComponentInjector(this));
 		// Set resource settings
         getResourceSettings().setThrowExceptionOnMissingResource(false);
         getRequestCycleSettings().setRenderStrategy(

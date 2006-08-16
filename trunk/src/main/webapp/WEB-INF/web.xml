@@ -14,19 +14,19 @@
 			classpath:bugeater-context.xml
 		</param-value>
 	</context-param>
+
+	<!--
+	  This setting allows you to configure whether the app is being deployed
+	  in production or development.  Production turns off some some things that
+	  are useful for debugging, but not for production.
+      When deploying for production, comment this parameter out.
+	-->
+	<context-param>
+		<param-name>configuration</param-name>
+		<param-value>development</param-value>
+	</context-param>
 	
 	<!-- Filters -->
-	<filter>
-		<filter-name>WicketSessionFilter</filter-name>
-		<filter-class>
-			wicket.protocol.http.servlet.WicketSessionFilter
-		</filter-class>
-		<init-param>
-			<param-name>servletPath</param-name>
-			<param-value>app</param-value>
-		</init-param>
-	</filter>
-	
 	<filter>
 		<filter-name>openSessionInViewFilter</filter-name>
 		<filter-class>
@@ -34,15 +34,28 @@
 		</filter-class>
 	</filter>
 
+    <filter>
+        <filter-name>BugeaterApplication</filter-name>
+        <filter-class>wicket.protocol.http.WicketFilter</filter-class>
+        <init-param>
+            <param-name>applicationClassName</param-name>
+            <param-value>bugeater.web.BugeaterApplication</param-value>
+        </init-param>
+		<init-param>
+		  <param-name>filterPath</param-name>
+		  <param-value></param-value>
+		</init-param>
+    </filter>
+
 	<!-- Filter Mappings -->
 	<filter-mapping>
-		<filter-name>WicketSessionFilter</filter-name>
-		<url-pattern>/app/*</url-pattern>
+		<filter-name>openSessionInViewFilter</filter-name>
+		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	
 	<filter-mapping>
-		<filter-name>openSessionInViewFilter</filter-name>
-		<url-pattern>/app/*</url-pattern>
+		<filter-name>BugeaterApplication</filter-name>
+		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	
 	<!-- Listeners -->
@@ -68,10 +81,4 @@
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
-	
-	<!-- URL Mappings -->
-	<servlet-mapping>
-		<servlet-name>WicketServlet</servlet-name>
-		<url-pattern>/app/*</url-pattern>
-	</servlet-mapping>
 </web-app>

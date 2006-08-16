@@ -333,9 +333,7 @@ class PendingIssuesSearchModel extends AbstractDetachableModel<List<Issue>>
 	{
 		if (list == null) {
 			IssueService service =
-				(IssueService)((BugeaterApplication)Application.get())
-				.getSpringContextLocator().getSpringContext()
-				.getBean("issueService");
+				(IssueService)((BugeaterApplication)Application.get()).getSpringBean("issueService");
 			list = service.getPendingIssues();
 		}
 	}
@@ -403,10 +401,8 @@ class CurrentStatusSearchModel extends AbstractDetachableModel<List<Issue>>
 	protected void onAttach()
 	{
 		if (list == null) {
-			IssueService service =
-				(IssueService)((BugeaterApplication)Application.get())
-				.getSpringContextLocator().getSpringContext()
-				.getBean("issueService");
+			IssueService service = (IssueService)
+				((BugeaterApplication)Application.get()).getSpringBean("issueService");
 			list = service.getIssuesByCurrentStatus(issueStatus);
 		}
 	}
@@ -477,9 +473,7 @@ class StatusChangeSearchModel extends AbstractDetachableModel<List<Issue>>
 	{
 		if (list == null) {
 			IssueService service =
-				(IssueService)((BugeaterApplication)Application.get())
-				.getSpringContextLocator().getSpringContext()
-				.getBean("issueService");
+				(IssueService)((BugeaterApplication)Application.get()).getSpringBean("issueService");
 			list = service.getIssuesByStatusChange(issueStatus, userBean);
 		}
 	}
@@ -547,9 +541,7 @@ class ReleaseVersionSearchModel extends AbstractDetachableModel<List<Issue>>
 	{
 		if (list == null) {
 			IssueService service =
-				(IssueService)((BugeaterApplication)Application.get())
-				.getSpringContextLocator().getSpringContext()
-				.getBean("issueService");
+				(IssueService)((BugeaterApplication)Application.get()).getSpringBean("issueService");
 			list = service.getIssuesByReleaseVersion(releaseVersion.getObject());
 		}
 	}
@@ -617,9 +609,7 @@ class ProjectSearchModel extends AbstractDetachableModel<List<Issue>>
 	{
 		if (list == null) {
 			IssueService service =
-				(IssueService)((BugeaterApplication)Application.get())
-				.getSpringContextLocator().getSpringContext()
-				.getBean("issueService");
+				(IssueService)((BugeaterApplication)Application.get()).getSpringBean("issueService");
 			list = service.getIssuesByProject(project);
 		}
 	}

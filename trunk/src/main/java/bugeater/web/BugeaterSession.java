@@ -8,8 +8,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.context.ApplicationContext;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import bugeater.bean.IUserBean;
@@ -49,8 +47,7 @@ public class BugeaterSession extends WebSession
 	{
 		if (authService == null) {
 			// Retrieve it from the spring context
-			ApplicationContext context = ((BugeaterApplication)Application.get()).getApplicationContext();
-			authService = (AuthenticationService)context.getBean("authenticationService");
+			authService = (AuthenticationService)((BugeaterApplication)Application.get()).getSpringBean("authenticationService");
 		}
 		return authService;
 	}
@@ -100,8 +97,7 @@ public class BugeaterSession extends WebSession
 	{
 		if (userService == null) {
 			// Retrieve it from the spring context
-			ApplicationContext context = ((BugeaterApplication)Application.get()).getApplicationContext();
-			userService = (UserService)context.getBean("userService");
+			userService = (UserService)((BugeaterApplication)Application.get()).getSpringBean("userService");
 		}
 		return userService;
 	}

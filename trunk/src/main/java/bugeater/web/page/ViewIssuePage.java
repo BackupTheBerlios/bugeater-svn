@@ -107,6 +107,13 @@ public class ViewIssuePage extends BugeaterPage
 	}
 	
 	@SpringBean
+	private IssueService issueService;
+	public void setIssueService(IssueService service)
+	{
+		this.issueService = service;
+	}
+	
+	@SpringBean
 	private UserService userService;
 	public void setUserService(UserService service)
 	{
@@ -166,11 +173,7 @@ public class ViewIssuePage extends BugeaterPage
 			@Override
 			protected void onSelectionChanged(Object newSelection)
 			{
-				IssueService iService =
-					(IssueService)((BugeaterApplication)Application.get())
-					.getSpringContextLocator().getSpringContext()
-					.getBean("issueService");
-				iService.save(model.getObject());
+				issueService.save(model.getObject());
 			}
 
 			/**
@@ -206,11 +209,7 @@ public class ViewIssuePage extends BugeaterPage
 			protected void onSelectionChanged(Object newSelection)
 			{
 				if (newSelection != null) {
-					IssueService iService =
-						(IssueService)((BugeaterApplication)Application.get())
-						.getSpringContextLocator().getSpringContext()
-						.getBean("issueService");
-					iService.save(model.getObject());
+					issueService.save(model.getObject());
 				}
 			}
 
@@ -280,11 +279,7 @@ public class ViewIssuePage extends BugeaterPage
 			@Override
 			protected void onSelectionChanged(Object newSelection)
 			{
-				IssueService iService =
-					(IssueService)((BugeaterApplication)Application.get())
-					.getSpringContextLocator().getSpringContext()
-					.getBean("issueService");
-				iService.save(model.getObject());
+				issueService.save(model.getObject());
 			}
 
 			/**
@@ -383,8 +378,7 @@ public class ViewIssuePage extends BugeaterPage
 			if (service == null) {
 				service =
 					(UserService)((BugeaterApplication)Application.get())
-					.getSpringContextLocator().getSpringContext()
-					.getBean("userService");
+					.getSpringBean("userService");
 			}
 		}
 

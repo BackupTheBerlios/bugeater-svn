@@ -64,9 +64,7 @@ public class UserIssuesListModel extends AbstractDetachableModel<List<Issue>>
 	{
 		if (issues == null && userID != null) {
 			IssueService service =
-				(IssueService)((BugeaterApplication)Application.get())
-				.getSpringContextLocator().getSpringContext()
-				.getBean("issueService");
+				(IssueService)((BugeaterApplication)Application.get()).getSpringBean("issueService");
 			switch (associationType) {
 			case Assigned:
 				issues = service.getPendingIssuesByAssigned(userID); break;

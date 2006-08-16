@@ -72,9 +72,7 @@ public class WatchIssueLink extends Panel<Issue>
 			public void onClick()
 			{
 				IssueService service =
-					(IssueService)((BugeaterApplication)Application.get())
-					.getSpringContextLocator().getSpringContext()
-					.getBean("issueService");
+					(IssueService)((BugeaterApplication)Application.get()).getSpringBean("issueService");
 				Issue i = service.load(issueID);
 				BugeaterSession sess = (BugeaterSession)Session.get();
 				if (watchedModel.getObject()) {

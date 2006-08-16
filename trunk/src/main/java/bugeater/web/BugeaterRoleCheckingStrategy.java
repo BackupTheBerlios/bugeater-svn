@@ -9,7 +9,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import bugeater.service.AuthenticationService;
 import bugeater.service.SecurityRole;
-import org.springframework.context.ApplicationContext;
 
 import wicket.Application;
 import wicket.Session;
@@ -41,8 +40,7 @@ public class BugeaterRoleCheckingStrategy implements IRoleCheckingStrategy
 	{
 		if (authService == null) {
 			// Retrieve it from the spring context
-			ApplicationContext context = ((BugeaterApplication)Application.get()).getApplicationContext();
-			authService = (AuthenticationService)context.getBean("authenticationService");
+			authService = (AuthenticationService)((BugeaterApplication)Application.get()).getSpringBean("authenticationService");
 		}
 		return authService;
 	}

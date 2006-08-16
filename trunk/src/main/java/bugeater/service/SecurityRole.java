@@ -19,8 +19,8 @@ public enum SecurityRole
 	 */
 	public static final String ADMINISTRATOR = "Administrator";
 	public static final String DEVELOPER = "Developer";
-	public static final String MANAGER = "Manager";
 	public static final String TESTER = "Tester";
+	public static final String MANAGER = "Manager";
 	public static final String USER = "User";
 	
 	/**

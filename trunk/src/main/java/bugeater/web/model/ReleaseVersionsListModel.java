@@ -82,17 +82,11 @@ public class ReleaseVersionsListModel
 			}
 			if (projectModel.getObject() == null) {
 				ReleaseVersionService service =
-					(ReleaseVersionService)
-					((BugeaterApplication)Application.get())
-					.getSpringContextLocator().getSpringContext()
-					.getBean("releaseVersionService");
+					(ReleaseVersionService)((BugeaterApplication)Application.get()).getSpringBean("releaseVersionService");
 				list.addAll(service.loadAll(sortOrder));
 			} else {
 				ReleaseVersionService service =
-					(ReleaseVersionService)
-					((BugeaterApplication)Application.get())
-					.getSpringContextLocator().getSpringContext()
-					.getBean("releaseVersionService");
+					(ReleaseVersionService)((BugeaterApplication)Application.get()).getSpringBean("releaseVersionService");
 				list.addAll(service.loadAll(projectModel.getObject(), sortOrder));
 			}
 		}

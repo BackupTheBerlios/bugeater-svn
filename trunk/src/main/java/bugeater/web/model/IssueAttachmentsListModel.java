@@ -55,9 +55,7 @@ public class IssueAttachmentsListModel
 			)
 		{
 			AttachmentService service =
-				(AttachmentService)((BugeaterApplication)Application.get())
-				.getSpringContextLocator().getSpringContext()
-				.getBean("attachmentService");
+				(AttachmentService)((BugeaterApplication)Application.get()).getSpringBean("attachmentService");
 			list = service.getAttachments(issueModel.getObject());
 		}
 	}

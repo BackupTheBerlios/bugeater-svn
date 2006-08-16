@@ -50,8 +50,7 @@ public class AttachmentResource extends DynamicWebResource
 		if (attachmentService == null) {
 			attachmentService =
 				(AttachmentService)((BugeaterApplication)Application.get())
-				.getSpringContextLocator().getSpringContext()
-				.getBean("attachmentService");
+				.getSpringBean("attachmentService");
 		}
 		return attachmentService;
 	}
