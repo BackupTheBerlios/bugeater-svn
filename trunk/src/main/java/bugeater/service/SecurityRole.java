@@ -30,7 +30,7 @@ public enum SecurityRole
 	public static final SecurityRole fromName(String name)
 	{
 		for (SecurityRole role : SecurityRole.values()) {
-			if (role.toString().equals(name)) {
+			if (role.name().equals(name)) {
 				return role;
 			}
 		}

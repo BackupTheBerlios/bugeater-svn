@@ -64,6 +64,12 @@ public class BugeaterRoleCheckingStrategy implements IRoleCheckingStrategy
 						getAuthenticationService().isUserInRole(p, role)
 					)
 				{
+					if (logger.isDebugEnabled()) {
+						logger.debug(
+								"Principal " + p.toString() + " fills role " +
+								roleName
+							);
+					}
 					return true;
 				}
 			} catch (ServletException se) {
@@ -71,6 +77,12 @@ public class BugeaterRoleCheckingStrategy implements IRoleCheckingStrategy
 			}
 		}
 		
+		if (logger.isDebugEnabled()) {
+			logger.debug(
+					"Principal " + p.toString() +
+					" does not fill any of the roles " + roles.toString()
+				);
+		}
 		return false;
 	}
 }

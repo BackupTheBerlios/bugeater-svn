@@ -47,7 +47,7 @@ public class LookupValue
 	 * the unique ID of the lookup value.
 	 */
 	@Id @GeneratedValue
-	@Column(name="issue_id")
+	@Column(name="value_id")
 	private Long id;
 	protected Long getId()
 	{
