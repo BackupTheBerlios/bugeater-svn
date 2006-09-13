@@ -192,15 +192,6 @@ public class ViewIssuePage extends BugeaterPage
 			)
 		{
 			private static final long serialVersionUID = 1L;
-
-			/**
-			 * @see wicket.markup.html.form.AbstractSingleSelectChoice#getDefaultChoice(java.lang.Object)
-			 */
-			@Override
-			protected CharSequence getDefaultChoice(Object selected)
-			{
-				return "(Not Assigned)";
-			}
 			
 			/**
 			 * @see wicket.markup.html.form.DropDownChoice#onSelectionChanged(java.lang.Object)
@@ -263,15 +254,6 @@ public class ViewIssuePage extends BugeaterPage
 			)
 		{
 			private static final long serialVersionUID = 1L;
-
-			/**
-			 * @see wicket.markup.html.form.AbstractSingleSelectChoice#getDefaultChoice(java.lang.Object)
-			 */
-			@Override
-			protected CharSequence getDefaultChoice(Object selected)
-			{
-				return "(Not Assigned)";
-			}
 			
 			/**
 			 * @see wicket.markup.html.form.DropDownChoice#onSelectionChanged(java.lang.Object)
