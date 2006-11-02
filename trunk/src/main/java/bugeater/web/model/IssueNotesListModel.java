@@ -29,15 +29,6 @@ public class IssueNotesListModel extends AbstractDetachableModel<List<Note>>
 	private IModel<Issue>issueModel;
 
 	/**
-	 * @see wicket.model.AbstractDetachableModel#getNestedModel()
-	 */
-	@Override
-	public IModel getNestedModel()
-	{
-		return issueModel;
-	}
-
-	/**
 	 * @see wicket.model.AbstractDetachableModel#onAttach()
 	 */
 	@Override
@@ -52,7 +43,9 @@ public class IssueNotesListModel extends AbstractDetachableModel<List<Note>>
 	@Override
 	protected void onDetach()
 	{
-		// The nested model is detached by wicket
+		if (issueModel instanceof AbstractDetachableModel) {
+			((AbstractDetachableModel)issueModel).detach();
+		}
 	}
 
 	/**

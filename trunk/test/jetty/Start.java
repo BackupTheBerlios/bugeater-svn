@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import java.net.URL;
 
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 import javax.naming.Context;
@@ -87,6 +88,12 @@ public class Start
 	        ds.setUrl(rBundle.getString("jdbc.url"));
 	        ds.setUsername(rBundle.getString("jdbc.username"));
 	        ds.setPassword(rBundle.getString("jdbc.password"));
+	        try {
+	        	ds.getConnection().close();
+	        } catch (SQLException sqle) {
+	        	log.error("Unable to open the connection", sqle);
+	        	return false;
+	        }
 	        // add to the context
 	        context.rebind(rBundle.getString("datasource.jndiName"), ds);
 

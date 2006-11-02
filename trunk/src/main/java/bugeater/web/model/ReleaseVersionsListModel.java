@@ -61,15 +61,6 @@ public class ReleaseVersionsListModel
 	private SortOrder sortOrder;
 
 	/**
-	 * @see wicket.model.AbstractDetachableModel#getNestedModel()
-	 */
-	@Override
-	public IModel getNestedModel()
-	{
-		return projectModel;
-	}
-
-	/**
 	 * @see wicket.model.AbstractDetachableModel#onAttach()
 	 */
 	@Override
@@ -99,6 +90,9 @@ public class ReleaseVersionsListModel
 	protected void onDetach()
 	{
 		list = null;
+		if (projectModel instanceof AbstractDetachableModel) {
+			((AbstractDetachableModel)projectModel).detach();
+		}
 	}
 
 	/**

@@ -14,7 +14,6 @@ import bugeater.web.BugeaterApplication;
 
 import wicket.Application;
 import wicket.model.AbstractDetachableModel;
-import wicket.model.IModel;
 
 /**
  * A model that provides a list of users that an issue may be assigned to.
@@ -34,15 +33,6 @@ public class AssignableUsersModel extends AbstractDetachableModel<List<IUserBean
 	}
 	
 	private List<IUserBean>list;
-
-	/**
-	 * @see wicket.model.AbstractDetachableModel#getNestedModel()
-	 */
-	@Override
-	public IModel getNestedModel()
-	{
-		return null;
-	}
 
 	/**
 	 * @see wicket.model.AbstractDetachableModel#onAttach()

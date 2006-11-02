@@ -75,10 +75,12 @@
                 <prop key="hibernate.dialect">${hibernate.dialect}</prop>
                 <prop key="show_sql">true</prop>
                 <prop key="use_outer_join">true</prop>
+                <prop key="hibernate.cache.use_second_level_cache">true</prop>
+                <prop key="hibernate.cache.use_query_cache">true</prop>
             </props>
         </property>
         
-        <property name="schemaUpdate"><value>true</value></property>
+        <property name="schemaUpdate"><value>false</value></property>
     </bean>
 
     <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
@@ -97,7 +99,6 @@
     <bean class="org.springframework.transaction.interceptor.TransactionAttributeSourceAdvisor">
         <property name="transactionInterceptor" ref="transactionInterceptor"/>
     </bean>
-
 
 	<!-- Configuration of DAOs -->
 	

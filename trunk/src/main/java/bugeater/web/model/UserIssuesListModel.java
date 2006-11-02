@@ -8,7 +8,6 @@ import bugeater.web.BugeaterApplication;
 
 import wicket.Application;
 import wicket.model.AbstractDetachableModel;
-import wicket.model.IModel;
 
 /**
  * Provides a list of all issues associated with a user.  How the issue is
@@ -44,15 +43,6 @@ public class UserIssuesListModel extends AbstractDetachableModel<List<Issue>>
 	private String userID;
 	
 	private List<Issue> issues;
-	
-	/**
-	 * @see wicket.model.AbstractDetachableModel#getNestedModel()
-	 */
-	@Override
-	public IModel getNestedModel()
-	{
-		return null;
-	}
 
 	// METHODS
 	

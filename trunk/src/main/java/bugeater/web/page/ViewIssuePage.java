@@ -343,15 +343,6 @@ public class ViewIssuePage extends BugeaterPage
 		private UserService service;
 
 		/**
-		 * @see wicket.model.AbstractDetachableModel#getNestedModel()
-		 */
-		@Override
-		public IModel getNestedModel()
-		{
-			return null;
-		}
-
-		/**
 		 * @see wicket.model.AbstractDetachableModel#onAttach()
 		 */
 		@Override

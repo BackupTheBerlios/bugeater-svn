@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -11,6 +12,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import bugeater.service.AuthenticationException;
 import bugeater.service.AuthenticationService;
@@ -24,6 +28,8 @@ import bugeater.service.SecurityRole;
  */
 public class AuthenticationServiceImpl implements AuthenticationService
 {
+	private static final Log logger =
+		LogFactory.getLog(AuthenticationServiceImpl.class);
 	private static final String AUTH_COOKIE = "JSESSIONID";
 
 	/**
@@ -96,9 +102,21 @@ public class AuthenticationServiceImpl implements AuthenticationService
 	public boolean isUserInRole(Principal user, SecurityRole role)
 		throws ServletException
 	{
-		return userService.getUserDao().load(
-				Long.parseLong(((UserBean)user).getId())
-			).getRoles().contains(role);
+		if (user == null || role == null) {
+			return false;
+		} else {
+			Set<SecurityRole> roles =
+				userService.getUserDao().load(
+					Long.parseLong(((UserBean)user).getId())
+				).getRoles();
+			if (logger.isDebugEnabled()) {
+				logger.debug("Role count for user " + user.toString() + " is " + roles.size());
+				for (SecurityRole r: roles) {
+					logger.debug("Role " + r + (r.equals(role) ? " matches " : " does not match ") + role);
+				}
+			}
+			return roles.contains(role);
+		}
 	}
 
 	/**

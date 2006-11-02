@@ -7,7 +7,6 @@ import bugeater.web.BugeaterApplication;
 
 import wicket.Application;
 import wicket.model.AbstractDetachableModel;
-import wicket.model.IModel;
 
 /**
  * A model used to provide an ReleaseVersion object to the component.
@@ -47,15 +46,6 @@ public class ReleaseVersionModel extends AbstractDetachableModel<ReleaseVersion>
 	
 	private ReleaseVersion releaseVersion;
 	private Long releaseVersionid;
-	
-	/**
-	 * @see wicket.model.AbstractDetachableModel#getNestedModel()
-	 */
-	@Override
-	public IModel getNestedModel()
-	{
-		return null;
-	}
 
 	// METHODS
 	

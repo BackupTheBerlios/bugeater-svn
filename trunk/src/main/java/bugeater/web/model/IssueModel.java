@@ -7,7 +7,6 @@ import bugeater.web.BugeaterApplication;
 
 import wicket.Application;
 import wicket.model.AbstractDetachableModel;
-import wicket.model.IModel;
 
 /**
  * A model used to provide an Issue object to the component.
@@ -47,15 +46,6 @@ public class IssueModel extends AbstractDetachableModel<Issue>
 	
 	private Issue issue;
 	private Long issueid;
-	
-	/**
-	 * @see wicket.model.AbstractDetachableModel#getNestedModel()
-	 */
-	@Override
-	public IModel getNestedModel()
-	{
-		return null;
-	}
 
 	// METHODS
 	

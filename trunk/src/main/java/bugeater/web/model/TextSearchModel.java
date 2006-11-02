@@ -7,7 +7,7 @@ import java.util.Set;
 
 import wicket.Application;
 import wicket.model.AbstractDetachableModel;
-import wicket.model.IModel;
+
 import bugeater.domain.Issue;
 import bugeater.domain.Note;
 import bugeater.service.ISearchResult;
@@ -41,15 +41,6 @@ public class TextSearchModel extends AbstractDetachableModel<List<Issue>>
 	
 	private Long[] ids;
 	private List<Issue>list;
-	
-	/**
-	 * @see wicket.model.AbstractDetachableModel#getNestedModel()
-	 */
-	@Override
-	public IModel getNestedModel()
-	{
-		return null;
-	}
 
 	/**
 	 * @see wicket.model.AbstractDetachableModel#onAttach()

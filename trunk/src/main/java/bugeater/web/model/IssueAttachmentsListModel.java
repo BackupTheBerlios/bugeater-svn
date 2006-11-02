@@ -34,15 +34,6 @@ public class IssueAttachmentsListModel
 	private transient List<Attachment>list;
 
 	/**
-	 * @see wicket.model.AbstractDetachableModel#getNestedModel()
-	 */
-	@Override
-	public IModel getNestedModel()
-	{
-		return issueModel;
-	}
-
-	/**
 	 * @see wicket.model.AbstractDetachableModel#onAttach()
 	 */
 	@Override
@@ -67,6 +58,9 @@ public class IssueAttachmentsListModel
 	protected void onDetach()
 	{
 		list = null;
+		if (issueModel instanceof AbstractDetachableModel) {
+			((AbstractDetachableModel)issueModel).detach();
+		}
 	}
 
 	/**

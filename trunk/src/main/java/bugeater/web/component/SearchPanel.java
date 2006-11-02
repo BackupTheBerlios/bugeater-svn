@@ -315,15 +315,6 @@ class PendingIssuesSearchModel extends AbstractDetachableModel<List<Issue>>
 	}
 	
 	private List<Issue>list;
-	
-	/**
-	 * @see wicket.model.AbstractDetachableModel#getNestedModel()
-	 */
-	@Override
-	public IModel getNestedModel()
-	{
-		return null;
-	}
 
 	/**
 	 * @see wicket.model.AbstractDetachableModel#onAttach()
@@ -384,15 +375,6 @@ class CurrentStatusSearchModel extends AbstractDetachableModel<List<Issue>>
 	
 	private IssueStatus issueStatus;
 	private List<Issue>list;
-	
-	/**
-	 * @see wicket.model.AbstractDetachableModel#getNestedModel()
-	 */
-	@Override
-	public IModel getNestedModel()
-	{
-		return null;
-	}
 
 	/**
 	 * @see wicket.model.AbstractDetachableModel#onAttach()
@@ -455,15 +437,6 @@ class StatusChangeSearchModel extends AbstractDetachableModel<List<Issue>>
 	private IssueStatus issueStatus;
 	private List<Issue>list;
 	private IUserBean userBean;
-	
-	/**
-	 * @see wicket.model.AbstractDetachableModel#getNestedModel()
-	 */
-	@Override
-	public IModel getNestedModel()
-	{
-		return null;
-	}
 
 	/**
 	 * @see wicket.model.AbstractDetachableModel#onAttach()
@@ -523,15 +496,6 @@ class ReleaseVersionSearchModel extends AbstractDetachableModel<List<Issue>>
 	
 	private List<Issue>list;
 	private IModel<ReleaseVersion>releaseVersion;
-	
-	/**
-	 * @see wicket.model.AbstractDetachableModel#getNestedModel()
-	 */
-	@Override
-	public IModel getNestedModel()
-	{
-		return releaseVersion;
-	}
 
 	/**
 	 * @see wicket.model.AbstractDetachableModel#onAttach()
@@ -553,6 +517,9 @@ class ReleaseVersionSearchModel extends AbstractDetachableModel<List<Issue>>
 	protected void onDetach()
 	{
 		list = null;
+		if (releaseVersion instanceof AbstractDetachableModel) {
+			((AbstractDetachableModel)releaseVersion).detach();
+		}
 	}
 
 	/**
@@ -591,15 +558,6 @@ class ProjectSearchModel extends AbstractDetachableModel<List<Issue>>
 	
 	private List<Issue>list;
 	private String project;
-	
-	/**
-	 * @see wicket.model.AbstractDetachableModel#getNestedModel()
-	 */
-	@Override
-	public IModel getNestedModel()
-	{
-		return null;
-	}
 
 	/**
 	 * @see wicket.model.AbstractDetachableModel#onAttach()
