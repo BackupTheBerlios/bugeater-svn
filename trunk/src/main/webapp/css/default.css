@@ -325,3 +325,32 @@ br.clear {
 #notetop {
 	padding: 1em 0em 0em 0em;
 }
+
+#notebody li {
+	display: list-item;
+}
+
+#notebody ul {
+	list-style-position: inside;
+	list-style-type: circle;
+    width: auto;
+    padding-left: 0px;
+}
+
+#notebody ul.minus {
+	list-style-type: square;
+}
+
+#notebody ul.star {
+	list-style-type: disc;
+}
+
+#notebody ol {
+	list-style-position: inside;
+	list-style-type: decimal;
+}
+
+#notebody ol.alpha {
+	list-style-type: lower-alpha;
+}
+

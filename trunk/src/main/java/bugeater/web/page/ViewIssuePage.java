@@ -31,10 +31,12 @@ import bugeater.web.model.IssueModel;
 import bugeater.web.model.IssueNotesListModel;
 
 import wicket.Application;
+import wicket.AttributeModifier;
 import wicket.PageMap;
 import wicket.PageParameters;
 import wicket.Session;
 import wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
+import wicket.markup.html.WebMarkupContainer;
 import wicket.markup.html.basic.Label;
 import wicket.markup.html.form.DropDownChoice;
 import wicket.markup.html.link.BookmarkablePageLink;
@@ -42,6 +44,7 @@ import wicket.markup.html.link.Link;
 import wicket.markup.html.list.ListItem;
 import wicket.markup.html.list.ListView;
 import wicket.model.AbstractDetachableModel;
+import wicket.model.AbstractReadOnlyModel;
 import wicket.model.CompoundPropertyModel;
 import wicket.model.IModel;
 import wicket.model.Model;
@@ -231,7 +234,7 @@ public class ViewIssuePage extends BugeaterPage
 				IssueStatus status = getModelObject();
 				if (status != null) {
 					// Get the note, then change the status
-					setResponsePage(new AddNotePage(model, status));
+					setResponsePage(new EditNotePage(model, status));
 				}
 			}
 
@@ -314,6 +317,21 @@ public class ViewIssuePage extends BugeaterPage
 				new Label(
 						item, "text", new RadeoxModel(note.getText())
 					).setEscapeModelStrings(false);
+				PageParameters params = new PageParameters();
+				params.add(BugeaterConstants.PARAM_NAME_NOTE_ID, String.valueOf(note.getId()));
+				Link l = new BookmarkablePageLink(
+						item, "editnotelink", EditNotePage.class, params
+					);
+				new WebMarkupContainer(l, "editnoteimage").add(new AttributeModifier("src", true, new UrlModel()));
+				BugeaterSession session = (BugeaterSession)Session.get();
+				boolean editable = false;
+				try {
+					editable =
+						aService.isUserInRole(session.getPrincipal(), SecurityRole.Administrator) ||
+						session.getUserBean().getId().equals(note.getUserID());
+				} catch (ServletException se) {}
+				l.setVisible(editable);
+
 			}
 		}.setRenderBodyOnly(true);
 		
@@ -322,7 +340,7 @@ public class ViewIssuePage extends BugeaterPage
 			private static final long serialVersionUID = 1L;
 			public void onClick()
 			{
-				setResponsePage(new AddNotePage(model));
+				setResponsePage(new EditNotePage(model));
 			}
 		};
 		
@@ -382,4 +400,29 @@ public class ViewIssuePage extends BugeaterPage
 			issueModel.getObject().setAssignedUserID(bean.getId());
 		}
 	}	
+	
+	private class UrlModel extends AbstractReadOnlyModel<String>
+	{
+		private static final long serialVersionUID = 1L;
+
+		/**
+		 * @see wicket.model.Model#getObject()
+		 */
+		@Override
+		public String getObject()
+		{
+			return
+				((BugeaterApplication)Application.get()).getServerContextPath() +
+				"/images/edit.png";
+		}
+
+		/**
+		 * @see wicket.model.Model#toString()
+		 */
+		@Override
+		public String toString()
+		{
+			return getObject();
+		}
+	}
 }

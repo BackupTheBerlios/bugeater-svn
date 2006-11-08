@@ -10,6 +10,7 @@ import bugeater.service.SecurityRole;
 import bugeater.web.BugeaterConstants;
 import bugeater.web.BugeaterSession;
 import bugeater.web.model.IssueModel;
+import bugeater.web.model.NoteModel;
 
 import wicket.MarkupContainer;
 import wicket.PageParameters;
@@ -33,46 +34,68 @@ import wicket.util.string.StringValueConversionException;
 	SecurityRole.ADMINISTRATOR, SecurityRole.DEVELOPER,
 	SecurityRole.MANAGER, SecurityRole.TESTER
 })
-public class AddNotePage extends BugeaterPage<Issue>
+public class EditNotePage extends BugeaterPage<Issue>
 {
 	private static final long serialVersionUID = 1L;
 	
-	public AddNotePage(Long issueID)
+	public EditNotePage(Long issueID, Long noteId)
+	{
+		this(new IssueModel(issueID), new NoteModel(noteId));
+	}
+
+	public EditNotePage(Issue arg0, Note arg1)
+	{
+		this(new IssueModel(arg0), new NoteModel(arg1));
+	}
+
+	public EditNotePage(IModel<Issue> arg0, IModel<Note> arg1)
+	{
+		init(arg0, arg1, null);
+	}
+	
+	public EditNotePage(Long issueID)
 	{
 		this(new IssueModel(issueID));
 	}
 
-	public AddNotePage(Issue arg0)
+	public EditNotePage(Issue arg0)
 	{
 		this(new IssueModel(arg0));
 	}
 
-	public AddNotePage(IModel<Issue> arg0)
+	public EditNotePage(IModel<Issue> arg0)
 	{
-		this(arg0, null);
+		this(arg0, (IssueStatus)null);
 	}
 	
-	public AddNotePage(Long issueID, IssueStatus newStatus)
+	public EditNotePage(Long issueID, IssueStatus newStatus)
 	{
 		this(new IssueModel(issueID), newStatus);
 	}
 
-	public AddNotePage(Issue arg0, IssueStatus newStatus)
+	public EditNotePage(Issue arg0, IssueStatus newStatus)
 	{
 		this(new IssueModel(arg0), newStatus);
 	}
 
-	public AddNotePage(IModel<Issue> arg0, IssueStatus newStatus)
+	public EditNotePage(IModel<Issue> arg0, IssueStatus newStatus)
 	{
 		super();
-		init(arg0, newStatus);
+		init(arg0, new NoteModel((Long)null), newStatus);
 	}
 
 	@SuppressWarnings("unchecked")
-	public AddNotePage(PageParameters params)
+	public EditNotePage(PageParameters params)
 	{
 		super(params);
-		if (params.containsKey(BugeaterConstants.PARAM_NAME_ISSUE_ID)) {
+		if (params.containsKey(BugeaterConstants.PARAM_NAME_NOTE_ID)) {
+			try {
+				Note note = noteService.load(params.getLong(BugeaterConstants.PARAM_NAME_NOTE_ID));
+				init(new IssueModel(note.getIssue()), new NoteModel(note), null);
+			} catch (StringValueConversionException svce) {
+				throw new IllegalArgumentException(svce);
+			}			
+		} else if (params.containsKey(BugeaterConstants.PARAM_NAME_ISSUE_ID)) {
 			try {
 				Long issueid = params.getLong(BugeaterConstants.PARAM_NAME_ISSUE_ID);
 				IssueStatus newStatus = null;
@@ -89,7 +112,7 @@ public class AddNotePage extends BugeaterPage<Issue>
 					}
 				}
 				
-				init(new IssueModel(issueid), newStatus);
+				init(new IssueModel(issueid), new NoteModel((Long)null), newStatus);
 			} catch (StringValueConversionException svce) {
 				logger.error(svce);
 			}
@@ -114,22 +137,28 @@ public class AddNotePage extends BugeaterPage<Issue>
 		this.noteService = service;
 	}
 	
-	private void init(IModel<Issue> model, IssueStatus newStatus)
+	private void init(
+			IModel<Issue> model, IModel<Note> noteModel, IssueStatus newStatus
+		)
 	{
 		setModel(model);
 		this.newStatus = newStatus;
-		new AddNoteForm(this, "addNoteForm");
+		new AddNoteForm(this, "addNoteForm", noteModel);
 	}
 	
-	class AddNoteForm extends Form
+	class AddNoteForm extends Form<Note>
 	{
 		private static final long serialVersionUID = 1L;
 		
-		AddNoteForm(MarkupContainer container, String id)
+		AddNoteForm(MarkupContainer container, String id, IModel<Note> noteModel)
 		{
-			super(container, id);
+			super(container, id, noteModel);
 			new FeedbackPanel(this, "formFeedback");
 			textModel = new Model<String>();
+			Note n = noteModel.getObject();
+			if (n != null) {
+				textModel.setObject(n.getText());
+			}
 			new TextArea<String>(this, "text", textModel).setRequired(true);
 		}
 		
@@ -137,27 +166,32 @@ public class AddNotePage extends BugeaterPage<Issue>
 		
 		public void onSubmit()
 		{
-			BugeaterSession sess = (BugeaterSession)Session.get();
-			IUserBean userBean = sess.getUserBean();
-			if (newStatus == null) {
-				// Create a plain ordinary note
-				Note note =
-					new Note()
-					.setIssue(AddNotePage.this.getModelObject())
-					.setText(textModel.getObject())
-					.setUserID(userBean.getId());
-				noteService.save(note);
+			Note note = getModelObject();
+			if (note == null) {
+				BugeaterSession sess = (BugeaterSession)Session.get();
+				IUserBean userBean = sess.getUserBean();
+				if (newStatus == null) {
+					// Create a plain ordinary note
+					note =
+						new Note()
+						.setIssue(EditNotePage.this.getModelObject())
+						.setText(textModel.getObject())
+						.setUserID(userBean.getId());
+				} else {
+					// Change status with the given note text
+					note = issueService.changeStatus(
+							EditNotePage.this.getModelObject(), userBean,
+							newStatus, textModel.getObject()
+						).getNote();
+				}
 			} else {
-				// Change status with the given note text
-				issueService.changeStatus(
-						AddNotePage.this.getModelObject(), userBean,
-						newStatus, textModel.getObject()
-					);
+				note.setText(textModel.getObject());
 			}
+			noteService.save(note);
 			PageParameters params = new PageParameters();
 			params.add(
 					BugeaterConstants.PARAM_NAME_ISSUE_ID,
-					String.valueOf(AddNotePage.this.getModelObject().getId())
+					String.valueOf(note.getIssue().getId())
 				);
 			setResponsePage(ViewIssuePage.class, params);
 		}
