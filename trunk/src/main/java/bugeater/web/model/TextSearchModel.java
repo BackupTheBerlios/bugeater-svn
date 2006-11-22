@@ -2,8 +2,11 @@ package bugeater.web.model;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import org.hibernate.ObjectNotFoundException;
 
 import wicket.Application;
 import wicket.model.AbstractDetachableModel;
@@ -31,15 +34,29 @@ public class TextSearchModel extends AbstractDetachableModel<List<Issue>>
 		List<ISearchResult<Note>>nResults = service.searchByNoteText(text);
 		Set <Long>iSet = new HashSet<Long>();
 		for (ISearchResult<Issue> result : iResults) {
-			iSet.add(result.getObjectId());
+			try {
+				iSet.add(result.getObjectId());
+			} catch (ObjectNotFoundException onfe) {
+				// If the issue was somehow deleted out of the system
+				// without updating the text search module, delete the
+				// issue from the text search module.
+//				service.deleteIndexes(result);
+			}
 		}
 		for (ISearchResult<Note> result : nResults) {
-			iSet.add(result.getObject().getIssue().getId());
+			try {
+				iSet.add(result.getObject().getIssue().getId());
+			} catch (ObjectNotFoundException onfe) {
+				// If the note was somehow deleted out of the system
+				// without updating the text search module, delete the
+				// note from the text search module.
+//				service.deleteIndexes(result);
+			}
 		}
-		ids = iSet.toArray(new Long[iSet.size()]);
+		ids = new ArrayList<Long>(iSet);
 	}
 	
-	private Long[] ids;
+	private List<Long> ids;
 	private List<Issue>list;
 
 	/**
@@ -52,8 +69,17 @@ public class TextSearchModel extends AbstractDetachableModel<List<Issue>>
 			IssueService service =
 				(IssueService)((BugeaterApplication)Application.get()).getSpringBean("issueService");
 			list = new ArrayList<Issue>();
-			for (Long id : ids) {
-				list.add(service.load(id));
+			Long id;
+			for (Iterator<Long> iter = ids.iterator(); iter.hasNext(); ) {
+				id = iter.next();
+				try {
+					list.add(service.load(id));
+				} catch (ObjectNotFoundException onfe) {
+					// If the issue was somehow deleted out of the system
+					// without updating the text search module, delete the
+					// issue from the text search module.
+					iter.remove();
+				}
 			}
 		}
 	}

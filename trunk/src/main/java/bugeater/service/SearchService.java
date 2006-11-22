@@ -14,6 +14,13 @@ import bugeater.domain.Note;
 public interface SearchService
 {
 	/**
+	 * Deletes the indicies for the indicated item from within the search
+	 * system.
+	 * @param result
+	 */
+	public void deleteIndexes(ISearchResult result);
+	
+	/**
 	 * Searches for matches in issue summaries.
 	 * @param queryText The text to search for.
 	 * @return Matches

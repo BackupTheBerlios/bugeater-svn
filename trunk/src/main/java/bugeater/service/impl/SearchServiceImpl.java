@@ -11,7 +11,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.SimpleAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexModifier;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Hit;
@@ -85,7 +86,7 @@ public class SearchServiceImpl implements SearchService
 		return searcher;
 	}
 	
-	private IndexWriter getWriter()
+	private IndexModifier getModifier()
 		throws IOException
 	{
 		boolean createNew = false;
@@ -94,19 +95,49 @@ public class SearchServiceImpl implements SearchService
 			testfile.createNewFile();
 			createNew = true;
 		}
-		IndexWriter writer =
-			new IndexWriter(indexDir, new SimpleAnalyzer(), createNew);
-		return writer;
+		IndexModifier modifier =
+			new IndexModifier(indexDir, new SimpleAnalyzer(), createNew);
+		return modifier;
 	}
 	
 	private QueryParser noteParser;
-//	private Searcher searcher;
-//	private IndexWriter writer;
 
+
+	/**
+	 * @see bugeater.service.SearchService#deleteIndexes(bugeater.service.ISearchResult)
+	 */
+	public synchronized void deleteIndexes(ISearchResult result)
+	{
+		try {
+			IndexModifier modifier = getModifier();
+			if (result instanceof AbstractSearchResult) {
+				int docnum = ((AbstractSearchResult)result).getDocumentNumber();
+				if (logger.isDebugEnabled()) {
+					logger.debug("Deleting documents number " + docnum);
+				}
+				modifier.deleteDocument(docnum);
+			} else {
+				if (logger.isDebugEnabled()) {
+					logger.debug(
+							"Deleting documents for unique ID " +
+							result.getObjectId()
+						);
+				}
+				modifier.deleteDocuments(
+						new Term("id", result.getObjectId().toString())
+					);
+			}
+			modifier.optimize();
+			modifier.close();
+		} catch (IOException ioe) {
+			logger.error(ioe);
+		}
+	}
+	
 	/**
 	 * @see bugeater.service.SearchService#searchByIssueSummary(java.lang.String)
 	 */
-	public List<ISearchResult<Issue>> searchByIssueSummary(String queryText)
+	public synchronized List<ISearchResult<Issue>> searchByIssueSummary(String queryText)
 	{
 		try {
 			if (issueParser == null) {
@@ -120,6 +151,9 @@ public class SearchServiceImpl implements SearchService
 				new ArrayList<ISearchResult<Issue>>();
 			for (Iterator iter = hits.iterator() ; iter.hasNext() ;) {
 				hit = (Hit)iter.next();
+				if (logger.isDebugEnabled()) {
+					logger.debug("Hit " + hit.toString() + " has id " + hit.getId());
+				}
 				list.add(new IssueSearchResult(hit).setIssueDao(issueDao));
 			}
 			searcher.close();
@@ -136,7 +170,7 @@ public class SearchServiceImpl implements SearchService
 	/**
 	 * @see bugeater.service.SearchService#searchByNoteText(java.lang.String)
 	 */
-	public List<ISearchResult<Note>> searchByNoteText(String queryText)
+	public synchronized List<ISearchResult<Note>> searchByNoteText(String queryText)
 	{
 		try {
 			if (noteParser == null) {
@@ -150,6 +184,9 @@ public class SearchServiceImpl implements SearchService
 				new ArrayList<ISearchResult<Note>>();
 			for (Iterator iter = hits.iterator() ; iter.hasNext() ;) {
 				hit = (Hit)iter.next();
+				if (logger.isDebugEnabled()) {
+					logger.debug("Hit " + hit.toString() + " has id " + hit.getId());
+				}
 				list.add(new NoteSearchResult(hit).setNoteDao(noteDao));
 			}
 			searcher.close();
@@ -196,10 +233,10 @@ public class SearchServiceImpl implements SearchService
 		}
 	}
 	
-	private void index(Document doc)
+	private synchronized void index(Document doc)
 		throws IOException
 	{
-		IndexWriter writer = getWriter();
+		IndexModifier writer = getModifier();
 		writer.addDocument(doc);
 		writer.optimize();
 		writer.close();

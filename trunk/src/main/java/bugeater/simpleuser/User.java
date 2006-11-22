@@ -100,7 +100,7 @@ public class User
 		return this;
 	}
 
-	@Column( name="login" )
+	@Column( name="login", unique=true )
 	private String login;
 	/**
 	 * @see bugeater.bean.IUserBean#getLogin()

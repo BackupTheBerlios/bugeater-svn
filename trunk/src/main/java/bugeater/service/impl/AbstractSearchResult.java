@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.search.Hit;
+
 import bugeater.service.ISearchResult;
 
 /**
@@ -23,11 +24,18 @@ abstract class AbstractSearchResult<T> implements ISearchResult<T>
 	{
 		super();
 		try {
+			documentNumber = hit.getId();
 			objectid = Long.parseLong(hit.getDocument().get("id"));
 			score = hit.getScore();
 		} catch (IOException ioe) {
 			logger.error(ioe);
 		}
+	}
+	
+	private int documentNumber;
+	int getDocumentNumber()
+	{
+		return documentNumber;
 	}
 	
 	/**
