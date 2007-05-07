@@ -1,0 +1,95 @@
+<html xmlns:wicket="http://wicket.sourceforge.net/">
+    <body>
+        <wicket:extend>
+        	<h3>Issue:</h3>
+        	<table>
+        		<tr>
+        			<td><strong>ID:</strong></td>
+        			<td>
+        				<!--
+        					Make the issue ID a link so that people can easily
+							link to this issue
+						-->
+        				<a href="#" wicket:id="idlink">
+        					<span wicket:id="id"></span>
+        				</a>
+        			</td>
+        			<td><strong>Opened:</strong></td>
+        			<td wicket:id="openTime"></td>
+        		</tr>
+        		<tr>
+        			<td><strong>Summary:</strong></td>
+        			<td wicket:id="summary" colspan="3"></td>
+        		</tr>
+        		<tr>
+        			<td><strong>Project:</strong></td>
+        			<td wicket:id="project"></td>
+        			<td><strong>Category:</strong></td>
+        			<td wicket:id="category"></td>
+        		</tr>
+        		<tr>
+        			<td><strong>Priority:</strong></td>
+        			<td>
+        				<select wicket:id="priority">
+        					<value>Low</value>
+        					<value>Medium</value>
+        					<value>High</value>
+        				</select>
+        			</td>
+        			<td><strong>Assigned to:</strong></td>
+        			<td>
+        				<select wicket:id="assignedTo">
+        					<value>John Doe</value>
+        					<value>Jake Smith</value>
+        				</select>
+        			</td>
+        		</tr>
+        		<tr>
+        			<td><strong>Status:</strong></td>
+        			<td>
+        				<select wicket:id="currentStatus">
+        					<value>Closed</value>
+        					<value>Open</value>
+        					<value>Testing</value>
+        				</select>
+        			</td>
+        			<td><strong>Release:</strong></td>
+        			<td>
+        				<select wicket:id="releaseVersion">
+        					<value></value>
+        					<value>1.0</value>
+        					<value>1.1</value>
+        				</select>
+        			</td>
+        			<td/><td/>
+        		</tr>
+        	</table>
+        	<a href="#" wicket:id="watchLink">Toggle Watch</a>
+        	<a href="#" wicket:id="deleteLink"><img src="images/delete.png"/></a>
+        	<h3>Notes</h3>
+        	<table width="100%">
+        		<span wicket:id="notesList">
+	        		<tr class="notetop">
+	        			<td><strong>Posted By:</strong></td>
+	        			<td wicket:id="postedBy"></td>
+	        			<td><strong>Post Date:</strong></td>
+	        			<td wicket:id="postDate"></td>
+	        			<td><strong>Status Change:</strong></td>
+	        			<td wicket:id="statusChange"></td>
+	        			<td>
+	        				<a href="#" wicket:id="editnotelink">
+	        					<img border="0" alt="Edit Note" wicket:id="editnoteimage"/>
+	        				</a>
+	        			</td>
+	        		</tr>
+	        		<tr>
+	        			<td id="notebody" wicket:id="text" colspan="6"></td>
+	        		</tr>
+	        	</span>
+        	</table>
+        	<a href="#" wicket:id="addNoteLink">Add a note</a>
+        	<p/>
+        	<span wicket:id="attachments"></span>
+		</wicket:extend>
+	</body>
+</html>

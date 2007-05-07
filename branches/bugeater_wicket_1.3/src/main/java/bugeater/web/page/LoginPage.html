@@ -1,0 +1,35 @@
+<html xmlns:wicket="http://wicket.sourceforge.net/" xml:lang="en" lang="en">
+    <body>
+    	<wicket:extend>
+        	<h1>You must log in to access Bugeater.</h1>
+	    	<form wicket:id="form">
+	    		<p wicket:id="feedback"></p>
+		    	<table>
+					<tr>
+						<td align="right"><strong>Username:</strong></td>
+						<td>
+							<input wicket:id="username" type="text" size="30"/>
+						</td>
+					</tr>
+					<tr>
+						<td align="right"><strong>Password:</strong></td>
+						<td>
+							<input
+								wicket:id="password" type="password"
+								value="password" size="30"
+							/>
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>
+							<input
+								type="submit" name="submit" value="Sign In"
+							/>
+						</td>
+					</tr>
+		    	</table>
+		    </form>
+		</wicket:extend>
+    </body>
+</html>

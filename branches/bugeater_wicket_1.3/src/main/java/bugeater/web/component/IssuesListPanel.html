@@ -1,0 +1,30 @@
+<html xmlns:wicket="http://wicket.sourceforge.net/">
+	<body>
+		<wicket:panel>
+			<table width="100%">
+				<tr>
+					<th width="30%">Summary</th><th width="20%">Project</th>
+					<th width="10%">Priority</th><th width="10%">Status</th>
+					<th width="10%">Watch</th>
+				</tr>
+				<tr wicket:id="issueList" width="35%">
+					<td>
+						<a wicket:id="viewIssueLink">
+							<span wicket:id="summaryLabel"></span>
+						</a>
+					</td>
+					<td wicket:id="projectLabel" width="20%"></td>
+					<td width="10%">
+						<center wicket:id="priorityLabel"></center>
+					</td>
+					<td width="10%">
+						<center wicket:id="statusLabel"></center>
+					</td>
+					<td width="5%">
+						<center wicket:id="watchIssueLink"></center>
+					</td>
+				</tr>
+			</table>
+		</wicket:panel>
+	</body>
+</html>

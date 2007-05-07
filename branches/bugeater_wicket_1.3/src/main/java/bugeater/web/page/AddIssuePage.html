@@ -1,0 +1,74 @@
+<html xmlns:wicket="http://wicket.sourceforge.net/">
+    <body>
+        <wicket:extend>
+        	<form wicket:id="addIssueForm">
+	        	<p>
+	        		Enter information about the software issue below and a new
+	        		issue record will be created.  You will automatically be
+	        		assigned as a watcher of the issue.
+	        	</p>
+    	    	<p wicket:id="formFeedback"></p>
+        		<table>
+        			<tr>
+        				<td><strong>Summary:</strong></td>
+        				<td colspan="5">
+        					<input style="width: 100%" type="text" wicket:id="summary">
+        					</input>
+        				</td>
+	        		</tr>
+        			<tr>
+        				<td><strong>Project:</strong></td>
+        				<td>
+        					<select wicket:id="project">
+        						<value>SIMIS Desktop App</value>
+        						<value>SIMIS Reporting</value>
+        					</select>
+        				</td>
+        				<td><strong>Category:</strong></td>
+        				<td>
+        					<select wicket:id="category">
+        						<value>Bug</value>
+        						<value>Functionality Change Request</value>
+        						<value>New Functionality Request</value>
+        					</select>
+        				</td>
+        				<td><strong>Priority</strong></td>
+        				<td>
+        					<select wicket:id="priority">
+        						<value>Lowest</value>
+        						<value>Low</value>
+        						<value>Medium</value>
+        						<value>High</value>
+        						<value>Highest</value>
+        					</select>
+        				</td>
+	        		</tr>
+        			<tr>
+        				<td valign="top">
+        					<strong>Description:</strong><br/>
+        					The description is entered using wiki style
+        					formatting.
+        					<a
+        						href="static/note_formatting.html"
+        						target="_blank"
+        					>
+        						Click here for description formatting help.
+        					</a>
+        				</td>
+        				<td colspan="5" align="right">
+        					<textarea style="width: 100%" rows="15" wicket:id="description">
+        					</textarea>
+        				</td>
+	        		</tr>
+	        		<tr>
+	        			<td/>
+	        			<td>
+	        				<input type="submit" value="Create"/>
+	        			</td>
+	        			<td/><td/><td/><td/>
+	        		</tr>
+    	    	</table>
+    	    </form>
+		</wicket:extend>
+	</body>
+</html>

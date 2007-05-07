@@ -1,0 +1,30 @@
+<html xmlns:wicket="http://wicket.sourceforge.net/">
+    <body>
+        <wicket:extend>
+        	<form wicket:id="addForm">
+	        	<h1>Here, you may administer lookup lists:</h1>
+    	    	<p wicket:id="formFeedback"></p>
+    	    	<h2>Categories:</h2>
+    	    	<ul>
+    	    		<li wicket:id="categoryList">
+    	    			<span wicket:id="categoryLabel"></span>
+    	    		</li>
+    	    	</ul>
+				<input type="text" wicket:id="categoryField"></input>
+				<input type="submit" wicket:id="addCategoryBtn" value="Add Category"></input>
+				<p/>
+    	    	<h2>Projects (Click the link to view and edit releases):</h2>
+    	    	<ul>
+    	    		<li wicket:id="projectList">
+    	    			<a href="#" wicket:id="editReleaseLink">
+	    	    			<span wicket:id="projectLabel"></span>
+	    	    		</a>
+    	    		</li>
+    	    	</ul>
+				<input type="text" wicket:id="projectField"></input>
+				<input type="submit" wicket:id="addProjectBtn" value="Add Project"></input>
+				<p/>
+    	    </form>
+		</wicket:extend>
+	</body>
+</html>
