@@ -5,14 +5,15 @@ import bugeater.domain.Issue;
 import bugeater.service.IssueService;
 import bugeater.web.BugeaterApplication;
 
-import wicket.Application;
+import org.apache.wicket.Application;
+import org.apache.wicket.model.IModel;
 
 /**
  * A model used to provide an Issue object to the component.
  * 
  * @author pchapman
  */
-public class IssueModel extends MutableDetachableModel<Issue>
+public class IssueModel implements IModel
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -34,36 +35,48 @@ public class IssueModel extends MutableDetachableModel<Issue>
 	 */
 	public IssueModel(Issue issue)
 	{
-		super(issue);
-		this.issueid = issue == null ? null : issue.getId();
+		super();
+		setObject(issue);
 	}
 
 	// MEMBERS
 	
 	private Long issueid;
+	private transient Issue issue;
 
+	
 	/**
-	 * @see bugeater.web.model.MutableDetachableModel#detach()
+	 * @see org.apache.wicket.model.IDetachable#detach()
 	 */
-	@Override
 	public void detach()
 	{
-		issueid = getObject().getId();
-		super.detach();
+		issue = null;
 	}
 
 	/**
-	 * @see bugeater.web.model.MutableDetachableModel#load()
+	 * @see org.apache.wicket.model.IModel#getObject()
 	 */
-	@Override
-	protected Issue load()
+	public Object getObject()
 	{
-		if (issueid == null) {
-			return null;
-		} else {
+		if (issue == null && issueid != null) {
 			IssueService iService =
 				(IssueService)((BugeaterApplication)Application.get()).getSpringBean("issueService");
-			return iService.load(issueid);
+			issue = iService.load(issueid);
+		}
+		return issue;
+	}
+
+	/**
+	 * @see org.apache.wicket.model.IModel#setObject(java.lang.Object)
+	 */
+	public void setObject(Object object)
+	{
+		if (object == null) {
+			issue = null;
+			issueid = null;
+		} else if (object instanceof Issue) {
+			this.issue = (Issue)object;
+			this.issueid = issue.getId();
 		}
 	}
 }

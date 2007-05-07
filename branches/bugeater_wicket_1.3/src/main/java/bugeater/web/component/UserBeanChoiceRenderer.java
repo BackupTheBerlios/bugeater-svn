@@ -1,30 +1,38 @@
 package bugeater.web.component;
 
 import bugeater.bean.IUserBean;
-import wicket.markup.html.form.IChoiceRenderer;
+import org.apache.wicket.markup.html.form.IChoiceRenderer;
 
 /**
  * A choice renderer that renders an IUserBean as the user's full name.
  * 
  * @author pchapman
  */
-public class UserBeanChoiceRenderer implements IChoiceRenderer<IUserBean>
+public class UserBeanChoiceRenderer implements IChoiceRenderer
 {
 	private static final long serialVersionUID = 1L;
 	
 	/**
 	 * @see wicket.markup.html.form.IChoiceRenderer#getDisplayValue(java.lang.Object)
 	 */
-	public Object getDisplayValue(IUserBean object)
+	public Object getDisplayValue(Object object)
 	{
-		return object.getFullname();
+		if (object instanceof IUserBean) {
+			return ((IUserBean)object).getFullname();
+		} else {
+			return null;
+		}
 	}
 
 	/**
 	 * @see wicket.markup.html.form.IChoiceRenderer#getIdValue(java.lang.Object, int)
 	 */
-	public String getIdValue(IUserBean object, int index)
+	public String getIdValue(Object object, int index)
 	{
-		return object.getId();
+		if (object instanceof IUserBean) {
+			return ((IUserBean)object).getId();
+		} else {
+			return null;
+		}
 	}
 }

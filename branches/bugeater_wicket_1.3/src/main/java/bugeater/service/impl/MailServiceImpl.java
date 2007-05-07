@@ -17,8 +17,8 @@ import javax.mail.internet.MimeMessage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import wicket.Application;
-import wicket.PageParameters;
+import org.apache.wicket.Application;
+import org.apache.wicket.PageParameters;
 
 import bugeater.domain.Issue;
 import bugeater.domain.Note;

@@ -1,8 +1,8 @@
 package bugeater.web.page;
 
 import bugeater.web.BugeaterConstants;
-import wicket.PageParameters;
-import wicket.markup.html.include.Include;
+import org.apache.wicket.PageParameters;
+import org.apache.wicket.markup.html.include.Include;
 
 /**
  * A page used to show static content.
@@ -20,6 +20,6 @@ public class StaticContentPage extends BugeaterPage
 	{
 		super(params);
 		String url = params.getString(BugeaterConstants.PARAM_NAME_CONTENT_URL);
-		new Include(this, "content", url);
+		add(new Include("content", url));
 	}
 }

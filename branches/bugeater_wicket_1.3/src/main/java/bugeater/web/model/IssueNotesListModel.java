@@ -5,7 +5,7 @@ import java.util.List;
 import bugeater.domain.Note;
 import bugeater.domain.Issue;
 
-import wicket.model.IModel;
+import org.apache.wicket.model.IModel;
 
 /**
  * Provides a list of all notes associated with an issue.
@@ -19,17 +19,17 @@ public class IssueNotesListModel extends AbstractDetachableEntityListModel<Note>
 	/**
 	 * Creates a new instance. 
 	 */
-	public IssueNotesListModel(IModel<Issue> issueModel)
+	public IssueNotesListModel(IModel issueModel)
 	{
 		super();
 		this.issueModel = issueModel;
 	}
 	
-	private IModel<Issue>issueModel;
+	private IModel issueModel;
 
 	@Override
 	protected List<Note> load()
 	{
-		return issueModel.getObject().getNotes();
+		return ((Issue)issueModel.getObject()).getNotes();
 	}
 }

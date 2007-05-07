@@ -5,8 +5,8 @@ import org.radeox.api.engine.context.RenderContext;
 import org.radeox.engine.BaseRenderEngine;
 import org.radeox.engine.context.BaseRenderContext;
 
-import wicket.model.IModel;
-import wicket.model.Model;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 
 /**
  * A model that gets String input from the nested model and passes it though
@@ -14,14 +14,14 @@ import wicket.model.Model;
  * 
  * @author pchapman
  */
-public class RadeoxModel implements IModel<String>
+public class RadeoxModel implements IModel
 {
 	private static final long serialVersionUID = 1L;
 	
 	/**
 	 * Creates a new instance. 
 	 */
-	public RadeoxModel(IModel<String> nestedModel)
+	public RadeoxModel(IModel nestedModel)
 	{
 		super();
 		this.nestedModel = nestedModel;
@@ -34,12 +34,12 @@ public class RadeoxModel implements IModel<String>
 	 */
 	public RadeoxModel(Object object)
 	{
-		this(new Model<String>(object == null ? "" : object.toString()));
+		this(new Model(object == null ? "" : object.toString()));
 	}
 	
 	private transient RenderContext context;
 	private transient RenderEngine engine;
-	private IModel<String>nestedModel;
+	private IModel nestedModel;
 
 	/**
 	 * @see wicket.model.IDetachable#detach()
@@ -58,11 +58,11 @@ public class RadeoxModel implements IModel<String>
 			context = new BaseRenderContext();
 		    engine = new BaseRenderEngine();
 		}
-	    return engine.render(nestedModel.getObject(), context);
+	    return engine.render(nestedModel.getObject().toString(), context);
 	}
 
 	/**
 	 * @see wicket.model.IModel#setObject(T)
 	 */
-	public void setObject(String object) {}
+	public void setObject(Object object) {}
 }

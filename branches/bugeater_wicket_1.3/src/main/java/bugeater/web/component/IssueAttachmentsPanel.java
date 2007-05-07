@@ -13,19 +13,18 @@ import bugeater.web.BugeaterConstants;
 import bugeater.web.model.IssueAttachmentsListModel;
 import bugeater.web.model.IssueModel;
 
-import wicket.MarkupContainer;
-import wicket.ResourceReference;
-import wicket.markup.html.basic.Label;
-import wicket.markup.html.form.Form;
-import wicket.markup.html.form.upload.FileUpload;
-import wicket.markup.html.form.upload.FileUploadField;
-import wicket.markup.html.link.ExternalLink;
-import wicket.markup.html.list.ListItem;
-import wicket.markup.html.list.ListView;
-import wicket.markup.html.panel.Panel;
-import wicket.model.IModel;
-import wicket.spring.injection.SpringBean;
-import wicket.util.value.ValueMap;
+import org.apache.wicket.ResourceReference;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.upload.FileUpload;
+import org.apache.wicket.markup.html.form.upload.FileUploadField;
+import org.apache.wicket.markup.html.link.ExternalLink;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.value.ValueMap;
 
 /**
  * A panel that shows all attachments for an issue and allows the user to
@@ -33,71 +32,65 @@ import wicket.util.value.ValueMap;
  * 
  * @author pchapman
  */
-public class IssueAttachmentsPanel extends Panel<Issue>
+public class IssueAttachmentsPanel extends Panel
 {
 	private static final long serialVersionUID = 1L;
 	private static final Log logger = LogFactory.getLog(IssueAttachmentsPanel.class);
 	
 	/**
-	 * @param parent The parent in which the panel belongs.
 	 * @param id The id of the panel in markup.
 	 * @param issue The ID of the issue for which attachments are to be
 	 *              displayed.
 	 */
-	public IssueAttachmentsPanel(
-			MarkupContainer parent, String id, Long issueID
-		)
+	public IssueAttachmentsPanel(String id, Long issueID)
 	{
-		this(parent, id, new IssueModel(issueID));
+		this(id, new IssueModel(issueID));
 	}
 
 	/**
-	 * @param parent The parent in which the panel belongs.
 	 * @param id The id of the panel in markup.
 	 * @param issue The issue for which attachments are to be displayed.
 	 */
-	public IssueAttachmentsPanel(
-			MarkupContainer parent, String id, Issue issue
-		)
+	public IssueAttachmentsPanel(String id, Issue issue)
 	{
-		this(parent, id, new IssueModel(issue));
+		this(id, new IssueModel(issue));
 	}
 
 	/**
-	 * @param parent The parent in which the panel belongs.
 	 * @param id The id of the panel in markup.
 	 * @param model A model that provides the issue for which attachments are
 	 *              to be displayed.
 	 */
-	public IssueAttachmentsPanel(
-			MarkupContainer parent, String id, IModel <Issue>model
-		)
+	public IssueAttachmentsPanel(String id, IModel model)
 	{
-		super(parent, id, model);
-		new ListView<Attachment>(
-				this, "attachmentsList", new IssueAttachmentsListModel(model)
-			)
-		{
-			private static final long serialVersionUID = 1L;
-			public void populateItem(ListItem <Attachment>item)
+		super(id, model);
+		add(
+				new ListView(
+						"attachmentsList", new IssueAttachmentsListModel(model)
+				)
 			{
-				Attachment att = item.getModelObject();
-				ResourceReference ref = new ResourceReference("attachment");
-				String url =
-					getRequestCycle().urlFor(ref)  + "?" +
-					BugeaterConstants.PARAM_NAME_ATTACHMENT_ID + "=" +
-					att.getId().toString();
-                ExternalLink link = new ExternalLink(item, "downloadLink", url);
-				
-				ValueMap params = new ValueMap();
-				params.add(
-						BugeaterConstants.PARAM_NAME_ATTACHMENT_ID,
-						att.getId().toString()
-					);
-				new Label(link, "attachmentLabel", att.getFileName());
+				private static final long serialVersionUID = 1L;
+				public void populateItem(ListItem item)
+				{
+					Attachment att = (Attachment)item.getModelObject();
+					ResourceReference ref = new ResourceReference("attachment");
+					String url =
+						getRequestCycle().urlFor(ref)  + "?" +
+						BugeaterConstants.PARAM_NAME_ATTACHMENT_ID + "=" +
+						att.getId().toString();
+	                ExternalLink link = new ExternalLink("downloadLink", url);
+	                item.add(link);
+					
+					ValueMap params = new ValueMap();
+					params.add(
+							BugeaterConstants.PARAM_NAME_ATTACHMENT_ID,
+							att.getId().toString()
+						);
+					link.add(new Label("attachmentLabel", att.getFileName()));
+				}
 			}
-		};
-		new AddAttachmentForm(this, "addForm");
+		);
+		add(new AddAttachmentForm("addForm"));
 	}
 	
 	@SpringBean
@@ -111,10 +104,11 @@ public class IssueAttachmentsPanel extends Panel<Issue>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public AddAttachmentForm(MarkupContainer parent, String id)
+		public AddAttachmentForm(String id)
 		{
-			super(parent, id);
-			uploadField = new FileUploadField(this, "attachmentFile");
+			super(id);
+			uploadField = new FileUploadField("attachmentFile");
+			add(uploadField);
 		}
 		
 		private FileUploadField uploadField;
@@ -125,7 +119,7 @@ public class IssueAttachmentsPanel extends Panel<Issue>
 			if (upload != null) {
 				Attachment a =
 					new Attachment()
-					.setIssue(IssueAttachmentsPanel.this.getModelObject())
+					.setIssue((Issue)IssueAttachmentsPanel.this.getModelObject())
 					.setContentType(upload.getContentType())
 					.setFileName(upload.getClientFileName());
 				try {

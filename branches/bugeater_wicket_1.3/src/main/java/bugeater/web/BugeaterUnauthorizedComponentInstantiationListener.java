@@ -2,12 +2,12 @@ package bugeater.web;
 
 import bugeater.web.page.LoginPage;
 
-import wicket.Component;
-import wicket.Page;
-import wicket.RestartResponseAtInterceptPageException;
-import wicket.Session;
-import wicket.authorization.IUnauthorizedComponentInstantiationListener;
-import wicket.authorization.UnauthorizedInstantiationException;
+import org.apache.wicket.Component;
+import org.apache.wicket.Page;
+import org.apache.wicket.RestartResponseAtInterceptPageException;
+import org.apache.wicket.Session;
+import org.apache.wicket.authorization.IUnauthorizedComponentInstantiationListener;
+import org.apache.wicket.authorization.UnauthorizedInstantiationException;
 
 /**
  * Listens for an exception thrown when a component cannot be instantiated

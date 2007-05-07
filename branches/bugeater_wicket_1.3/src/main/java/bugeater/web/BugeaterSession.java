@@ -14,12 +14,12 @@ import bugeater.bean.IUserBean;
 import bugeater.service.AuthenticationService;
 import bugeater.service.UserService;
 
-import wicket.Application;
-import wicket.Request;
+import org.apache.wicket.Application;
+import org.apache.wicket.Request;
 
-import wicket.protocol.http.WebApplication;
-import wicket.protocol.http.WebRequestCycle;
-import wicket.protocol.http.WebSession;
+import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.protocol.http.WebRequestCycle;
+import org.apache.wicket.protocol.http.WebSession;
 
 /**
  * A session object used by the web application to track session state.
@@ -61,7 +61,7 @@ public class BugeaterSession extends WebSession
 	public Principal getPrincipal()
 	{
 		if (principal == null) {
-			WebRequestCycle cycle = WebRequestCycle.get();
+			WebRequestCycle cycle = (WebRequestCycle)WebRequestCycle.get();
 			HttpServletRequest request = cycle.getWebRequest().getHttpServletRequest();
 			HttpServletResponse response = cycle.getWebResponse().getHttpServletResponse();
 			ServletContext context = ((WebApplication)Application.get()).getServletContext();

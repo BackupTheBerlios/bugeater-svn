@@ -1,12 +1,10 @@
 package bugeater.web.model;
 
-import java.util.List;
-
-import wicket.model.IModel;
-import wicket.model.LoadableDetachableModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 
 public abstract class AbstractDetachableEntityListModel<T> extends
-		LoadableDetachableModel<List<T>>
+		LoadableDetachableModel
 {
 	public AbstractDetachableEntityListModel()
 	{

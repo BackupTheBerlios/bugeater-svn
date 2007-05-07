@@ -14,22 +14,20 @@ import bugeater.service.AuthenticationException;
 import bugeater.service.AuthenticationService;
 import bugeater.web.BugeaterSession;
 
-import wicket.Application;
-import wicket.MarkupContainer;
-import wicket.Session;
+import org.apache.wicket.Application;
+import org.apache.wicket.Session;
 
-import wicket.markup.html.form.Form;
-import wicket.markup.html.form.PasswordTextField;
-import wicket.markup.html.form.TextField;
-import wicket.markup.html.form.validation.FormComponentFeedbackBorder;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.PasswordTextField;
+import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
 
-import wicket.model.IModel;
-import wicket.model.Model;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 
-import wicket.protocol.http.WebApplication;
-import wicket.protocol.http.WebRequestCycle;
-
-import wicket.spring.injection.SpringBean;
+import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.protocol.http.WebRequestCycle;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
 /**
  * A page which allows the user to log in.
@@ -54,42 +52,38 @@ public class LoginPage extends BugeaterPage
 	public LoginPage()
 	{
 		super();
-		new LoginForm(this, "form");
+		add(new LoginForm("form"));
 	}
 	
 	private class LoginForm extends Form
 	{
 		private static final long serialVersionUID = 1L;
 		
-		public LoginForm(MarkupContainer parent, String wicketID)
+		public LoginForm(String wicketID)
 		{
-			super(parent, wicketID);
+			super(wicketID);
 
-			new FormComponentFeedbackBorder(LoginForm.this, "feedback");
+			add(new FormComponentFeedbackBorder("feedback"));
 			
-			loginModel = new Model<String>();
-			new TextField<String>(
-					LoginForm.this, "username", loginModel
-				);
-			passModel = new Model<String>();
-			new PasswordTextField(
-					LoginForm.this, "password", passModel
-				);
+			loginModel = new Model();
+			add(new TextField("username", loginModel));
+			passModel = new Model();
+			add(new PasswordTextField("password", passModel));
 		}
 		
-		private IModel<String>loginModel;
-		private IModel<String>passModel;
+		private IModel loginModel;
+		private IModel passModel;
 		
 		private String getLogin()
 		{
-			String s = loginModel.getObject();
-			return s == null ? "" : s;
+			Object s = loginModel.getObject();
+			return s == null ? "" : s.toString();
 		}
 		
 		private String getPassword()
 		{
-			String s = passModel.getObject();
-			return s == null ? "" : s;
+			Object s = passModel.getObject();
+			return s == null ? "" : s.toString();
 		}
 		
 		@SuppressWarnings("unchecked")
@@ -97,7 +91,7 @@ public class LoginPage extends BugeaterPage
 		{
 			try {
 				// Attempt authentication
-				WebRequestCycle cycle = WebRequestCycle.get();
+				WebRequestCycle cycle = (WebRequestCycle)WebRequestCycle.get();
 				HttpServletRequest request = cycle.getWebRequest().getHttpServletRequest();
 				HttpServletResponse response = cycle.getWebResponse().getHttpServletResponse();
 				ServletContext context = ((WebApplication)Application.get()).getServletContext();

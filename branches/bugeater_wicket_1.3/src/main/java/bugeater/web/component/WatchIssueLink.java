@@ -6,13 +6,12 @@ import bugeater.web.BugeaterApplication;
 import bugeater.web.BugeaterSession;
 import bugeater.web.model.IssueModel;
 
-import wicket.Application;
-import wicket.MarkupContainer;
-import wicket.Session;
-import wicket.markup.html.link.Link;
-import wicket.markup.html.panel.Panel;
-import wicket.model.IModel;
-import wicket.model.Model;
+import org.apache.wicket.Application;
+import org.apache.wicket.Session;
+import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 
 /**
  * Provides a clickable image that will either add the user to an issue's
@@ -20,22 +19,19 @@ import wicket.model.Model;
  * 
  * @author pchapman
  */
-public class WatchIssueLink extends Panel<Issue>
+public class WatchIssueLink extends Panel
 {
 	private static final long serialVersionUID = 1L;
 	
-	private IModel<Boolean>watchedModel;
+	private IModel watchedModel;
 	
 	/**
-	 * @param parent The parent.
 	 * @param id The unique ID of the panel.
 	 * @param model The model holding the issue.
 	 */
-	public WatchIssueLink(
-			MarkupContainer parent, String id, Long issueID
-		)
+	public WatchIssueLink(String id, Long issueID)
 	{
-		this(parent, id, new IssueModel(issueID));
+		this(id, new IssueModel(issueID));
 	}	
 	
 	/**
@@ -43,30 +39,25 @@ public class WatchIssueLink extends Panel<Issue>
 	 * @param id The unique ID of the panel.
 	 * @param model The model holding the issue.
 	 */
-	public WatchIssueLink(
-			MarkupContainer parent, String id, Issue issue
-		)
+	public WatchIssueLink(String id, Issue issue)
 	{
-		this(parent, id, new IssueModel(issue));
+		this(id, new IssueModel(issue));
 	}	
 	
 	/**
-	 * @param parent The parent.
 	 * @param id The unique ID of the panel.
 	 * @param model The model holding the issue.
 	 */
-	public WatchIssueLink(
-			MarkupContainer parent, String id, IModel<Issue> model
-		)
+	public WatchIssueLink(String id, IModel model)
 	{
-		super(parent, id, model);
+		super(id, model);
 		BugeaterSession sess = (BugeaterSession)Session.get();
 		String userID = sess.getUserBean().getId();
-		Issue i = getModelObject();
+		Issue i = (Issue)getModelObject();
 		final Long issueID = i.getId();
 		final boolean assigned = userID.equals(i.getAssignedUserID());
-		watchedModel = new Model<Boolean>(i.getWatchers().contains(userID));
-		Link link = new Link(this, "watchIssueLink")
+		watchedModel = new Model(i.getWatchers().contains(userID));
+		Link link = new Link("watchIssueLink")
 		{
 			private static final long serialVersionUID = 1L;
 			public void onClick()
@@ -75,7 +66,7 @@ public class WatchIssueLink extends Panel<Issue>
 					(IssueService)((BugeaterApplication)Application.get()).getSpringBean("issueService");
 				Issue i = service.load(issueID);
 				BugeaterSession sess = (BugeaterSession)Session.get();
-				if (watchedModel.getObject()) {
+				if ((Boolean)watchedModel.getObject()) {
 					i.getWatchers().remove(sess.getUserBean().getId());
 				} else {
 					i.getWatchers().add(sess.getUserBean().getId());
@@ -84,11 +75,12 @@ public class WatchIssueLink extends Panel<Issue>
 				service.save(i);
 			}
 		};
-		new StaticImage(link, "watchIssueImg", new UrlModel());
+		link.add(new StaticImage("watchIssueImg", new UrlModel()));
+		this.add(link);
 		setVisible(!assigned);
 	}
 	
-	private class UrlModel implements IModel<String>
+	private class UrlModel implements IModel
 	{
 		private static final long serialVersionUID = 1L;
 		
@@ -106,14 +98,14 @@ public class WatchIssueLink extends Panel<Issue>
 		{
 			return
 				((BugeaterApplication)Application.get()).getServerContextPath() +
-				"/images/" + (watchedModel.getObject() ? "no" : "") +
+				"/images/" + (((Boolean)watchedModel.getObject()) ? "no" : "") +
 				"watch.png";
 		}
 
 		/**
 		 * @see wicket.model.IModel#setObject(T)
 		 */
-		public void setObject(String object)
+		public void setObject(Object object)
 		{
 			// Not implemented
 		}

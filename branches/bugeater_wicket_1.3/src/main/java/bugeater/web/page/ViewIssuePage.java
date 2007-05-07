@@ -12,7 +12,6 @@ import bugeater.domain.IssueStatus;
 import bugeater.domain.IssueStatusChange;
 import bugeater.domain.Note;
 import bugeater.domain.Priority;
-import bugeater.domain.ReleaseVersion;
 import bugeater.service.AuthenticationService;
 import bugeater.service.IssueService;
 import bugeater.service.SecurityRole;
@@ -27,34 +26,31 @@ import bugeater.web.component.UserBeanChoiceRenderer;
 import bugeater.web.component.WatchIssueLink;
 import bugeater.web.component.util.NullableChoiceRenderer;
 import bugeater.web.model.AssignableUsersModel;
-import bugeater.web.model.MutableDetachableModel;
 import bugeater.web.model.RadeoxModel;
 import bugeater.web.model.ReleaseVersionsListModel;
 import bugeater.web.model.IssueModel;
 import bugeater.web.model.IssueNotesListModel;
 
-import wicket.Application;
-import wicket.AttributeModifier;
-import wicket.MarkupContainer;
-import wicket.PageMap;
-import wicket.PageParameters;
-import wicket.Session;
-import wicket.authorization.strategies.role.annotations.AuthorizeAction;
-import wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
-import wicket.markup.html.WebMarkupContainer;
-import wicket.markup.html.basic.Label;
-import wicket.markup.html.form.DropDownChoice;
-import wicket.markup.html.link.BookmarkablePageLink;
-import wicket.markup.html.link.Link;
-import wicket.markup.html.list.ListItem;
-import wicket.markup.html.list.ListView;
-import wicket.model.AbstractReadOnlyModel;
-import wicket.model.CompoundPropertyModel;
-import wicket.model.IModel;
-import wicket.model.Model;
-import wicket.model.PropertyModel;
-import wicket.spring.injection.SpringBean;
-import wicket.util.string.StringValueConversionException;
+import org.apache.wicket.Application;
+import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.PageMap;
+import org.apache.wicket.PageParameters;
+import org.apache.wicket.Session;
+import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeAction;
+import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
+import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.string.StringValueConversionException;
 
 /**
  * A page that will allow the user to view an issue.
@@ -78,13 +74,13 @@ public class ViewIssuePage extends BugeaterPage
 		init(new IssueModel(arg0));
 	}
 
-	public ViewIssuePage(IModel<Issue> arg0)
+	public ViewIssuePage(IModel arg0)
 	{
 		super();
 		init(arg0);
 	}
 
-	public ViewIssuePage(PageMap arg0, IModel<Issue> arg1)
+	public ViewIssuePage(PageMap arg0, IModel arg1)
 	{
 		super(arg0);
 		init(arg1);
@@ -128,7 +124,7 @@ public class ViewIssuePage extends BugeaterPage
 	}
 
 	@SuppressWarnings("unchecked")
-	private void init(final IModel<Issue>model)
+	private void init(final IModel model)
 	{
 		Principal p = ((BugeaterSession)Session.get()).getPrincipal();
 		boolean canEditIssue = false;
@@ -149,28 +145,30 @@ public class ViewIssuePage extends BugeaterPage
 		PageParameters params = new PageParameters();
 		params.add(
 				BugeaterConstants.PARAM_NAME_ISSUE_ID,
-				model.getObject().getId().toString()
+				((Issue)model.getObject()).getId().toString()
 			);
 		Link link = new BookmarkablePageLink(
-				this, "idlink", ViewIssuePage.class, params
+				"idlink", ViewIssuePage.class, params
 			);
-		new Label(link, "id");
+		add(link);
+		link.add(new Label("id"));
 		final DateFormat dateFormat = DateFormat.getDateTimeInstance();
 		
-		new Label(
-				this, "openTime",
-				new Model<String>(
+		add(new Label(
+				"openTime",
+				new Model(
 						dateFormat.format(
-								model.getObject().getOpenTime().getTime()
+								((Issue)model.getObject()).getOpenTime().getTime()
 							)
 					)
-			);
+			)
+		);
 		
-		new Label(this, "summary");
-		new Label(this, "project");
-		new Label(this, "category");
+		add(new Label("summary"));
+		add(new Label("project"));
+		add(new Label("category"));
 		
-		new DropDownChoice<Priority>(this, "priority", Arrays.<Priority>asList(Priority.values()))
+		add(new DropDownChoice("priority", Arrays.asList(Priority.values()))
 		{
 			private static final long serialVersionUID = 1L;
 			
@@ -178,9 +176,9 @@ public class ViewIssuePage extends BugeaterPage
 			 * @see wicket.markup.html.form.DropDownChoice#onSelectionChanged(java.lang.Object)
 			 */
 			@Override
-			protected void onSelectionChanged(Priority newSelection)
+			protected void onSelectionChanged(Object newSelection)
 			{
-				issueService.save(model.getObject());
+				issueService.save((Issue)model.getObject());
 			}
 
 			/**
@@ -191,10 +189,10 @@ public class ViewIssuePage extends BugeaterPage
 			{
 				return true;
 			}
-		}.setEnabled(canEditIssue);
-		
-		DropDownChoice choice = new DropDownChoice<IUserBean>(
-				this, "assignedTo", new AssignedUserModel(model),
+		}.setEnabled(canEditIssue));
+
+		DropDownChoice choice = new DropDownChoice(
+				"assignedTo", new AssignedUserModel(model),
 				new AssignableUsersModel(), new UserBeanChoiceRenderer()
 			)
 		{
@@ -204,10 +202,10 @@ public class ViewIssuePage extends BugeaterPage
 			 * @see wicket.markup.html.form.DropDownChoice#onSelectionChanged(java.lang.Object)
 			 */
 			@Override
-			protected void onSelectionChanged(IUserBean newSelection)
+			protected void onSelectionChanged(Object newSelection)
 			{
 				if (newSelection != null) {
-					issueService.save(model.getObject());
+					issueService.save((Issue)model.getObject());
 				}
 			}
 
@@ -220,41 +218,44 @@ public class ViewIssuePage extends BugeaterPage
 				return true;
 			}
 		};
+		add(choice);
 		choice.setChoiceRenderer(new NullableChoiceRenderer());
 		choice.setEnabled(canEditIssue);
 		choice.setNullValid(true);
 		
-		final IModel<IssueStatus>newStatusModel = new Model<IssueStatus>(model.getObject().getCurrentStatus());
-		new DropDownChoice<IssueStatus>(this, "currentStatus", newStatusModel, Arrays.<IssueStatus>asList(IssueStatus.values()))
-		{
-			private static final long serialVersionUID = 1L;
-			
-			/**
-			 * @see wicket.markup.html.form.DropDownChoice#onSelectionChanged(java.lang.Object)
-			 */
-			@Override
-			protected void onSelectionChanged(IssueStatus newSelection)
+		final IModel newStatusModel = new Model(((Issue)model.getObject()).getCurrentStatus());
+		add(
+			new DropDownChoice("currentStatus", newStatusModel, Arrays.asList(IssueStatus.values()))
 			{
-				if (newSelection != null) {
-					// Get the note, then change the status
-					setResponsePage(new EditNotePage(model, newSelection));
+				private static final long serialVersionUID = 1L;
+				
+				/**
+				 * @see wicket.markup.html.form.DropDownChoice#onSelectionChanged(java.lang.Object)
+				 */
+				@Override
+				protected void onSelectionChanged(Object newSelection)
+				{
+					if (newSelection != null) {
+						// Get the note, then change the status
+						setResponsePage(new EditNotePage(model, (IssueStatus)newSelection));
+					}
 				}
-			}
+	
+				/**
+				 * @see wicket.markup.html.form.DropDownChoice#wantOnSelectionChangedNotifications()
+				 */
+				@Override
+				protected boolean wantOnSelectionChangedNotifications()
+				{
+					return true;
+				}
+			}.setEnabled(canEditIssue)
+		);
 
-			/**
-			 * @see wicket.markup.html.form.DropDownChoice#wantOnSelectionChangedNotifications()
-			 */
-			@Override
-			protected boolean wantOnSelectionChangedNotifications()
-			{
-				return true;
-			}
-		}.setEnabled(canEditIssue);
-
-		choice = new DropDownChoice<ReleaseVersion>(
-				this, "releaseVersion",
+		choice = new DropDownChoice(
+				"releaseVersion",
 				new ReleaseVersionsListModel(
-						new PropertyModel<String>(model, "project"), true,
+						new PropertyModel(model, "project"), true,
 						SortOrder.Descending
 					)
 			)
@@ -265,9 +266,9 @@ public class ViewIssuePage extends BugeaterPage
 			 * @see wicket.markup.html.form.DropDownChoice#onSelectionChanged(java.lang.Object)
 			 */
 			@Override
-			protected void onSelectionChanged(ReleaseVersion newSelection)
+			protected void onSelectionChanged(Object newSelection)
 			{
-				issueService.save(model.getObject());
+				issueService.save((Issue)model.getObject());
 			}
 
 			/**
@@ -279,148 +280,160 @@ public class ViewIssuePage extends BugeaterPage
 				return true;
 			}
 		};
+		add(choice);
 		choice.setChoiceRenderer(new NullableChoiceRenderer());
 		choice.setNullValid(true);
 		choice.setEnabled(canEditIssue);
 		
-		new WatchIssueLink(this, "watchLink", model);
+		add(new WatchIssueLink("watchLink", model));
 		
-		new DeleteIssueLink(this, "deleteLink", model);
+		add(new DeleteIssueLink("deleteLink", model));
 		
-		new ListView<Note>(this, "notesList", new IssueNotesListModel(model))
-		{
-			private static final long serialVersionUID = 1L;
-			public void populateItem(ListItem <Note>item)
+		add(new ListView("notesList", new IssueNotesListModel(model))
 			{
-				Note note = item.getModelObject();
-				new Label(
-						item, "postedBy",
-						new Model<String>(
-								userService.getUserById(
-										note.getUserID()
-									).getFullname()
-							)
-					);
-				new Label(
-						item, "postDate",
-						new Model<String>(
-								dateFormat.format(
-										note.getCreateTime().getTime()
-									)
-							)
-					);
-				Label label = null;
-				for (IssueStatusChange isc : note.getIssue().getStatusChanges()) {
-					if (isc.getNote() != null && isc.getNote().equals(note)) {
-						label = new Label(item, "statusChange", isc.getIssueStatus().toString());
-						break;
+				private static final long serialVersionUID = 1L;
+				public void populateItem(ListItem item)
+				{
+					Note note = (Note)item.getModelObject();
+					item.add(
+					new Label(
+							"postedBy",
+							new Model(
+									userService.getUserById(
+											note.getUserID()
+										).getFullname()
+								)
+						));
+					item.add(
+					new Label(
+							"postDate",
+							new Model(
+									dateFormat.format(
+											note.getCreateTime().getTime()
+										)
+								)
+						));
+					Label label = null;
+					for (IssueStatusChange isc : note.getIssue().getStatusChanges()) {
+						if (isc.getNote() != null && isc.getNote().equals(note)) {
+							label = new Label("statusChange", isc.getIssueStatus().toString());
+							break;
+						}
 					}
+					if (label == null) {
+						label = new Label("statusChange", "");
+					}
+					item.add(label);
+					item.add(
+					new Label(
+							"text", new RadeoxModel(note.getText())
+						).setEscapeModelStrings(false));
+					PageParameters params = new PageParameters();
+					params.add(BugeaterConstants.PARAM_NAME_NOTE_ID, String.valueOf(note.getId()));
+					Link l = new BookmarkablePageLink(
+							"editnotelink", EditNotePage.class, params
+						);
+					item.add(l);
+					l.add(new WebMarkupContainer("editnoteimage").add(new AttributeModifier("src", true, new UrlModel())));
+					BugeaterSession session = (BugeaterSession)Session.get();
+					boolean editable = false;
+					try {
+						editable =
+							aService.isUserInRole(session.getPrincipal(), SecurityRole.Administrator) ||
+							session.getUserBean().getId().equals(note.getUserID());
+					} catch (ServletException se) {}
+					l.setVisible(editable);
+	
 				}
-				if (label == null) {
-					label = new Label(item, "statusChange", "");
-				}
-				new Label(
-						item, "text", new RadeoxModel(note.getText())
-					).setEscapeModelStrings(false);
-				PageParameters params = new PageParameters();
-				params.add(BugeaterConstants.PARAM_NAME_NOTE_ID, String.valueOf(note.getId()));
-				Link l = new BookmarkablePageLink(
-						item, "editnotelink", EditNotePage.class, params
-					);
-				new WebMarkupContainer(l, "editnoteimage").add(new AttributeModifier("src", true, new UrlModel()));
-				BugeaterSession session = (BugeaterSession)Session.get();
-				boolean editable = false;
-				try {
-					editable =
-						aService.isUserInRole(session.getPrincipal(), SecurityRole.Administrator) ||
-						session.getUserBean().getId().equals(note.getUserID());
-				} catch (ServletException se) {}
-				l.setVisible(editable);
+			}.setRenderBodyOnly(true)
+		);
 
-			}
-		}.setRenderBodyOnly(true);
-		
-		new Link(this, "addNoteLink")
+		add(
+		new Link("addNoteLink")
 		{
 			private static final long serialVersionUID = 1L;
 			public void onClick()
 			{
 				setResponsePage(new EditNotePage(model));
 			}
-		};
+		});
 		
-		new IssueAttachmentsPanel(this, "attachments", model);
+		add(new IssueAttachmentsPanel("attachments", model));
 	}
 	
-	class AssignedUserModel extends MutableDetachableModel<IUserBean>
+	class AssignedUserModel implements IModel
 	{
 		private static final long serialVersionUID = 1L;
 		
-		AssignedUserModel(IModel<Issue>issueModel)
+		AssignedUserModel(IModel issueModel)
 		{
 			super();
 			this.issueModel = issueModel;
 		}
 		
-		private IModel<Issue>issueModel;
+		private IModel issueModel;
 		private UserService service;
-
-		/**
-		 * @see wicket.model.AbstractDetachableModel#onAttach()
-		 */
-		@Override
-		protected IUserBean load()
-		{
-			service =
-				(UserService)((BugeaterApplication)Application.get())
-				.getSpringBean("userService");
-			return service.getUserById(issueModel.getObject().getAssignedUserID());
-		}
+		private transient IUserBean userBean;
 
 		/**
 		 * @see wicket.model.IModel#detach()
 		 */
-		@Override
 		public void detach()
 		{
+			userBean = null;
 			issueModel.detach();
 		}
+
+		public Object getObject()
+		{
+			if (userBean == null) {
+				service =
+					(UserService)((BugeaterApplication)Application.get())
+					.getSpringBean("userService");
+				userBean = service.getUserById(((Issue)issueModel.getObject()).getAssignedUserID());
+			}
+			return userBean;
+		}
+		
+		public void setObject(Object obj) {}
 	}	
 	
-	private class UrlModel extends AbstractReadOnlyModel<String>
+	private class UrlModel implements IModel
 	{
 		private static final long serialVersionUID = 1L;
+		
+		public void detach() {}
 
 		/**
 		 * @see wicket.model.Model#getObject()
 		 */
-		@Override
-		public String getObject()
+		public Object getObject()
 		{
 			return
 				((BugeaterApplication)Application.get()).getServerContextPath() +
 				"/images/edit.png";
 		}
 
+		public void setObject(Object obj) {}
+		
 		/**
-		 * @see wicket.model.Model#toString()
+		 * @see java.lang.Object#toString()
 		 */
-		@Override
 		public String toString()
 		{
-			return getObject();
+			return getObject().toString();
 		}
 	}
 }
 
 @AuthorizeAction(action = "RENDER", roles = { SecurityRole.ADMINISTRATOR })
-class DeleteIssueLink extends ConfirmLink<Issue>
+class DeleteIssueLink extends ConfirmLink
 {
 	private static final long serialVersionUID = 1L;
 	
-	DeleteIssueLink(MarkupContainer parent, String name, IModel<Issue> model)
+	DeleteIssueLink(String name, IModel model)
 	{
-		super(parent, name, model);
+		super(name, model);
 	}
 	
 	/**
@@ -439,7 +452,7 @@ class DeleteIssueLink extends ConfirmLink<Issue>
 	public void onClick()
 	{
 		IssueService service = (IssueService)((BugeaterApplication)BugeaterApplication.get()).getSpringBean("issueService");
-		service.delete(getModelObject());
+		service.delete((Issue)getModelObject());
 		setResponsePage(Home.class);
 	}
 }

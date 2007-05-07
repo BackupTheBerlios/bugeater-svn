@@ -1,10 +1,11 @@
 package bugeater.web;
 
-import wicket.ISessionFactory;
-import wicket.Request;
-import wicket.Session;
+import org.apache.wicket.ISessionFactory;
+import org.apache.wicket.Request;
+import org.apache.wicket.Response;
+import org.apache.wicket.Session;
 
-import wicket.protocol.http.WebApplication;
+import org.apache.wicket.protocol.http.WebApplication;
 
 /**
  * A factory used by wicket to instantiate new BugeaterSession objects whenever a
@@ -25,7 +26,7 @@ public class BugeaterSessionFactory implements ISessionFactory
 	/**
 	 * @see wicket.ISessionFactory#newSession()
 	 */
-	public Session newSession(Request req)
+	public Session newSession(Request req, Response resp)
 	{
 		return new BugeaterSession((WebApplication)WebApplication.get(), req);
 	}	

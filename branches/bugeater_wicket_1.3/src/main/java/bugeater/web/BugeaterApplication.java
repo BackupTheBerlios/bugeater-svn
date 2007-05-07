@@ -12,19 +12,19 @@ import bugeater.web.page.ViewIssuePage;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import wicket.ISessionFactory;
-import wicket.Page;
-import wicket.PageParameters;
-import wicket.RequestCycle;
+import org.apache.wicket.ISessionFactory;
+import org.apache.wicket.Page;
+import org.apache.wicket.PageParameters;
+import org.apache.wicket.RequestCycle;
 
-import wicket.authorization.strategies.role.annotations.AnnotationsRoleAuthorizationStrategy;
-import wicket.protocol.http.WebApplication;
-import wicket.protocol.http.WebRequest;
-import wicket.protocol.http.WebRequestCycle;
-import wicket.settings.IRequestCycleSettings;
-import wicket.spring.injection.SpringComponentInjector;
+import org.apache.wicket.authorization.strategies.role.annotations.AnnotationsRoleAuthorizationStrategy;
+import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.protocol.http.WebRequest;
+import org.apache.wicket.protocol.http.WebRequestCycle;
+import org.apache.wicket.settings.IRequestCycleSettings;
+import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 
-import wicket.util.time.Duration;
+import org.apache.wicket.util.time.Duration;
 
 /**
  * The application class used to initialize wicket for the Bugeater web app.
@@ -127,7 +127,7 @@ public class BugeaterApplication extends WebApplication
 		// Set resource settings
         getResourceSettings().setThrowExceptionOnMissingResource(false);
         getRequestCycleSettings().setRenderStrategy(
-        		IRequestCycleSettings.RenderStrategy.REDIRECT_TO_RENDER
+        		IRequestCycleSettings.REDIRECT_TO_RENDER
         	);
         getResourceSettings().addResourceFolder("web/WEB-INF/classes");
         getResourceSettings().setResourcePollFrequency(Duration.ONE_MINUTE);

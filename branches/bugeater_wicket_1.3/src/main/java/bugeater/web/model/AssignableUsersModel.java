@@ -12,7 +12,7 @@ import bugeater.service.SecurityRole;
 import bugeater.service.UserService;
 import bugeater.web.BugeaterApplication;
 
-import wicket.Application;
+import org.apache.wicket.Application;
 
 /**
  * A model that provides a list of users that an issue may be assigned to.

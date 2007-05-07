@@ -12,17 +12,17 @@ import bugeater.web.BugeaterSession;
 import bugeater.web.model.IssueModel;
 import bugeater.web.model.NoteModel;
 
-import wicket.MarkupContainer;
-import wicket.PageParameters;
-import wicket.Session;
-import wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
-import wicket.markup.html.form.Form;
-import wicket.markup.html.form.TextArea;
-import wicket.markup.html.panel.FeedbackPanel;
-import wicket.model.IModel;
-import wicket.model.Model;
-import wicket.spring.injection.SpringBean;
-import wicket.util.string.StringValueConversionException;
+import org.apache.wicket.MarkupContainer;
+import org.apache.wicket.PageParameters;
+import org.apache.wicket.Session;
+import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextArea;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.string.StringValueConversionException;
 
 /**
  * Allows the user to create a new note either as a stand-alone note, or as
@@ -48,7 +48,7 @@ public class EditNotePage extends BugeaterPage<Issue>
 		this(new IssueModel(arg0), new NoteModel(arg1));
 	}
 
-	public EditNotePage(IModel<Issue> arg0, IModel<Note> arg1)
+	public EditNotePage(IModel arg0, IModel arg1)
 	{
 		init(arg0, arg1, null);
 	}
@@ -63,7 +63,7 @@ public class EditNotePage extends BugeaterPage<Issue>
 		this(new IssueModel(arg0));
 	}
 
-	public EditNotePage(IModel<Issue> arg0)
+	public EditNotePage(IModel arg0)
 	{
 		this(arg0, (IssueStatus)null);
 	}
@@ -78,7 +78,7 @@ public class EditNotePage extends BugeaterPage<Issue>
 		this(new IssueModel(arg0), newStatus);
 	}
 
-	public EditNotePage(IModel<Issue> arg0, IssueStatus newStatus)
+	public EditNotePage(IModel arg0, IssueStatus newStatus)
 	{
 		super();
 		init(arg0, new NoteModel((Long)null), newStatus);
@@ -138,7 +138,7 @@ public class EditNotePage extends BugeaterPage<Issue>
 	}
 	
 	private void init(
-			IModel<Issue> model, IModel<Note> noteModel, IssueStatus newStatus
+			IModel model, IModel noteModel, IssueStatus newStatus
 		)
 	{
 		setModel(model);
@@ -146,27 +146,28 @@ public class EditNotePage extends BugeaterPage<Issue>
 		new AddNoteForm(this, "addNoteForm", noteModel);
 	}
 	
-	class AddNoteForm extends Form<Note>
+	class AddNoteForm extends Form
 	{
 		private static final long serialVersionUID = 1L;
 		
-		AddNoteForm(MarkupContainer container, String id, IModel<Note> noteModel)
+		AddNoteForm(MarkupContainer container, String id, IModel noteModel)
 		{
-			super(container, id, noteModel);
-			new FeedbackPanel(this, "formFeedback");
-			textModel = new Model<String>();
-			Note n = noteModel.getObject();
+			super(id, noteModel);
+			container.add(this);
+			add(new FeedbackPanel("formFeedback"));
+			textModel = new Model();
+			Note n = (Note)noteModel.getObject();
 			if (n != null) {
 				textModel.setObject(n.getText());
 			}
-			new TextArea<String>(this, "text", textModel).setRequired(true);
+			add(new TextArea("text", textModel).setRequired(true));
 		}
 		
-		private IModel<String>textModel;
+		private IModel textModel;
 		
 		public void onSubmit()
 		{
-			Note note = getModelObject();
+			Note note = (Note)getModelObject();
 			if (note == null) {
 				BugeaterSession sess = (BugeaterSession)Session.get();
 				IUserBean userBean = sess.getUserBean();
@@ -174,18 +175,18 @@ public class EditNotePage extends BugeaterPage<Issue>
 					// Create a plain ordinary note
 					note =
 						new Note()
-						.setIssue(EditNotePage.this.getModelObject())
-						.setText(textModel.getObject())
+						.setIssue((Issue)EditNotePage.this.getModelObject())
+						.setText(textModel.getObject().toString())
 						.setUserID(userBean.getId());
 				} else {
 					// Change status with the given note text
 					note = issueService.changeStatus(
-							EditNotePage.this.getModelObject(), userBean,
-							newStatus, textModel.getObject()
+							(Issue)EditNotePage.this.getModelObject(), userBean,
+							newStatus, textModel.getObject().toString()
 						).getNote();
 				}
 			} else {
-				note.setText(textModel.getObject());
+				note.setText(textModel.getObject().toString());
 			}
 			noteService.save(note);
 			PageParameters params = new PageParameters();

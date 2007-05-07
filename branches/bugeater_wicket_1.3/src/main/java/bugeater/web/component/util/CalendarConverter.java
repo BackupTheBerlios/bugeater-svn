@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import wicket.util.convert.converters.AbstractConverter;
+import org.apache.wicket.util.convert.converters.AbstractConverter;
 
 /**
  * Converts from Object to Calendar.  Adapted from wicket's CalendarConverter

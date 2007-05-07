@@ -5,14 +5,15 @@ import bugeater.domain.Note;
 import bugeater.service.NoteService;
 import bugeater.web.BugeaterApplication;
 
-import wicket.Application;
+import org.apache.wicket.Application;
+import org.apache.wicket.model.IModel;
 
 /**
- * A model used to provide an Note object to the component.
+ * A model used to provide a Note object to the component.
  * 
  * @author pchapman
  */
-public class NoteModel extends MutableDetachableModel<Note>
+public class NoteModel implements IModel
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -34,36 +35,47 @@ public class NoteModel extends MutableDetachableModel<Note>
 	 */
 	public NoteModel(Note note)
 	{
-		super(note);
-		this.noteid = note == null ? null : note.getId();
+		super();
+		setObject(note);
 	}
 
 	// MEMBERS
 	
 	private Long noteid;
+	private transient Note note;
 
 	/**
-	 * @see bugeater.web.model.MutableDetachableModel#detach()
+	 * @see org.apache.wicket.model.IDetachable#detach()
 	 */
-	@Override
 	public void detach()
 	{
-		noteid = getObject().getId();
-		super.detach();
+		note = null;
 	}
 
 	/**
-	 * @see bugeater.web.model.MutableDetachableModel#load()
+	 * @see org.apache.wicket.model.IModel#getObject()
 	 */
-	@Override
-	protected Note load()
+	public Object getObject()
 	{
-		if (noteid == null) {
+		if (note == null && noteid != null) {
 			NoteService iService =
 				(NoteService)((BugeaterApplication)Application.get()).getSpringBean("noteService");
-			return iService.load(noteid);
-		} else {
-			return null;
+			note = iService.load(noteid); 
+		}
+		return note;
+	}
+
+	/**
+	 * @see org.apache.wicket.model.IModel#setObject(java.lang.Object)
+	 */
+	public void setObject(Object object)
+	{
+		if (object == null) {
+			note = null;
+			noteid = null;
+		} else if (object instanceof Note) {
+			note = (Note)object;
+			noteid = note.getId();
 		}
 	}
 }

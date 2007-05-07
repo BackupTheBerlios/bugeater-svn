@@ -7,7 +7,7 @@ import bugeater.domain.Issue;
 import bugeater.service.IssueService;
 import bugeater.web.BugeaterApplication;
 
-import wicket.Application;
+import org.apache.wicket.Application;
 
 /**
  * Provides a list of all issues associated with a user.  How the issue is

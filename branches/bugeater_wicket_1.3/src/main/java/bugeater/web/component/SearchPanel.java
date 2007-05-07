@@ -17,17 +17,16 @@ import bugeater.web.model.ReleaseVersionsListModel;
 import bugeater.web.model.UserIssuesListModel;
 import bugeater.web.page.IssuesListPage;
 
-import wicket.Application;
-import wicket.MarkupContainer;
-import wicket.markup.html.form.Button;
-import wicket.markup.html.form.DropDownChoice;
-import wicket.markup.html.form.Form;
-import wicket.markup.html.form.IChoiceRenderer;
-import wicket.markup.html.link.Link;
-import wicket.markup.html.panel.Panel;
-import wicket.model.IModel;
-import wicket.model.Model;
-import wicket.spring.injection.SpringBean;
+import org.apache.wicket.Application;
+import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.IChoiceRenderer;
+import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
 /**
  * A panel which allows the user to provide search criteria for finding issues.
@@ -42,10 +41,10 @@ public class SearchPanel extends Panel
 	 * @param parent
 	 * @param id
 	 */
-	public SearchPanel(MarkupContainer parent, String id)
+	public SearchPanel(String id)
 	{
-		super(parent, id);
-		new SearchForm(this, "searchForm");
+		super(id);
+		add(new SearchForm("searchForm"));
 	}
 }
 
@@ -63,241 +62,257 @@ class SearchForm extends Form
 		this.issueService = service;
 	}
 
-	public SearchForm(MarkupContainer parent, String id)
+	public SearchForm(String id)
 	{
-		super(parent, id);
+		super(id);
 
 		// Search by current status
-		new DropDownChoice<IssueStatus>(
-				this, "status", new Model<IssueStatus>(),
-				Arrays.asList(IssueStatus.values())
-			)
-		{
-			private static final long serialVersionUID = 1L;
-			
-			/**
-			 * @see wicket.markup.html.form.DropDownChoice#wantOnSelectionChangedNotifications()
-			 */
-			@Override
-			protected boolean wantOnSelectionChangedNotifications()
+		add(
+			new DropDownChoice(
+					"status", new Model(), Arrays.asList(IssueStatus.values())
+				)
 			{
-				return true;
-			}
-
-			/**
-			 * @see wicket.markup.html.form.DropDownChoice#onSelectionChanged(java.lang.Object)
-			 */
-			@Override
-			protected void onSelectionChanged(IssueStatus newSelection)
-			{
-				if (newSelection != null) {
-					setResponsePage(
-							new IssuesListPage(
-									new CurrentStatusSearchModel(
-											newSelection
-										),
-									"Issues which currently have the status " +
-										newSelection.toString() +
-										":"
-								)
-						);
+				private static final long serialVersionUID = 1L;
+				
+				/**
+				 * @see wicket.markup.html.form.DropDownChoice#wantOnSelectionChangedNotifications()
+				 */
+				@Override
+				protected boolean wantOnSelectionChangedNotifications()
+				{
+					return true;
+				}
+	
+				/**
+				 * @see wicket.markup.html.form.DropDownChoice#onSelectionChanged(java.lang.Object)
+				 */
+				@Override
+				protected void onSelectionChanged(Object newSelection)
+				{
+					if (newSelection != null) {
+						setResponsePage(
+								new IssuesListPage(
+										new CurrentStatusSearchModel(
+												(IssueStatus)newSelection
+											),
+										"Issues which currently have the status " +
+											newSelection.toString() +
+											":"
+									)
+							);
+					}
 				}
 			}
-		};
+		);
 		
 		// All pending issues link
-		new Link(this, "pendingIssuesLink")
-		{
-			private static final long serialVersionUID = 1L;
-			public void onClick()
+		add(
+			new Link("pendingIssuesLink")
 			{
-				setResponsePage(
-						new IssuesListPage(
-								new PendingIssuesSearchModel(),
-								"Pending issues (Issues not closed):"
-							)
-					);
-			}
-		};
-		
-		// Search by release version
-		new DropDownChoice<ReleaseVersion>(
-				this, "release",
-				new ReleaseVersionModel((Long)null),
-				new ReleaseVersionsListModel(SortOrder.Descending)
-			)
-		{
-			private static final long serialVersionUID = 1L;
-			
-			/**
-			 * @see wicket.markup.html.form.DropDownChoice#wantOnSelectionChangedNotifications()
-			 */
-			@Override
-			protected boolean wantOnSelectionChangedNotifications()
-			{
-				return true;
-			}
-
-			/**
-			 * @see wicket.markup.html.form.DropDownChoice#onSelectionChanged(java.lang.Object)
-			 */
-			@Override
-			protected void onSelectionChanged(ReleaseVersion newSelection)
-			{
-				if (newSelection != null) {
+				private static final long serialVersionUID = 1L;
+				public void onClick()
+				{
 					setResponsePage(
 							new IssuesListPage(
-									new ReleaseVersionSearchModel(
-											new ReleaseVersionModel(
-													newSelection
-											)
-										),
-									"Issues assigned to be released in " +
-										newSelection.toString() +
-										":"
+									new PendingIssuesSearchModel(),
+									"Pending issues (Issues not closed):"
 								)
 						);
 				}
 			}
-		}.setChoiceRenderer(
-				new IChoiceRenderer<ReleaseVersion>()
+		);
+		
+		// Search by release version
+		add(
+			new DropDownChoice(
+					"release",
+					new ReleaseVersionModel((Long)null),
+					new ReleaseVersionsListModel(SortOrder.Descending)
+				)
+			{
+				private static final long serialVersionUID = 1L;
+				
+				/**
+				 * @see wicket.markup.html.form.DropDownChoice#wantOnSelectionChangedNotifications()
+				 */
+				@Override
+				protected boolean wantOnSelectionChangedNotifications()
 				{
-					private static final long serialVersionUID = 1L;
-					/**
-					 * @see wicket.markup.html.form.IChoiceRenderer#getDisplayValue(T)
-					 */
-					public Object getDisplayValue(ReleaseVersion object)
-					{
-						return
-							object.getProject() + " - " +
-							object.getVersionNumber();
-					}
-
-					/**
-					 * @see wicket.markup.html.form.IChoiceRenderer#getIdValue(T, int)
-					 */
-					public String getIdValue(ReleaseVersion object, int index)
-					{
-						return object.getId().toString();
+					return true;
+				}
+	
+				/**
+				 * @see wicket.markup.html.form.DropDownChoice#onSelectionChanged(java.lang.Object)
+				 */
+				@Override
+				protected void onSelectionChanged(Object newSelection)
+				{
+					if (newSelection != null) {
+						setResponsePage(
+								new IssuesListPage(
+										new ReleaseVersionSearchModel(
+												new ReleaseVersionModel(
+														(ReleaseVersion)newSelection
+												)
+											),
+										"Issues assigned to be released in " +
+											newSelection.toString() +
+											":"
+									)
+							);
 					}
 				}
+			}.setChoiceRenderer(
+					new IChoiceRenderer()
+					{
+						private static final long serialVersionUID = 1L;
+						/**
+						 * @see wicket.markup.html.form.IChoiceRenderer#getDisplayValue(T)
+						 */
+						public Object getDisplayValue(Object object)
+						{
+							ReleaseVersion r = (ReleaseVersion)object;
+							return
+								r.getProject() + " - " +
+								r.getVersionNumber();
+						}
+	
+						/**
+						 * @see wicket.markup.html.form.IChoiceRenderer#getIdValue(T, int)
+						 */
+						public String getIdValue(Object object, int index)
+						{
+							return ((ReleaseVersion)object).getId().toString();
+						}
+					}
+			)
 		);
 		
 		
 		// Search by project
-		new DropDownChoice<String>(
-				this, "project",
-				new Model<String>(null),
-				issueService.getProjectsList()
-			)
-		{
-			private static final long serialVersionUID = 1L;
-			
-			/**
-			 * @see wicket.markup.html.form.DropDownChoice#wantOnSelectionChangedNotifications()
-			 */
-			@Override
-			protected boolean wantOnSelectionChangedNotifications()
+		add(
+			new DropDownChoice(
+					"project",
+					new Model(null),
+					issueService.getProjectsList()
+				)
 			{
-				return true;
-			}
-
-			/**
-			 * @see wicket.markup.html.form.DropDownChoice#onSelectionChanged(java.lang.Object)
-			 */
-			@Override
-			protected void onSelectionChanged(String newSelection)
-			{
-				if (newSelection != null) {
-					setResponsePage(
-							new IssuesListPage(
-									new ProjectSearchModel(
-											newSelection
-										),
-									"Issues for the project " +
-										newSelection.toString() +
-										":"
-								)
-						);
+				private static final long serialVersionUID = 1L;
+				
+				/**
+				 * @see wicket.markup.html.form.DropDownChoice#wantOnSelectionChangedNotifications()
+				 */
+				@Override
+				protected boolean wantOnSelectionChangedNotifications()
+				{
+					return true;
+				}
+	
+				/**
+				 * @see wicket.markup.html.form.DropDownChoice#onSelectionChanged(java.lang.Object)
+				 */
+				@Override
+				protected void onSelectionChanged(Object newSelection)
+				{
+					if (newSelection != null) {
+						setResponsePage(
+								new IssuesListPage(
+										new ProjectSearchModel(
+												newSelection.toString()
+											),
+										"Issues for the project " +
+											newSelection.toString() +
+											":"
+									)
+							);
+					}
 				}
 			}
-		};
+		);
 		
 		// Search by assignee
-		new DropDownChoice<IUserBean>(
-				this, "assignee",
-				searchUserModel = new Model<IUserBean>(),
-				new AssignableUsersModel(), new UserBeanChoiceRenderer()
-			)
-		{
-			private static final long serialVersionUID = 1L;
-			
-			/**
-			 * @see wicket.markup.html.form.DropDownChoice#wantOnSelectionChangedNotifications()
-			 */
-			@Override
-			protected boolean wantOnSelectionChangedNotifications()
+		add(
+			new DropDownChoice(
+					"assignee",
+					searchUserModel = new Model(),
+					new AssignableUsersModel(), new UserBeanChoiceRenderer()
+				)
 			{
-				return true;
+				private static final long serialVersionUID = 1L;
+				
+				/**
+				 * @see wicket.markup.html.form.DropDownChoice#wantOnSelectionChangedNotifications()
+				 */
+				@Override
+				protected boolean wantOnSelectionChangedNotifications()
+				{
+					return true;
+				}
+	
+				/**
+				 * @see wicket.markup.html.form.DropDownChoice#onSelectionChanged(java.lang.Object)
+				 */
+				@Override
+				protected void onSelectionChanged(Object newSelection)
+				{
+					if (newSelection != null) {
+						setResponsePage(
+								new IssuesListPage(
+										new UserIssuesListModel(
+												UserIssuesListModel.AssociationType.Assigned,
+												((IUserBean)newSelection).getId()
+											),
+										"Issues assigned to " +
+											newSelection.toString() +
+											":"
+									)
+							);
+					}
+				}
 			}
-
-			/**
-			 * @see wicket.markup.html.form.DropDownChoice#onSelectionChanged(java.lang.Object)
-			 */
-			@Override
-			protected void onSelectionChanged(IUserBean newSelection)
+		);
+			
+		// Search by status change
+		add(
+			new DropDownChoice(
+					"statusChanged",
+					searchStatusChangeModel = new Model(),
+					Arrays.asList(IssueStatus.values())
+				)
+			);
+		add(
+			new DropDownChoice(
+					"changedBy",
+					searchUserModel = new Model(),
+					new AssignableUsersModel()
+				)
+			);
+		add(
+			new Button("statusChangeSearch")
 			{
-				if (newSelection != null) {
+				private static final long serialVersionUID = 1L;
+				public void onSubmit()
+				{
 					setResponsePage(
 							new IssuesListPage(
-									new UserIssuesListModel(
-											UserIssuesListModel.AssociationType.Assigned,
-											newSelection.getId()
+									new StatusChangeSearchModel(
+											((IssueStatus)searchStatusChangeModel.getObject()),
+											((IUserBean)searchUserModel.getObject())
 										),
-									"Issues assigned to " +
-										newSelection.toString() +
+									"Issues changed to status " +
+										searchStatusChangeModel.getObject().toString() +
+										" by " +
+										searchUserModel.getObject().toString() +
 										":"
 								)
 						);
 				}
 			}
-		};
-			
-		// Search by status change
-		new DropDownChoice<IssueStatus>(
-				this, "statusChanged",
-				searchStatusChangeModel = new Model<IssueStatus>(),
-				Arrays.<IssueStatus>asList(IssueStatus.values())
-			);
-		new DropDownChoice<IUserBean>(
-				this, "changedBy",
-				searchUserModel = new Model<IUserBean>(),
-				new AssignableUsersModel()
-			);
-		new Button(this, "statusChangeSearch")
-		{
-			private static final long serialVersionUID = 1L;
-			public void onSubmit()
-			{
-				setResponsePage(
-						new IssuesListPage(
-								new StatusChangeSearchModel(
-										searchStatusChangeModel.getObject(),
-										searchUserModel.getObject()
-									),
-								"Issues changed to status " +
-									searchStatusChangeModel.getObject().toString() +
-									" by " +
-									searchUserModel.getObject().toString() +
-									":"
-							)
-					);
-			}
-		};
+		);
 	}
 	
-	private IModel<IssueStatus>searchStatusChangeModel;
-	private IModel<IUserBean>searchUserModel;
+	private IModel searchStatusChangeModel;
+	private IModel searchUserModel;
 }
 
 /**
@@ -388,20 +403,20 @@ class ReleaseVersionSearchModel extends AbstractDetachableEntityListModel<Issue>
 {
 	private static final long serialVersionUID = 1L;
 	
-	ReleaseVersionSearchModel(IModel<ReleaseVersion> releaseVersion)
+	ReleaseVersionSearchModel(IModel releaseVersion)
 	{
 		super();
 		this.releaseVersion = releaseVersion;
 	}
 	
-	private IModel<ReleaseVersion>releaseVersion;
+	private IModel releaseVersion;
 
 	@Override
 	protected List<Issue> load()
 	{
 		IssueService service =
 			(IssueService)((BugeaterApplication)Application.get()).getSpringBean("issueService");
-		return service.getIssuesByReleaseVersion(releaseVersion.getObject());
+		return service.getIssuesByReleaseVersion((ReleaseVersion)releaseVersion.getObject());
 	}
 }
 

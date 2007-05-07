@@ -10,17 +10,17 @@ import bugeater.service.SecurityRole;
 import bugeater.web.BugeaterConstants;
 import bugeater.web.BugeaterSession;
 
-import wicket.MarkupContainer;
-import wicket.PageParameters;
-import wicket.Session;
-import wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
-import wicket.markup.html.form.DropDownChoice;
-import wicket.markup.html.form.Form;
-import wicket.markup.html.form.TextArea;
-import wicket.markup.html.form.TextField;
-import wicket.markup.html.panel.FeedbackPanel;
-import wicket.model.CompoundPropertyModel;
-import wicket.spring.injection.SpringBean;
+import org.apache.wicket.MarkupContainer;
+import org.apache.wicket.PageParameters;
+import org.apache.wicket.Session;
+import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
+import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextArea;
+import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
 /**
  * A web page in which a new issue can be created.
@@ -60,8 +60,9 @@ public class AddIssuePage extends BugeaterPage
 		@SuppressWarnings("unchecked")
 		public AddIssueForm(MarkupContainer parent, String id)
 		{
-			super(parent, id);
-			new FeedbackPanel(this, "formFeedback");
+			super(id);
+			parent.add(this);
+			add(new FeedbackPanel("formFeedback"));
 			issueBean =
 				new CreateIssueBean()
 				.setCreator(
@@ -69,28 +70,17 @@ public class AddIssuePage extends BugeaterPage
 				);
 			setModel(new CompoundPropertyModel(issueBean));
 
-			new TextField<String>(
-					AddIssueForm.this, "summary"
-				).setRequired(true);
-			
-			new DropDownChoice<String>(
-					AddIssueForm.this, "project",
-					issueService.getProjectsList()
-				).setRequired(true);
-			
-			new DropDownChoice<String>(
-					AddIssueForm.this, "category",
-					issueService.getCategoriesList()
-				).setRequired(true);
+			add(new TextField("summary").setRequired(true));
 
-			new DropDownChoice<Priority>(
-					AddIssueForm.this, "priority",
-					Arrays.<Priority>asList(Priority.values())
-				).setRequired(true);
+			add(new DropDownChoice("project", issueService.getProjectsList()).setRequired(true));
 			
-			new TextArea<String>(
-					AddIssueForm.this, "description"
-				).setRequired(true);
+			add(new DropDownChoice("category", issueService.getCategoriesList()).setRequired(true));
+
+			add(new DropDownChoice(
+					"priority", Arrays.<Priority>asList(Priority.values())
+				).setRequired(true));
+			
+			add(new TextArea("description").setRequired(true));
 		}
 
 		/**

@@ -3,7 +3,7 @@ package bugeater.web.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import wicket.model.IModel;
+import org.apache.wicket.model.IModel;
 import bugeater.domain.Issue;
 import bugeater.domain.IssueStatus;
 
@@ -12,12 +12,12 @@ public class AssignableStatusesModel
 {
 	private static final long serialVersionUID = 1L;
 	
-	AssignableStatusesModel(IModel<Issue>issueModel)
+	AssignableStatusesModel(IModel issueModel)
 	{
 		this.issueModel = issueModel;
 	}
 	
-	private IModel<Issue>issueModel;
+	private IModel issueModel;
 	/**
 	 * @see bugeater.web.model.AbstractDetachableEntityListModel#getNestedModel()
 	 */
@@ -31,7 +31,7 @@ public class AssignableStatusesModel
 	protected List<IssueStatus> load()
 	{
 		IssueStatus currentStatus =
-			issueModel.getObject().getCurrentStatus();
+			((Issue)issueModel.getObject()).getCurrentStatus();
 		List<IssueStatus>list = new ArrayList<IssueStatus>(IssueStatus.values().length);
 		for (IssueStatus status : IssueStatus.values()) {
 			if (status != currentStatus) {

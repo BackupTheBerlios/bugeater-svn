@@ -1,10 +1,9 @@
 package bugeater.web.component;
 
-import wicket.MarkupContainer;
-import wicket.markup.ComponentTag;
-import wicket.markup.html.WebComponent;
-import wicket.model.IModel;
-import wicket.model.Model;
+import org.apache.wicket.markup.ComponentTag;
+import org.apache.wicket.markup.html.WebComponent;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 
 /**
  * Component for html img tags with static content. The model represents the
@@ -16,7 +15,7 @@ import wicket.model.Model;
  * @author igor
  * @author pchapman
  */
-public class StaticImage extends WebComponent<String>
+public class StaticImage extends WebComponent
 {
 	// CONSTANTS
 	
@@ -30,9 +29,9 @@ public class StaticImage extends WebComponent<String>
 	 * @param id component id
 	 * @param path path to image
 	 */
-	public StaticImage(MarkupContainer container, String id, String path)
+	public StaticImage(String id, String path)
 	{
-		super(container, id, new Model<String>(path));
+		super(id, new Model(path));
 	}
 
 	/**
@@ -42,11 +41,9 @@ public class StaticImage extends WebComponent<String>
 	 * @param path path to image
 	 * @param altText the alternate text
 	 */
-	public StaticImage(
-			MarkupContainer container, String id, String path, String altText
-		)
+	public StaticImage(String id, String path, String altText)
 	{
-		this(container, id, new Model<String>(path), new Model<String>(altText));
+		this(id, new Model(path), new Model(altText));
 	}
 
 	/**
@@ -55,9 +52,9 @@ public class StaticImage extends WebComponent<String>
 	 * @param id component id
 	 * @param model model containing the path to the image
 	 */
-	public StaticImage(MarkupContainer container, String id, IModel<String> model)
+	public StaticImage(String id, IModel model)
 	{
-		super(container, id, model);
+		super(id, model);
 	}
 
 	/**
@@ -67,12 +64,9 @@ public class StaticImage extends WebComponent<String>
 	 * @param srcModel model containing the path to the image
 	 * @param altModel model containing the alt text
 	 */
-	public StaticImage(
-			MarkupContainer container, String id,
-			IModel<String> srcModel, IModel<String> altModel
-		)
+	public StaticImage(String id, IModel srcModel, IModel altModel)
 	{
-		super(container, id, srcModel);
+		super(id, srcModel);
 		this.alt = altModel;
 	}
 
@@ -81,18 +75,18 @@ public class StaticImage extends WebComponent<String>
 	 * 
 	 * @param id
 	 */
-	public StaticImage(MarkupContainer container, String id)
+	public StaticImage(String id)
 	{
-		super(container, id);
+		super(id);
 	}
 	
 	// MEMBERS
 	
-	private IModel<String> alt;
+	private IModel alt;
 	/**
 	 * Returns the alternate text for the image.
 	 */
-	public IModel<String> getAlt()
+	public IModel getAlt()
 	{
 		return alt;
 	}
@@ -103,7 +97,7 @@ public class StaticImage extends WebComponent<String>
 	 * @param model
 	 * @return this for chaining
 	 */
-	public StaticImage setAlt(IModel<String> model)
+	public StaticImage setAlt(IModel model)
 	{
 		this.alt = model;
 		return this;
@@ -125,9 +119,9 @@ public class StaticImage extends WebComponent<String>
 		// Guard against both a null alt model and a null value in the model.
 		String altText = null;
 		if (alt != null) {
-			String s = alt.getObject();
+			Object s = alt.getObject();
 			if (s != null) {
-				altText = s;
+				altText = s.toString();
 			}
 		}
 		if (altText != null) {

@@ -13,15 +13,14 @@ import bugeater.web.BugeaterSession;
 import bugeater.web.component.IssuesListPanel;
 import bugeater.web.model.UserIssuesListModel;
 
-import wicket.PageMap;
-import wicket.Session;
+import org.apache.wicket.PageMap;
+import org.apache.wicket.Session;
 
-import wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
+import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 
-import wicket.markup.html.basic.Label;
-import wicket.model.ResourceModel;
-
-import wicket.spring.injection.SpringBean;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
 /**
  * The start page for the webapp.  This page lists all the user's
@@ -44,7 +43,7 @@ public class Home extends BugeaterPage
 		super();
 		// Load the UI
 		IUserBean user = ((BugeaterSession)Session.get()).getUserBean();
-		new Label(this, "userLabel", getString("label.welcome").replace("$", user.toString()));
+		this.add(new Label("userLabel", getString("label.welcome").replace("$", user.toString())));
 
 		// Assigned issues
 		Principal p = ((BugeaterSession)Session.get()).getPrincipal();
@@ -56,27 +55,31 @@ public class Home extends BugeaterPage
 		} catch (ServletException se) {
 			logger.error(se);
 		}
-		Label label = new Label(this, "assignedLabel", new ResourceModel("label.assigned"));
+		Label label = new Label("assignedLabel", new ResourceModel("label.assigned"));
+		add(label);
 		IssuesListPanel listPanel =
 			new IssuesListPanel(
-					this, "assignedPanel",
+					"assignedPanel",
 					new UserIssuesListModel(
 							UserIssuesListModel.AssociationType.Assigned,
 							user.getId()
 						)
 				);
+		add(listPanel);
 		label.setVisible(assignable);
 		listPanel.setVisible(assignable);
 
 		// Watched issues
-		listPanel =
-			new IssuesListPanel(
-					this, "watchedPanel",
-					new UserIssuesListModel(
-							UserIssuesListModel.AssociationType.Watched,
-							user.getId()
-						)
-				);
+		add(
+			listPanel =
+				new IssuesListPanel(
+						"watchedPanel",
+						new UserIssuesListModel(
+								UserIssuesListModel.AssociationType.Watched,
+								user.getId()
+							)
+					)
+			);
 		label.setVisible(assignable);
 		listPanel.setVisible(assignable);
 	}

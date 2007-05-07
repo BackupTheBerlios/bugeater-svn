@@ -8,7 +8,7 @@ import java.util.Set;
 
 import org.hibernate.ObjectNotFoundException;
 
-import wicket.Application;
+import org.apache.wicket.Application;
 
 import bugeater.domain.Issue;
 import bugeater.domain.Note;

@@ -8,8 +8,8 @@ import bugeater.domain.Issue;
 import bugeater.service.AttachmentService;
 import bugeater.web.BugeaterApplication;
 
-import wicket.Application;
-import wicket.model.IModel;
+import org.apache.wicket.Application;
+import org.apache.wicket.model.IModel;
 
 /**
  * A model that provides a list of attachments for an issue.
@@ -24,13 +24,13 @@ public class IssueAttachmentsListModel
 	/**
 	 * Creates a new instance. 
 	 */
-	public IssueAttachmentsListModel(IModel<Issue> issueModel)
+	public IssueAttachmentsListModel(IModel issueModel)
 	{
 		super();
 		this.issueModel = issueModel;
 	}
 	
-	private IModel<Issue>issueModel;
+	private IModel issueModel;
 	protected IModel getNestModel()
 	{
 		return issueModel;
@@ -49,7 +49,7 @@ public class IssueAttachmentsListModel
 		} else {
 			AttachmentService service =
 				(AttachmentService)((BugeaterApplication)Application.get()).getSpringBean("attachmentService");
-			list = service.getAttachments(issueModel.getObject());
+			list = service.getAttachments(((Issue)issueModel.getObject()));
 		}
 		return list;
 	}

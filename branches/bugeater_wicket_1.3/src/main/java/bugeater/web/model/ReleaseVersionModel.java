@@ -5,14 +5,15 @@ import bugeater.domain.ReleaseVersion;
 import bugeater.service.ReleaseVersionService;
 import bugeater.web.BugeaterApplication;
 
-import wicket.Application;
+import org.apache.wicket.Application;
+import org.apache.wicket.model.IModel;
 
 /**
- * A model used to provide an ReleaseVersion object to the component.
+ * A model used to provide a ReleaseVersion object to the component.
  * 
  * @author pchapman
  */
-public class ReleaseVersionModel extends MutableDetachableModel<ReleaseVersion>
+public class ReleaseVersionModel implements IModel
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -34,37 +35,48 @@ public class ReleaseVersionModel extends MutableDetachableModel<ReleaseVersion>
 	 */
 	public ReleaseVersionModel(ReleaseVersion releaseVersion)
 	{
-		super(releaseVersion);
-		this.releaseVersionid = releaseVersion == null ? null : releaseVersion.getId();
+		super();
+		setObject(releaseVersion);
 	}
 
 	// MEMBERS
 	
 	private Long releaseVersionid;
+	private transient ReleaseVersion releaseVersion;
 
 	// METHODS
 
 	/**
 	 * @see bugeater.web.model.MutableDetachableModel#detach()
 	 */
-	@Override
 	public void detach() {
-		ReleaseVersion releaseVersion = getObject();
-		this.releaseVersionid = releaseVersion == null ? null : releaseVersion.getId();
-		super.detach();
+		releaseVersion = null;
 	}
 
-	/* (non-Javadoc)
-	 * @see bugeater.web.model.MutableDetachableModel#load()
+	/**
+	 * @see org.apache.wicket.model.IModel#getObject()
 	 */
-	@Override
-	protected ReleaseVersion load() {
-		if (releaseVersionid == null) {
-			return null;
-		} else {
+	public Object getObject()
+	{
+		if (releaseVersion == null && releaseVersionid != null) {
 			ReleaseVersionService iService =
 				(ReleaseVersionService)((BugeaterApplication)Application.get()).getSpringBean("releaseVersionService");
-			return iService.load(releaseVersionid);
+			releaseVersion = iService.load(releaseVersionid);
 		}
-	}	
+		return releaseVersion;
+	}
+
+	/**
+	 * @see org.apache.wicket.model.IModel#setObject(java.lang.Object)
+	 */
+	public void setObject(Object object)
+	{
+		if (object == null) {
+			releaseVersionid = null;
+			releaseVersion = null;
+		} else if (object instanceof ReleaseVersion) {
+			releaseVersion = (ReleaseVersion)object;
+			releaseVersionid = releaseVersion.getId();
+		}
+	}
 }

@@ -3,9 +3,9 @@ package bugeater.web.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import wicket.Application;
-import wicket.model.IModel;
-import wicket.model.Model;
+import org.apache.wicket.Application;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 
 import bugeater.domain.ReleaseVersion;
 import bugeater.service.ReleaseVersionService;
@@ -35,7 +35,7 @@ public class ReleaseVersionsListModel
 	 */
 	public ReleaseVersionsListModel(String project, SortOrder order)
 	{
-		this(new Model<String>(project), false, order);
+		this(new Model(project), false, order);
 	}
 
 	/**
@@ -45,7 +45,7 @@ public class ReleaseVersionsListModel
 	 *              sorted by version number.
 	 */
 	public ReleaseVersionsListModel(
-			IModel<String>projectModel, boolean includeNull, SortOrder order
+			IModel projectModel, boolean includeNull, SortOrder order
 		)
 	{
 		super();
@@ -55,7 +55,7 @@ public class ReleaseVersionsListModel
 	}
 	
 	private boolean includeNull;
-	private IModel<String> projectModel;
+	private IModel projectModel;
 	private SortOrder sortOrder;
 
 	/**
@@ -81,7 +81,7 @@ public class ReleaseVersionsListModel
 		} else {
 			ReleaseVersionService service =
 				(ReleaseVersionService)((BugeaterApplication)Application.get()).getSpringBean("releaseVersionService");
-			list.addAll(service.loadAll(projectModel.getObject(), sortOrder));
+			list.addAll(service.loadAll(((String)projectModel.getObject()), sortOrder));
 		}
 		return list;
 	}
