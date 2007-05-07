@@ -255,6 +255,14 @@ public class IssueServiceImpl implements IssueService
 	}
 	
 	/**
+	 * @see bugeater.service.IssueService#delete(bugeater.domain.Issue)
+	 */
+	public void delete(Issue issue)
+	{
+		issueDao.delete(issue);
+	}
+	
+	/**
 	 * @see bugeater.service.IssueService#load(String)
 	 */
 	public Issue load(Long id)

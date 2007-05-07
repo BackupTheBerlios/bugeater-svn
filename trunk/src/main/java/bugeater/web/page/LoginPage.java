@@ -92,6 +92,7 @@ public class LoginPage extends BugeaterPage
 			return s == null ? "" : s;
 		}
 		
+		@SuppressWarnings("unchecked")
 		public void onSubmit()
 		{
 			try {

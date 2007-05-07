@@ -15,6 +15,13 @@ import bugeater.domain.ReleaseVersion;
 public interface IssueDao
 {
 	/**
+	 * Delets the indicated issue.
+	 * 
+	 * @param issue
+	 */
+	public void delete(Issue issue);
+	
+	/**
 	 * Gets all issues that have the given current status.
 	 * 
 	 * @param status The status to search for.

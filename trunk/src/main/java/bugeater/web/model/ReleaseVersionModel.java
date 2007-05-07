@@ -6,14 +6,13 @@ import bugeater.service.ReleaseVersionService;
 import bugeater.web.BugeaterApplication;
 
 import wicket.Application;
-import wicket.model.AbstractDetachableModel;
 
 /**
  * A model used to provide an ReleaseVersion object to the component.
  * 
  * @author pchapman
  */
-public class ReleaseVersionModel extends AbstractDetachableModel<ReleaseVersion>
+public class ReleaseVersionModel extends MutableDetachableModel<ReleaseVersion>
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -26,9 +25,7 @@ public class ReleaseVersionModel extends AbstractDetachableModel<ReleaseVersion>
 	public ReleaseVersionModel(Long releaseVersionID)
 	{
 		super();
-		this.releaseVersion = null;
 		this.releaseVersionid = releaseVersionID;
-		onAttach();
 	}
 	
 	/**
@@ -37,58 +34,37 @@ public class ReleaseVersionModel extends AbstractDetachableModel<ReleaseVersion>
 	 */
 	public ReleaseVersionModel(ReleaseVersion releaseVersion)
 	{
-		super();
+		super(releaseVersion);
 		this.releaseVersionid = releaseVersion == null ? null : releaseVersion.getId();
-		this.releaseVersion = releaseVersion;
 	}
 
 	// MEMBERS
 	
-	private ReleaseVersion releaseVersion;
 	private Long releaseVersionid;
 
 	// METHODS
-	
+
 	/**
-	 * @see wicket.model.AbstractDetachableModel#onAttach()
+	 * @see bugeater.web.model.MutableDetachableModel#detach()
 	 */
 	@Override
-	protected void onAttach()
-	{
-		if (releaseVersion == null && releaseVersionid != null) {
+	public void detach() {
+		ReleaseVersion releaseVersion = getObject();
+		this.releaseVersionid = releaseVersion == null ? null : releaseVersion.getId();
+		super.detach();
+	}
+
+	/* (non-Javadoc)
+	 * @see bugeater.web.model.MutableDetachableModel#load()
+	 */
+	@Override
+	protected ReleaseVersion load() {
+		if (releaseVersionid == null) {
+			return null;
+		} else {
 			ReleaseVersionService iService =
 				(ReleaseVersionService)((BugeaterApplication)Application.get()).getSpringBean("releaseVersionService");
-			releaseVersion = iService.load(releaseVersionid);
+			return iService.load(releaseVersionid);
 		}
-	}
-
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onDetach()
-	 */
-	@Override
-	protected void onDetach()
-	{
-		releaseVersion = null;		
-	}
-	
-	
-
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onGetObject()
-	 */
-	@Override
-	protected ReleaseVersion onGetObject()
-	{
-		return releaseVersion;
-	}
-
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onSetObject(<T>)
-	 */
-	@Override
-	protected void onSetObject(ReleaseVersion releaseVersion) 
-	{
-		this.releaseVersion = releaseVersion;
-		this.releaseVersionid = releaseVersion == null ? null : releaseVersion.getId();
 	}	
 }

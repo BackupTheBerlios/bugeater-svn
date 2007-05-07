@@ -5,7 +5,6 @@ import org.radeox.api.engine.context.RenderContext;
 import org.radeox.engine.BaseRenderEngine;
 import org.radeox.engine.context.BaseRenderContext;
 
-import wicket.model.AbstractModel;
 import wicket.model.IModel;
 import wicket.model.Model;
 
@@ -15,7 +14,7 @@ import wicket.model.Model;
  * 
  * @author pchapman
  */
-public class RadeoxModel extends AbstractModel<String>
+public class RadeoxModel implements IModel<String>
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -43,6 +42,14 @@ public class RadeoxModel extends AbstractModel<String>
 	private IModel<String>nestedModel;
 
 	/**
+	 * @see wicket.model.IDetachable#detach()
+	 */
+	public void detach()
+	{
+		nestedModel.detach();
+	}
+
+	/**
 	 * @see wicket.model.IModel#getObject()
 	 */
 	public String getObject()
@@ -57,8 +64,5 @@ public class RadeoxModel extends AbstractModel<String>
 	/**
 	 * @see wicket.model.IModel#setObject(T)
 	 */
-	public void setObject(String object)
-	{
-		// Not implemented.		
-	}	
+	public void setObject(String object) {}
 }

@@ -21,10 +21,13 @@ import bugeater.service.UserService;
 import bugeater.web.BugeaterApplication;
 import bugeater.web.BugeaterConstants;
 import bugeater.web.BugeaterSession;
+import bugeater.web.component.ConfirmLink;
 import bugeater.web.component.IssueAttachmentsPanel;
+import bugeater.web.component.UserBeanChoiceRenderer;
 import bugeater.web.component.WatchIssueLink;
 import bugeater.web.component.util.NullableChoiceRenderer;
 import bugeater.web.model.AssignableUsersModel;
+import bugeater.web.model.MutableDetachableModel;
 import bugeater.web.model.RadeoxModel;
 import bugeater.web.model.ReleaseVersionsListModel;
 import bugeater.web.model.IssueModel;
@@ -32,9 +35,11 @@ import bugeater.web.model.IssueNotesListModel;
 
 import wicket.Application;
 import wicket.AttributeModifier;
+import wicket.MarkupContainer;
 import wicket.PageMap;
 import wicket.PageParameters;
 import wicket.Session;
+import wicket.authorization.strategies.role.annotations.AuthorizeAction;
 import wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import wicket.markup.html.WebMarkupContainer;
 import wicket.markup.html.basic.Label;
@@ -43,7 +48,6 @@ import wicket.markup.html.link.BookmarkablePageLink;
 import wicket.markup.html.link.Link;
 import wicket.markup.html.list.ListItem;
 import wicket.markup.html.list.ListView;
-import wicket.model.AbstractDetachableModel;
 import wicket.model.AbstractReadOnlyModel;
 import wicket.model.CompoundPropertyModel;
 import wicket.model.IModel;
@@ -174,7 +178,7 @@ public class ViewIssuePage extends BugeaterPage
 			 * @see wicket.markup.html.form.DropDownChoice#onSelectionChanged(java.lang.Object)
 			 */
 			@Override
-			protected void onSelectionChanged(Object newSelection)
+			protected void onSelectionChanged(Priority newSelection)
 			{
 				issueService.save(model.getObject());
 			}
@@ -191,7 +195,7 @@ public class ViewIssuePage extends BugeaterPage
 		
 		DropDownChoice choice = new DropDownChoice<IUserBean>(
 				this, "assignedTo", new AssignedUserModel(model),
-				new AssignableUsersModel()
+				new AssignableUsersModel(), new UserBeanChoiceRenderer()
 			)
 		{
 			private static final long serialVersionUID = 1L;
@@ -200,7 +204,7 @@ public class ViewIssuePage extends BugeaterPage
 			 * @see wicket.markup.html.form.DropDownChoice#onSelectionChanged(java.lang.Object)
 			 */
 			@Override
-			protected void onSelectionChanged(Object newSelection)
+			protected void onSelectionChanged(IUserBean newSelection)
 			{
 				if (newSelection != null) {
 					issueService.save(model.getObject());
@@ -229,12 +233,11 @@ public class ViewIssuePage extends BugeaterPage
 			 * @see wicket.markup.html.form.DropDownChoice#onSelectionChanged(java.lang.Object)
 			 */
 			@Override
-			protected void onSelectionChanged(Object newSelection)
+			protected void onSelectionChanged(IssueStatus newSelection)
 			{
-				IssueStatus status = getModelObject();
-				if (status != null) {
+				if (newSelection != null) {
 					// Get the note, then change the status
-					setResponsePage(new EditNotePage(model, status));
+					setResponsePage(new EditNotePage(model, newSelection));
 				}
 			}
 
@@ -262,7 +265,7 @@ public class ViewIssuePage extends BugeaterPage
 			 * @see wicket.markup.html.form.DropDownChoice#onSelectionChanged(java.lang.Object)
 			 */
 			@Override
-			protected void onSelectionChanged(Object newSelection)
+			protected void onSelectionChanged(ReleaseVersion newSelection)
 			{
 				issueService.save(model.getObject());
 			}
@@ -281,6 +284,8 @@ public class ViewIssuePage extends BugeaterPage
 		choice.setEnabled(canEditIssue);
 		
 		new WatchIssueLink(this, "watchLink", model);
+		
+		new DeleteIssueLink(this, "deleteLink", model);
 		
 		new ListView<Note>(this, "notesList", new IssueNotesListModel(model))
 		{
@@ -347,7 +352,7 @@ public class ViewIssuePage extends BugeaterPage
 		new IssueAttachmentsPanel(this, "attachments", model);
 	}
 	
-	class AssignedUserModel extends AbstractDetachableModel<IUserBean>
+	class AssignedUserModel extends MutableDetachableModel<IUserBean>
 	{
 		private static final long serialVersionUID = 1L;
 		
@@ -364,40 +369,21 @@ public class ViewIssuePage extends BugeaterPage
 		 * @see wicket.model.AbstractDetachableModel#onAttach()
 		 */
 		@Override
-		protected void onAttach()
+		protected IUserBean load()
 		{
-			if (service == null) {
-				service =
-					(UserService)((BugeaterApplication)Application.get())
-					.getSpringBean("userService");
-			}
-		}
-
-		/**
-		 * @see wicket.model.AbstractDetachableModel#onDetach()
-		 */
-		@Override
-		protected void onDetach()
-		{
-			service = null;
-		}
-
-		/**
-		 * @see wicket.model.AbstractDetachableModel#onGetObject()
-		 */
-		@Override
-		protected IUserBean onGetObject()
-		{
+			service =
+				(UserService)((BugeaterApplication)Application.get())
+				.getSpringBean("userService");
 			return service.getUserById(issueModel.getObject().getAssignedUserID());
 		}
 
 		/**
-		 * @see wicket.model.AbstractDetachableModel#onSetObject(T)
+		 * @see wicket.model.IModel#detach()
 		 */
 		@Override
-		protected void onSetObject(IUserBean bean)
+		public void detach()
 		{
-			issueModel.getObject().setAssignedUserID(bean.getId());
+			issueModel.detach();
 		}
 	}	
 	
@@ -424,5 +410,36 @@ public class ViewIssuePage extends BugeaterPage
 		{
 			return getObject();
 		}
+	}
+}
+
+@AuthorizeAction(action = "RENDER", roles = { SecurityRole.ADMINISTRATOR })
+class DeleteIssueLink extends ConfirmLink<Issue>
+{
+	private static final long serialVersionUID = 1L;
+	
+	DeleteIssueLink(MarkupContainer parent, String name, IModel<Issue> model)
+	{
+		super(parent, name, model);
+	}
+	
+	/**
+	 * @see bugeater.web.component.ConfirmLink#getConfirmationMessageModel()
+	 */
+	@Override
+	public String getConfirmationMessage()
+	{
+		return "Once deleted, it cannot be recovered.  Are you sure you want to delete this issue?";
+	}
+
+	/**
+	 * @see wicket.markup.html.link.Link#onClick()
+	 */
+	@Override
+	public void onClick()
+	{
+		IssueService service = (IssueService)((BugeaterApplication)BugeaterApplication.get()).getSpringBean("issueService");
+		service.delete(getModelObject());
+		setResponsePage(Home.class);
 	}
 }

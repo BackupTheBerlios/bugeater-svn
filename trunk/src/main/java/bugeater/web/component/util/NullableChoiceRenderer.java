@@ -15,6 +15,7 @@ public class NullableChoiceRenderer extends ChoiceRenderer
 	 * @see wicket.markup.html.form.ChoiceRenderer#getDisplayValue(T)
 	 */
 	@Override
+	@SuppressWarnings("unchecked")
 	public Object getDisplayValue(Object object)
 	{
 		if (object == null) {

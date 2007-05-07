@@ -82,7 +82,46 @@ public class AttachmentResource extends DynamicWebResource
 	{
 		Attachment a = getAttachment(getParameters());
     	if (a == null) {
-    		return new ResourceState();
+    		return new ResourceState()
+    		{
+				/**
+				 * @see wicket.markup.html.DynamicWebResource.ResourceState#getContentType()
+				 */
+				@Override
+				public String getContentType()
+				{
+					return "text/plain";
+				}
+
+				/**
+				 * @see wicket.markup.html.DynamicWebResource.ResourceState#getData()
+				 */
+				@Override
+				public byte[] getData()
+				{
+					return new byte[0];
+				}
+
+				/**
+				 * @see wicket.markup.html.DynamicWebResource.ResourceState#getLength()
+				 */
+				@Override
+				public int getLength()
+				{
+					return 0;
+				}
+
+				private Time time = Time.now();
+				
+				/**
+				 * @see wicket.markup.html.DynamicWebResource.ResourceState#lastModifiedTime()
+				 */
+				@Override
+				public Time lastModifiedTime()
+				{
+					return time;
+				}
+    		};
     	}
 		AttachmentResourceState state =
 			new AttachmentResourceState(

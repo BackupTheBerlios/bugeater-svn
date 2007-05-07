@@ -10,6 +10,7 @@ import bugeater.domain.ReleaseVersion;
 import bugeater.service.IssueService;
 import bugeater.service.SortOrder;
 import bugeater.web.BugeaterApplication;
+import bugeater.web.model.AbstractDetachableEntityListModel;
 import bugeater.web.model.AssignableUsersModel;
 import bugeater.web.model.ReleaseVersionModel;
 import bugeater.web.model.ReleaseVersionsListModel;
@@ -24,7 +25,6 @@ import wicket.markup.html.form.Form;
 import wicket.markup.html.form.IChoiceRenderer;
 import wicket.markup.html.link.Link;
 import wicket.markup.html.panel.Panel;
-import wicket.model.AbstractDetachableModel;
 import wicket.model.IModel;
 import wicket.model.Model;
 import wicket.spring.injection.SpringBean;
@@ -88,13 +88,13 @@ class SearchForm extends Form
 			 * @see wicket.markup.html.form.DropDownChoice#onSelectionChanged(java.lang.Object)
 			 */
 			@Override
-			protected void onSelectionChanged(Object newSelection)
+			protected void onSelectionChanged(IssueStatus newSelection)
 			{
-				if (newSelection instanceof IssueStatus) {
+				if (newSelection != null) {
 					setResponsePage(
 							new IssuesListPage(
 									new CurrentStatusSearchModel(
-											(IssueStatus)newSelection
+											newSelection
 										),
 									"Issues which currently have the status " +
 										newSelection.toString() +
@@ -142,14 +142,14 @@ class SearchForm extends Form
 			 * @see wicket.markup.html.form.DropDownChoice#onSelectionChanged(java.lang.Object)
 			 */
 			@Override
-			protected void onSelectionChanged(Object newSelection)
+			protected void onSelectionChanged(ReleaseVersion newSelection)
 			{
-				if (newSelection instanceof ReleaseVersion) {
+				if (newSelection != null) {
 					setResponsePage(
 							new IssuesListPage(
 									new ReleaseVersionSearchModel(
 											new ReleaseVersionModel(
-													(ReleaseVersion)newSelection
+													newSelection
 											)
 										),
 									"Issues assigned to be released in " +
@@ -206,13 +206,13 @@ class SearchForm extends Form
 			 * @see wicket.markup.html.form.DropDownChoice#onSelectionChanged(java.lang.Object)
 			 */
 			@Override
-			protected void onSelectionChanged(Object newSelection)
+			protected void onSelectionChanged(String newSelection)
 			{
 				if (newSelection != null) {
 					setResponsePage(
 							new IssuesListPage(
 									new ProjectSearchModel(
-											newSelection.toString()
+											newSelection
 										),
 									"Issues for the project " +
 										newSelection.toString() +
@@ -227,7 +227,7 @@ class SearchForm extends Form
 		new DropDownChoice<IUserBean>(
 				this, "assignee",
 				searchUserModel = new Model<IUserBean>(),
-				new AssignableUsersModel()
+				new AssignableUsersModel(), new UserBeanChoiceRenderer()
 			)
 		{
 			private static final long serialVersionUID = 1L;
@@ -245,14 +245,14 @@ class SearchForm extends Form
 			 * @see wicket.markup.html.form.DropDownChoice#onSelectionChanged(java.lang.Object)
 			 */
 			@Override
-			protected void onSelectionChanged(Object newSelection)
+			protected void onSelectionChanged(IUserBean newSelection)
 			{
-				if (newSelection instanceof IUserBean) {
+				if (newSelection != null) {
 					setResponsePage(
 							new IssuesListPage(
 									new UserIssuesListModel(
 											UserIssuesListModel.AssociationType.Assigned,
-											((IUserBean)newSelection).getId()
+											newSelection.getId()
 										),
 									"Issues assigned to " +
 										newSelection.toString() +
@@ -305,7 +305,7 @@ class SearchForm extends Form
  * 
  * @author pchapman
  */
-class PendingIssuesSearchModel extends AbstractDetachableModel<List<Issue>>
+class PendingIssuesSearchModel extends AbstractDetachableEntityListModel<Issue>
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -313,47 +313,13 @@ class PendingIssuesSearchModel extends AbstractDetachableModel<List<Issue>>
 	{
 		super();
 	}
-	
-	private List<Issue>list;
 
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onAttach()
-	 */
 	@Override
-	protected void onAttach()
+	protected List<Issue> load()
 	{
-		if (list == null) {
-			IssueService service =
-				(IssueService)((BugeaterApplication)Application.get()).getSpringBean("issueService");
-			list = service.getPendingIssues();
-		}
-	}
-
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onDetach()
-	 */
-	@Override
-	protected void onDetach()
-	{
-		list = null;
-	}
-
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onGetObject()
-	 */
-	@Override
-	protected List<Issue> onGetObject()
-	{
-		return list;
-	}
-
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onSetObject(T)
-	 */
-	@Override
-	protected void onSetObject(List<Issue> object)
-	{
-		// not implemented
+		IssueService service =
+			(IssueService)((BugeaterApplication)Application.get()).getSpringBean("issueService");
+		return service.getPendingIssues();
 	}
 }
 
@@ -363,7 +329,7 @@ class PendingIssuesSearchModel extends AbstractDetachableModel<List<Issue>>
  * 
  * @author pchapman
  */
-class CurrentStatusSearchModel extends AbstractDetachableModel<List<Issue>>
+class CurrentStatusSearchModel extends AbstractDetachableEntityListModel<Issue>
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -374,46 +340,13 @@ class CurrentStatusSearchModel extends AbstractDetachableModel<List<Issue>>
 	}
 	
 	private IssueStatus issueStatus;
-	private List<Issue>list;
 
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onAttach()
-	 */
 	@Override
-	protected void onAttach()
+	protected List<Issue> load()
 	{
-		if (list == null) {
-			IssueService service = (IssueService)
-				((BugeaterApplication)Application.get()).getSpringBean("issueService");
-			list = service.getIssuesByCurrentStatus(issueStatus);
-		}
-	}
-
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onDetach()
-	 */
-	@Override
-	protected void onDetach()
-	{
-		list = null;
-	}
-
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onGetObject()
-	 */
-	@Override
-	protected List<Issue> onGetObject()
-	{
-		return list;
-	}
-
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onSetObject(T)
-	 */
-	@Override
-	protected void onSetObject(List<Issue> object)
-	{
-		// not implemented
+		IssueService service = (IssueService)
+			((BugeaterApplication)Application.get()).getSpringBean("issueService");
+		return service.getIssuesByCurrentStatus(issueStatus);
 	}
 }
 
@@ -423,7 +356,7 @@ class CurrentStatusSearchModel extends AbstractDetachableModel<List<Issue>>
  * 
  * @author pchapman
  */
-class StatusChangeSearchModel extends AbstractDetachableModel<List<Issue>>
+class StatusChangeSearchModel extends AbstractDetachableEntityListModel<Issue>
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -435,47 +368,14 @@ class StatusChangeSearchModel extends AbstractDetachableModel<List<Issue>>
 	}
 	
 	private IssueStatus issueStatus;
-	private List<Issue>list;
 	private IUserBean userBean;
 
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onAttach()
-	 */
 	@Override
-	protected void onAttach()
+	protected List<Issue> load()
 	{
-		if (list == null) {
-			IssueService service =
-				(IssueService)((BugeaterApplication)Application.get()).getSpringBean("issueService");
-			list = service.getIssuesByStatusChange(issueStatus, userBean);
-		}
-	}
-
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onDetach()
-	 */
-	@Override
-	protected void onDetach()
-	{
-		list = null;
-	}
-
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onGetObject()
-	 */
-	@Override
-	protected List<Issue> onGetObject()
-	{
-		return list;
-	}
-
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onSetObject(T)
-	 */
-	@Override
-	protected void onSetObject(List<Issue> object)
-	{
-		// not implemented
+		IssueService service =
+			(IssueService)((BugeaterApplication)Application.get()).getSpringBean("issueService");
+		return service.getIssuesByStatusChange(issueStatus, userBean);
 	}
 }
 
@@ -484,7 +384,7 @@ class StatusChangeSearchModel extends AbstractDetachableModel<List<Issue>>
  * 
  * @author pchapman
  */
-class ReleaseVersionSearchModel extends AbstractDetachableModel<List<Issue>>
+class ReleaseVersionSearchModel extends AbstractDetachableEntityListModel<Issue>
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -494,50 +394,14 @@ class ReleaseVersionSearchModel extends AbstractDetachableModel<List<Issue>>
 		this.releaseVersion = releaseVersion;
 	}
 	
-	private List<Issue>list;
 	private IModel<ReleaseVersion>releaseVersion;
 
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onAttach()
-	 */
 	@Override
-	protected void onAttach()
+	protected List<Issue> load()
 	{
-		if (list == null) {
-			IssueService service =
-				(IssueService)((BugeaterApplication)Application.get()).getSpringBean("issueService");
-			list = service.getIssuesByReleaseVersion(releaseVersion.getObject());
-		}
-	}
-
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onDetach()
-	 */
-	@Override
-	protected void onDetach()
-	{
-		list = null;
-		if (releaseVersion instanceof AbstractDetachableModel) {
-			((AbstractDetachableModel)releaseVersion).detach();
-		}
-	}
-
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onGetObject()
-	 */
-	@Override
-	protected List<Issue> onGetObject()
-	{
-		return list;
-	}
-
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onSetObject(T)
-	 */
-	@Override
-	protected void onSetObject(List<Issue> object)
-	{
-		// not implemented
+		IssueService service =
+			(IssueService)((BugeaterApplication)Application.get()).getSpringBean("issueService");
+		return service.getIssuesByReleaseVersion(releaseVersion.getObject());
 	}
 }
 
@@ -546,7 +410,7 @@ class ReleaseVersionSearchModel extends AbstractDetachableModel<List<Issue>>
  * 
  * @author pchapman
  */
-class ProjectSearchModel extends AbstractDetachableModel<List<Issue>>
+class ProjectSearchModel extends AbstractDetachableEntityListModel<Issue>
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -556,46 +420,13 @@ class ProjectSearchModel extends AbstractDetachableModel<List<Issue>>
 		this.project = project;
 	}
 	
-	private List<Issue>list;
 	private String project;
 
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onAttach()
-	 */
 	@Override
-	protected void onAttach()
+	protected List<Issue> load()
 	{
-		if (list == null) {
-			IssueService service =
-				(IssueService)((BugeaterApplication)Application.get()).getSpringBean("issueService");
-			list = service.getIssuesByProject(project);
-		}
-	}
-
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onDetach()
-	 */
-	@Override
-	protected void onDetach()
-	{
-		list = null;
-	}
-
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onGetObject()
-	 */
-	@Override
-	protected List<Issue> onGetObject()
-	{
-		return list;
-	}
-
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onSetObject(T)
-	 */
-	@Override
-	protected void onSetObject(List<Issue> object)
-	{
-		// not implemented
+		IssueService service =
+			(IssueService)((BugeaterApplication)Application.get()).getSpringBean("issueService");
+		return service.getIssuesByProject(project);
 	}
 }

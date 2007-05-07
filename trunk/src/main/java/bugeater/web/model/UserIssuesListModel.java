@@ -1,5 +1,6 @@
 package bugeater.web.model;
 
+import java.util.Collections;
 import java.util.List;
 
 import bugeater.domain.Issue;
@@ -7,7 +8,6 @@ import bugeater.service.IssueService;
 import bugeater.web.BugeaterApplication;
 
 import wicket.Application;
-import wicket.model.AbstractDetachableModel;
 
 /**
  * Provides a list of all issues associated with a user.  How the issue is
@@ -16,7 +16,7 @@ import wicket.model.AbstractDetachableModel;
  * 
  * @author pchapman
  */
-public class UserIssuesListModel extends AbstractDetachableModel<List<Issue>>
+public class UserIssuesListModel extends AbstractDetachableEntityListModel<Issue>
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -41,8 +41,6 @@ public class UserIssuesListModel extends AbstractDetachableModel<List<Issue>>
 	private AssociationType associationType;
 	
 	private String userID;
-	
-	private List<Issue> issues;
 
 	// METHODS
 	
@@ -50,9 +48,12 @@ public class UserIssuesListModel extends AbstractDetachableModel<List<Issue>>
 	 * @see wicket.model.AbstractDetachableModel#onAttach()
 	 */
 	@Override
-	protected void onAttach()
+	protected List<Issue> load()
 	{
-		if (issues == null && userID != null) {
+		List<Issue> issues = null;
+		if (userID == null) {
+			return Collections.emptyList();
+		} else {
 			IssueService service =
 				(IssueService)((BugeaterApplication)Application.get()).getSpringBean("issueService");
 			switch (associationType) {
@@ -62,32 +63,6 @@ public class UserIssuesListModel extends AbstractDetachableModel<List<Issue>>
 				issues = service.getPendingWatchedIssues(userID); break;
 			}
 		} 
-	}
-
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onDetach()
-	 */
-	@Override
-	protected void onDetach()
-	{
-		issues = null;
-	}
-
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onGetObject()
-	 */
-	@Override
-	protected List<Issue> onGetObject()
-	{
 		return issues;
-	}
-
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onSetObject(T)
-	 */
-	@Override
-	protected void onSetObject(List<Issue> object)
-	{
-		// Not implemented
 	}
 }

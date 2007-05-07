@@ -11,7 +11,6 @@ import wicket.MarkupContainer;
 import wicket.Session;
 import wicket.markup.html.link.Link;
 import wicket.markup.html.panel.Panel;
-import wicket.model.AbstractDetachableModel;
 import wicket.model.IModel;
 import wicket.model.Model;
 
@@ -89,24 +88,21 @@ public class WatchIssueLink extends Panel<Issue>
 		setVisible(!assigned);
 	}
 	
-	private class UrlModel extends AbstractDetachableModel<String>
+	private class UrlModel implements IModel<String>
 	{
 		private static final long serialVersionUID = 1L;
 		
 		public void onAttach() {}
 		
-		public void onDetach()
+		public void detach()
 		{
-			if (watchedModel instanceof AbstractDetachableModel) {
-				((AbstractDetachableModel)watchedModel).detach();
-			}
+			watchedModel.detach();
 		}
 
 		/**
-		 * @see wicket.model.Model#getObject()
+		 * @see wicket.model.IModel#getObject()
 		 */
-		@Override
-		public String onGetObject()
+		public String getObject()
 		{
 			return
 				((BugeaterApplication)Application.get()).getServerContextPath() +
@@ -115,10 +111,9 @@ public class WatchIssueLink extends Panel<Issue>
 		}
 
 		/**
-		 * @see wicket.model.Model#setObject(T)
+		 * @see wicket.model.IModel#setObject(T)
 		 */
-		@Override
-		public void onSetObject(String object)
+		public void setObject(String object)
 		{
 			// Not implemented
 		}

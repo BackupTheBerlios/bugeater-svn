@@ -15,6 +15,7 @@ import bugeater.service.AuthenticationService;
 import bugeater.service.UserService;
 
 import wicket.Application;
+import wicket.Request;
 
 import wicket.protocol.http.WebApplication;
 import wicket.protocol.http.WebRequestCycle;
@@ -37,9 +38,9 @@ public class BugeaterSession extends WebSession
 	 * @param userService The services used to load the user object when this
 	 *                    session is deserialized.
 	 */
-	BugeaterSession(WebApplication webapp)
+	BugeaterSession(WebApplication webapp, Request request)
 	{
-		super(webapp);
+		super(webapp, request);
 	}
 	
 	private transient AuthenticationService authService;

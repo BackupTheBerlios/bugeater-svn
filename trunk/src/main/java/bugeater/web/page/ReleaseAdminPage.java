@@ -1,6 +1,3 @@
-/**
- * 
- */
 package bugeater.web.page;
 
 import java.text.DateFormat;
@@ -49,6 +46,7 @@ public class ReleaseAdminPage extends BugeaterPage
 	/**
 	 * @param arg0
 	 */
+	@SuppressWarnings("unchecked")
 	public ReleaseAdminPage(PageParameters params)
 	{
 		super(params);
@@ -106,6 +104,7 @@ public class ReleaseAdminPage extends BugeaterPage
 			)
 		{
 			private static final long serialVersionUID = 1L;
+			@SuppressWarnings("unchecked")
 			public void populateItem(ListItem<ReleaseVersion> item)
 			{
 				ReleaseVersion rv = item.getModelObject();
@@ -148,6 +147,7 @@ public class ReleaseAdminPage extends BugeaterPage
 	{
 		private static final long serialVersionUID = 1L;
 		
+		@SuppressWarnings("unchecked")
 		ReleaseAdminForm(
 				MarkupContainer container, String wicketID,
 				ReleaseVersionBean bean
@@ -211,6 +211,7 @@ public class ReleaseAdminPage extends BugeaterPage
 		private IModel<String> sdModel;
 		private IModel<String> adModel;
 		
+		@SuppressWarnings("unchecked")
 		private void doSave()
 		{
 			String s = sdModel.getObject();

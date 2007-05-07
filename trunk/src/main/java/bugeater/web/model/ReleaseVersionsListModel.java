@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import wicket.Application;
-import wicket.model.AbstractDetachableModel;
 import wicket.model.IModel;
 import wicket.model.Model;
 
@@ -19,7 +18,7 @@ import bugeater.web.BugeaterApplication;
  * @author pchapman
  */
 public class ReleaseVersionsListModel
-	extends AbstractDetachableModel<List<ReleaseVersion>>
+	extends AbstractDetachableEntityListModel<ReleaseVersion>
 {
 	private static final long serialVersionUID = 1L;;
 	
@@ -57,59 +56,33 @@ public class ReleaseVersionsListModel
 	
 	private boolean includeNull;
 	private IModel<String> projectModel;
-	private List<ReleaseVersion>list;
 	private SortOrder sortOrder;
 
 	/**
-	 * @see wicket.model.AbstractDetachableModel#onAttach()
+	 * @see bugeater.web.model.AbstractDetachableEntityListModel#getNestedModel()
 	 */
 	@Override
-	protected void onAttach()
+	public IModel getNestedModel()
 	{
-		if (list == null) {
-			list = new ArrayList<ReleaseVersion>();
-			if (includeNull) {
-				list.add(null);
-			}
-			if (projectModel.getObject() == null) {
-				ReleaseVersionService service =
-					(ReleaseVersionService)((BugeaterApplication)Application.get()).getSpringBean("releaseVersionService");
-				list.addAll(service.loadAll(sortOrder));
-			} else {
-				ReleaseVersionService service =
-					(ReleaseVersionService)((BugeaterApplication)Application.get()).getSpringBean("releaseVersionService");
-				list.addAll(service.loadAll(projectModel.getObject(), sortOrder));
-			}
-		}
+		return projectModel;
 	}
 
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onDetach()
-	 */
 	@Override
-	protected void onDetach()
+	protected List<ReleaseVersion> load()
 	{
-		list = null;
-		if (projectModel instanceof AbstractDetachableModel) {
-			((AbstractDetachableModel)projectModel).detach();
+		List <ReleaseVersion> list = new ArrayList<ReleaseVersion>();
+		if (includeNull) {
+			list.add(null);
 		}
-	}
-
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onGetObject()
-	 */
-	@Override
-	protected List<ReleaseVersion> onGetObject()
-	{
+		if (projectModel.getObject() == null) {
+			ReleaseVersionService service =
+				(ReleaseVersionService)((BugeaterApplication)Application.get()).getSpringBean("releaseVersionService");
+			list.addAll(service.loadAll(sortOrder));
+		} else {
+			ReleaseVersionService service =
+				(ReleaseVersionService)((BugeaterApplication)Application.get()).getSpringBean("releaseVersionService");
+			list.addAll(service.loadAll(projectModel.getObject(), sortOrder));
+		}
 		return list;
-	}
-
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onSetObject(T)
-	 */
-	@Override
-	protected void onSetObject(List<ReleaseVersion> o)
-	{
-		// not implemented
 	}
 }

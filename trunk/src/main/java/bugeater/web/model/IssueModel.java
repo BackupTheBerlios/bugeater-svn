@@ -6,14 +6,13 @@ import bugeater.service.IssueService;
 import bugeater.web.BugeaterApplication;
 
 import wicket.Application;
-import wicket.model.AbstractDetachableModel;
 
 /**
  * A model used to provide an Issue object to the component.
  * 
  * @author pchapman
  */
-public class IssueModel extends AbstractDetachableModel<Issue>
+public class IssueModel extends MutableDetachableModel<Issue>
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -26,9 +25,7 @@ public class IssueModel extends AbstractDetachableModel<Issue>
 	public IssueModel(Long issueID)
 	{
 		super();
-		this.issue = null;
 		this.issueid = issueID;
-		onAttach();
 	}
 	
 	/**
@@ -37,57 +34,36 @@ public class IssueModel extends AbstractDetachableModel<Issue>
 	 */
 	public IssueModel(Issue issue)
 	{
-		super();
+		super(issue);
 		this.issueid = issue == null ? null : issue.getId();
-		this.issue = issue;
 	}
 
 	// MEMBERS
 	
-	private Issue issue;
 	private Long issueid;
 
-	// METHODS
-	
 	/**
-	 * @see wicket.model.AbstractDetachableModel#onAttach()
+	 * @see bugeater.web.model.MutableDetachableModel#detach()
 	 */
 	@Override
-	protected void onAttach()
+	public void detach()
 	{
-		if (issue == null && issueid != null) {
+		issueid = getObject().getId();
+		super.detach();
+	}
+
+	/**
+	 * @see bugeater.web.model.MutableDetachableModel#load()
+	 */
+	@Override
+	protected Issue load()
+	{
+		if (issueid == null) {
+			return null;
+		} else {
 			IssueService iService =
 				(IssueService)((BugeaterApplication)Application.get()).getSpringBean("issueService");
-			issue = iService.load(issueid);
+			return iService.load(issueid);
 		}
 	}
-
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onDetach()
-	 */
-	@Override
-	protected void onDetach()
-	{
-		issue = null;		
-	}
-	
-	
-
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onGetObject()
-	 */
-	@Override
-	protected Issue onGetObject()
-	{
-		return issue;
-	}
-
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onSetObject(<T>)
-	 */
-	@Override
-	protected void onSetObject(Issue issue) 
-	{
-		// Not implemented
-	}	
 }

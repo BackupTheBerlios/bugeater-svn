@@ -28,6 +28,14 @@ public class IssueDaoImpl extends AbstractHibernateDao<Issue>
 	}
 	
 	/**
+	 * @see bugeater.dao.IssueDao#delete(Issue)
+	 */
+	public void delete(Issue issue)
+	{
+		super.delete(issue);
+	}
+	
+	/**
 	 * @see bugeater.dao.IssueDao#getIssuesByProject(String)
 	 */
 	@SuppressWarnings("unchecked")

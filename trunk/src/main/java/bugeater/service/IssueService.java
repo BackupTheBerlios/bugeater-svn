@@ -42,6 +42,14 @@ public interface IssueService
 	public Issue createIssue(CreateIssueBean iBean);
 	
 	/**
+	 * Delets the indicated issue.
+	 * 
+	 * @param issue
+	 */
+	@Transactional
+	public void delete(Issue issue);
+		
+	/**
 	 * Loads the issue class instance by unique ID.
 	 */
 	public Issue load(Long id);

@@ -89,6 +89,7 @@ public class AdministrationPage extends BugeaterPage<Issue>
 					Link link = new Link(item, "editReleaseLink")
 					{
 						private static final long serialVersionUID = 1L;
+						@SuppressWarnings("unchecked")
 						public void onClick()
 						{
 							PageParameters params = new PageParameters();

@@ -6,14 +6,13 @@ import bugeater.service.NoteService;
 import bugeater.web.BugeaterApplication;
 
 import wicket.Application;
-import wicket.model.AbstractDetachableModel;
 
 /**
  * A model used to provide an Note object to the component.
  * 
  * @author pchapman
  */
-public class NoteModel extends AbstractDetachableModel<Note>
+public class NoteModel extends MutableDetachableModel<Note>
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -21,73 +20,50 @@ public class NoteModel extends AbstractDetachableModel<Note>
 	
 	/**
 	 * Creates a new instance.
-	 * @param noteID The unique ID of the Note.
+	 * @param noteID The unique ID of the note.
 	 */
 	public NoteModel(Long noteID)
 	{
 		super();
-		this.note = null;
 		this.noteid = noteID;
-		onAttach();
 	}
 	
 	/**
 	 * Creates a new instance.
-	 * @param note The Note.
+	 * @param note The note.
 	 */
 	public NoteModel(Note note)
 	{
-		super();
-		setObject(note);
+		super(note);
+		this.noteid = note == null ? null : note.getId();
 	}
 
 	// MEMBERS
 	
-	private Note note;
 	private Long noteid;
 
-	// METHODS
-	
 	/**
-	 * @see wicket.model.AbstractDetachableModel#onAttach()
+	 * @see bugeater.web.model.MutableDetachableModel#detach()
 	 */
 	@Override
-	protected void onAttach()
+	public void detach()
 	{
-		if (note == null && noteid != null) {
+		noteid = getObject().getId();
+		super.detach();
+	}
+
+	/**
+	 * @see bugeater.web.model.MutableDetachableModel#load()
+	 */
+	@Override
+	protected Note load()
+	{
+		if (noteid == null) {
 			NoteService iService =
 				(NoteService)((BugeaterApplication)Application.get()).getSpringBean("noteService");
-			note = iService.load(noteid);
+			return iService.load(noteid);
+		} else {
+			return null;
 		}
 	}
-
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onDetach()
-	 */
-	@Override
-	protected void onDetach()
-	{
-		note = null;		
-	}
-	
-	
-
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onGetObject()
-	 */
-	@Override
-	protected Note onGetObject()
-	{
-		return note;
-	}
-
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onSetObject(<T>)
-	 */
-	@Override
-	protected void onSetObject(Note note) 
-	{
-		this.noteid = note == null ? null : note.getId();
-		this.note = note;
-	}	
 }

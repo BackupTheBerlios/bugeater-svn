@@ -97,6 +97,7 @@ public class AddIssuePage extends BugeaterPage
 		 * @see wicket.markup.html.form.Form#onSubmit()
 		 */
 		@Override
+		@SuppressWarnings("unchecked")
 		protected void onSubmit()
 		{
 			Issue issue = issueService.createIssue(issueBean);

@@ -27,6 +27,6 @@ public class BugeaterSessionFactory implements ISessionFactory
 	 */
 	public Session newSession(Request req)
 	{
-		return new BugeaterSession((WebApplication)WebApplication.get());
+		return new BugeaterSession((WebApplication)WebApplication.get(), req);
 	}	
 }

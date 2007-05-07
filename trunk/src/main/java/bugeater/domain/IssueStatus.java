@@ -16,7 +16,9 @@ public enum IssueStatus
 	Testing("Testing"),
 	Closed_Fixed("Closed - Fixed"),
 	Closed_NoFix("Closed - No Fix"),
-	Closed_Duplicate("Closed - Duplicate");
+	Closed_Duplicate("Closed - Duplicate"),
+	Info_Requested("Information Requested"),
+	Pending_Release("Pending Release");
 	
 	private IssueStatus(String name)
 	{
@@ -59,6 +61,6 @@ public enum IssueStatus
 	 * Statuses of those issues that have not been closed.
 	 */
 	public static final IssueStatus[] PENDING_STATUSES = {
-		Open, Active, Testing
+		Open, Active, Testing, Info_Requested, Pending_Release
 	};
 }
