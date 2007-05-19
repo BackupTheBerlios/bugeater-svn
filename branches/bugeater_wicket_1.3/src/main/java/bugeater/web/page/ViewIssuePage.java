@@ -372,7 +372,6 @@ public class ViewIssuePage extends BugeaterPage
 		}
 		
 		private IModel issueModel;
-		private UserService service;
 		private transient IUserBean userBean;
 
 		/**
@@ -387,7 +386,7 @@ public class ViewIssuePage extends BugeaterPage
 		public Object getObject()
 		{
 			if (userBean == null) {
-				service =
+				UserService service =
 					(UserService)((BugeaterApplication)Application.get())
 					.getSpringBean("userService");
 				userBean = service.getUserById(((Issue)issueModel.getObject()).getAssignedUserID());
