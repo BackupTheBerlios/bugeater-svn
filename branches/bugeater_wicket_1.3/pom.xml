@@ -47,7 +47,7 @@
   <repositories>
     <repository>
     	<id>Wicket</id>
-    	<url>http://maven.sateh.com/wicket/ </url>
+    	<url>http://wicketstuff.org/maven/repository/</url>
     </repository>
   </repositories>
   <dependencies>
@@ -113,29 +113,34 @@
     </dependency>
 	<!-- main wicket framework api -->
     <dependency>
-        <groupId>wicket</groupId>
+        <groupId>org.apache.wicket</groupId>
         <artifactId>wicket</artifactId>
         <version>1.3.0-incubating-SNAPSHOT</version>
     </dependency>
     <dependency>
-        <groupId>wicket</groupId>
+        <groupId>org.apache.wicket</groupId>
         <artifactId>wicket-auth-roles</artifactId>
         <version>1.3.0-incubating-SNAPSHOT</version>
     </dependency>
     <dependency>
-        <groupId>wicket</groupId>
+        <groupId>org.apache.wicket</groupId>
         <artifactId>wicket-extensions</artifactId>
         <version>1.3.0-incubating-SNAPSHOT</version>
     </dependency>
     <dependency>
-        <groupId>wicket</groupId>
+        <groupId>org.apache.wicket</groupId>
         <artifactId>wicket-spring</artifactId>
         <version>1.3.0-incubating-SNAPSHOT</version>
     </dependency>
     <dependency>
-    	<groupId>wicket-stuff</groupId>
-		<artifactId>wicket-contrib-datepicker</artifactId>
-		<version>1.3-SNAPSHOT</version>
+        <groupId>org.apache.wicket</groupId>
+        <artifactId>wicket-spring-annot</artifactId>
+        <version>1.3.0-incubating-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.apache.wicket</groupId>
+		<artifactId>wicket-datetime</artifactId>
+		<version>1.3.0-incubating-SNAPSHOT</version>
     </dependency>
 
     <!-- Testing Dependencies needed only for testing and debugging -->
