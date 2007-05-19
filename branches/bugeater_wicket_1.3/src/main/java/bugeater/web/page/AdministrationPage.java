@@ -87,7 +87,8 @@ public class AdministrationPage extends BugeaterPage<Issue>
 				public void populateItem(ListItem item)
 				{
 					final String project = item.getModelObject().toString();
-					item.add(new Link("editReleaseLink")
+					Link editReleaseLink = 
+					new Link("editReleaseLink")
 					{
 						private static final long serialVersionUID = 1L;
 						@SuppressWarnings("unchecked")
@@ -100,8 +101,9 @@ public class AdministrationPage extends BugeaterPage<Issue>
 								);
 							setResponsePage(ReleaseAdminPage.class, params);
 						}
-					});
-					item.add(new Label("projectLabel", project));
+					};
+					item.add(editReleaseLink);
+					editReleaseLink.add(new Label("projectLabel", project));
 				}
 			});
 			final IModel projModel = new Model();

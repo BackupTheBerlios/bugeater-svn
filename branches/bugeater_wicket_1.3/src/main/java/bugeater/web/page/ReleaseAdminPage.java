@@ -14,6 +14,7 @@ import bugeater.web.model.ReleaseVersionsListModel;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.PageParameters;
+import org.apache.wicket.extensions.yui.calendar.DateField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
@@ -30,8 +31,6 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.string.StringValueConversionException;
 
-import wicket.extensions.markup.html.datepicker.DatePickerSettings;
-import wicket.extensions.markup.html.datepicker.PopupDatePicker;
 
 /**
  * @author pchapman
@@ -173,10 +172,9 @@ public class ReleaseAdminPage extends BugeaterPage
 			if (bean.getScheduledReleaseDate() != null) {
 				sdModel.setObject(SHORT_DATE_FORMAT.format(bean.getScheduledReleaseDate().getTime()));
 			}
-			TextField field = new TextField("scheduledReleaseDate", sdModel);
+			DateField field = new DateField("scheduledReleaseDatePicker", sdModel);
 			field.setRequired(true);
 			add(field);
-			add(new PopupDatePicker("scheduledReleaseDatePicker", field, new DatePickerSettings()));
 			
 			// Actual date
 			adModel = new Model();
@@ -186,26 +184,25 @@ public class ReleaseAdminPage extends BugeaterPage
 			WebMarkupContainer cont =
 				new WebMarkupContainer("actualWicketDateInput");
 			add(cont);
-			field = new TextField("actualReleaseDate", adModel);
-			cont.add(field);
-			cont.add(new PopupDatePicker("actualReleaseDatePicker", field, new DatePickerSettings()));
+			field = new DateField("actualReleaseDatePicker", adModel);
+			cont.add(field);			
 			cont.setRenderBodyOnly(true);
 			cont.setVisible(bean.getId() != null);
 			
-			String s;
+			IModel s;
 			if (bean.getId() == null) {
-				s = getString("submit.add");
+				s = new ResourceModel("submit.add");
 			} else {
-				s = getString("submit.edit");
+				s = new ResourceModel("submit.edit");
 			}
 			Button b = new Button("submit")
 			{
 				private static final long serialVersionUID = 1L;
-				public void onSubmit() {
+				public void onSubmit() {									
 					doSave();
 				}
 			};
-			b.add(new AttributeModifier("value", true, new Model(s)));
+			b.add(new AttributeModifier("value", true, s));
 			add(b);
 		}
 		
@@ -223,7 +220,7 @@ public class ReleaseAdminPage extends BugeaterPage
 				c = Calendar.getInstance();
 				c.setTime(d);
 			} catch (ParseException pe) {
-				error(getString("error.invalid.date"));
+				error(new ResourceModel("error.invalid.date"));
 				return;
 			}
 			bean.setScheduledReleaseDate(c);
@@ -236,7 +233,7 @@ public class ReleaseAdminPage extends BugeaterPage
 					c = Calendar.getInstance();
 					c.setTime(d);
 				} catch (ParseException pe) {
-					error(getString("error.invalid.date"));
+					error(new ResourceModel("error.invalid.date"));
 					return;
 				}
 			}
