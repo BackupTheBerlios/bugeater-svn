@@ -10,7 +10,6 @@ import bugeater.domain.ReleaseVersion;
 import bugeater.service.IssueService;
 import bugeater.service.SortOrder;
 import bugeater.web.BugeaterApplication;
-import bugeater.web.model.AbstractDetachableEntityListModel;
 import bugeater.web.model.AssignableUsersModel;
 import bugeater.web.model.ReleaseVersionModel;
 import bugeater.web.model.ReleaseVersionsListModel;
@@ -305,7 +304,7 @@ class SearchForm extends Form
  * 
  * @author pchapman
  */
-class PendingIssuesSearchModel extends AbstractDetachableEntityListModel<Issue>
+class PendingIssuesSearchModel implements IModel<List<Issue>>
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -313,14 +312,27 @@ class PendingIssuesSearchModel extends AbstractDetachableEntityListModel<Issue>
 	{
 		super();
 	}
+	
+	private transient List<Issue> list;
+	
+	public void detach() {}
 
-	@Override
 	protected List<Issue> load()
 	{
 		IssueService service =
 			(IssueService)((BugeaterApplication)Application.get()).getSpringBean("issueService");
 		return service.getPendingIssues();
 	}
+	
+	public List<Issue> getObject()
+	{
+		if (list == null) {
+			list = load();
+		}
+		return list;
+	}
+	
+	public void setObject(List<Issue> list) {}
 }
 
 /**
@@ -329,7 +341,7 @@ class PendingIssuesSearchModel extends AbstractDetachableEntityListModel<Issue>
  * 
  * @author pchapman
  */
-class CurrentStatusSearchModel extends AbstractDetachableEntityListModel<Issue>
+class CurrentStatusSearchModel implements IModel<List<Issue>>
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -340,14 +352,26 @@ class CurrentStatusSearchModel extends AbstractDetachableEntityListModel<Issue>
 	}
 	
 	private IssueStatus issueStatus;
+	private transient List<Issue> list;
+	
+	public void detach() {}
 
-	@Override
 	protected List<Issue> load()
 	{
 		IssueService service = (IssueService)
 			((BugeaterApplication)Application.get()).getSpringBean("issueService");
 		return service.getIssuesByCurrentStatus(issueStatus);
 	}
+	
+	public List<Issue> getObject()
+	{
+		if (list == null) {
+			list = load();
+		}
+		return list;
+	}
+	
+	public void setObject(List<Issue> list) {}
 }
 
 /**
@@ -356,7 +380,7 @@ class CurrentStatusSearchModel extends AbstractDetachableEntityListModel<Issue>
  * 
  * @author pchapman
  */
-class StatusChangeSearchModel extends AbstractDetachableEntityListModel<Issue>
+class StatusChangeSearchModel implements IModel<List<Issue>>
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -368,15 +392,27 @@ class StatusChangeSearchModel extends AbstractDetachableEntityListModel<Issue>
 	}
 	
 	private IssueStatus issueStatus;
+	private transient List<Issue> list;
 	private IUserBean userBean;
+	
+	public void detach() {}
 
-	@Override
 	protected List<Issue> load()
 	{
 		IssueService service =
 			(IssueService)((BugeaterApplication)Application.get()).getSpringBean("issueService");
 		return service.getIssuesByStatusChange(issueStatus, userBean);
 	}
+	
+	public List<Issue> getObject()
+	{
+		if (list == null) {
+			list = load();
+		}
+		return list;
+	}
+	
+	public void setObject(List<Issue> list) {}
 }
 
 /**
@@ -384,7 +420,7 @@ class StatusChangeSearchModel extends AbstractDetachableEntityListModel<Issue>
  * 
  * @author pchapman
  */
-class ReleaseVersionSearchModel extends AbstractDetachableEntityListModel<Issue>
+class ReleaseVersionSearchModel implements IModel<List<Issue>>
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -395,14 +431,25 @@ class ReleaseVersionSearchModel extends AbstractDetachableEntityListModel<Issue>
 	}
 	
 	private IModel<ReleaseVersion>releaseVersion;
+	private transient List<Issue> issue;
+	
+	public void detach() {}
 
-	@Override
 	protected List<Issue> load()
 	{
 		IssueService service =
 			(IssueService)((BugeaterApplication)Application.get()).getSpringBean("issueService");
 		return service.getIssuesByReleaseVersion(releaseVersion.getObject());
 	}
+	
+	public List<Issue> getObject()
+	{
+		if (issue == null) {
+			issue = load();
+		}
+		return issue;
+	}
+	public void setObject(List<Issue> list) {}
 }
 
 /**
@@ -410,7 +457,7 @@ class ReleaseVersionSearchModel extends AbstractDetachableEntityListModel<Issue>
  * 
  * @author pchapman
  */
-class ProjectSearchModel extends AbstractDetachableEntityListModel<Issue>
+class ProjectSearchModel  implements IModel<List<Issue>>
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -421,12 +468,24 @@ class ProjectSearchModel extends AbstractDetachableEntityListModel<Issue>
 	}
 	
 	private String project;
+	private transient List<Issue> list;
+	
+	public void detach() {}
 
-	@Override
 	protected List<Issue> load()
 	{
 		IssueService service =
 			(IssueService)((BugeaterApplication)Application.get()).getSpringBean("issueService");
 		return service.getIssuesByProject(project);
 	}
+	
+	public List<Issue> getObject()
+	{
+		if (list == null) {
+			list = load();
+		}
+		return list;
+	}
+	
+	public void setObject(List<Issue> list) {}
 }

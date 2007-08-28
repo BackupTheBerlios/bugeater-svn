@@ -17,8 +17,7 @@ import bugeater.web.BugeaterApplication;
  * 
  * @author pchapman
  */
-public class ReleaseVersionsListModel
-	extends AbstractDetachableEntityListModel<ReleaseVersion>
+public class ReleaseVersionsListModel implements IModel<List<ReleaseVersion>>
 {
 	private static final long serialVersionUID = 1L;;
 	
@@ -57,17 +56,24 @@ public class ReleaseVersionsListModel
 	private boolean includeNull;
 	private IModel<String> projectModel;
 	private SortOrder sortOrder;
-
-	/**
-	 * @see bugeater.web.model.AbstractDetachableEntityListModel#getNestedModel()
-	 */
-	@Override
-	public IModel getNestedModel()
+	private transient List<ReleaseVersion> list;
+	
+	public List<ReleaseVersion> getObject()
 	{
-		return projectModel;
+		if (list == null) {
+			list = load();
+		}
+		return list;
+	}
+	
+	public void setObject(List<ReleaseVersion> list) {}
+	
+	public void detach()
+	{
+		list = null;
+		projectModel.detach();
 	}
 
-	@Override
 	protected List<ReleaseVersion> load()
 	{
 		List <ReleaseVersion> list = new ArrayList<ReleaseVersion>();

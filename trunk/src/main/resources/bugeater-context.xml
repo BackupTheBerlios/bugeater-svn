@@ -80,7 +80,7 @@
             </props>
         </property>
         
-        <property name="schemaUpdate"><value>false</value></property>
+        <property name="schemaUpdate"><value>true</value></property>
     </bean>
 
     <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">

@@ -6,13 +6,14 @@ import bugeater.service.ReleaseVersionService;
 import bugeater.web.BugeaterApplication;
 
 import wicket.Application;
+import wicket.model.IModel;
 
 /**
  * A model used to provide an ReleaseVersion object to the component.
  * 
  * @author pchapman
  */
-public class ReleaseVersionModel extends MutableDetachableModel<ReleaseVersion>
+public class ReleaseVersionModel implements IModel<ReleaseVersion>
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -34,30 +35,38 @@ public class ReleaseVersionModel extends MutableDetachableModel<ReleaseVersion>
 	 */
 	public ReleaseVersionModel(ReleaseVersion releaseVersion)
 	{
-		super(releaseVersion);
-		this.releaseVersionid = releaseVersion == null ? null : releaseVersion.getId();
+		super();
+		setObject(releaseVersion);
 	}
 
 	// MEMBERS
 	
 	private Long releaseVersionid;
+	private transient ReleaseVersion version;
 
 	// METHODS
 
 	/**
 	 * @see bugeater.web.model.MutableDetachableModel#detach()
 	 */
-	@Override
 	public void detach() {
-		ReleaseVersion releaseVersion = getObject();
-		this.releaseVersionid = releaseVersion == null ? null : releaseVersion.getId();
-		super.detach();
+		version = null;
+	}
+	
+	public ReleaseVersion getObject()
+	{
+		if (version == null && releaseVersionid != null) {
+			version = load();
+		}
+		return version;
+	}
+	
+	public void setObject(ReleaseVersion version)
+	{
+		this.version = version;
+		this.releaseVersionid = version == null ? null : version.getId();
 	}
 
-	/* (non-Javadoc)
-	 * @see bugeater.web.model.MutableDetachableModel#load()
-	 */
-	@Override
 	protected ReleaseVersion load() {
 		if (releaseVersionid == null) {
 			return null;

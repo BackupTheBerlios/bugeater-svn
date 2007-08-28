@@ -27,28 +27,24 @@ import bugeater.web.component.UserBeanChoiceRenderer;
 import bugeater.web.component.WatchIssueLink;
 import bugeater.web.component.util.NullableChoiceRenderer;
 import bugeater.web.model.AssignableUsersModel;
-import bugeater.web.model.MutableDetachableModel;
 import bugeater.web.model.RadeoxModel;
 import bugeater.web.model.ReleaseVersionsListModel;
 import bugeater.web.model.IssueModel;
 import bugeater.web.model.IssueNotesListModel;
 
 import wicket.Application;
-import wicket.AttributeModifier;
 import wicket.MarkupContainer;
 import wicket.PageMap;
 import wicket.PageParameters;
 import wicket.Session;
 import wicket.authorization.strategies.role.annotations.AuthorizeAction;
 import wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
-import wicket.markup.html.WebMarkupContainer;
 import wicket.markup.html.basic.Label;
 import wicket.markup.html.form.DropDownChoice;
 import wicket.markup.html.link.BookmarkablePageLink;
 import wicket.markup.html.link.Link;
 import wicket.markup.html.list.ListItem;
 import wicket.markup.html.list.ListView;
-import wicket.model.AbstractReadOnlyModel;
 import wicket.model.CompoundPropertyModel;
 import wicket.model.IModel;
 import wicket.model.Model;
@@ -327,7 +323,6 @@ public class ViewIssuePage extends BugeaterPage
 				Link l = new BookmarkablePageLink(
 						item, "editnotelink", EditNotePage.class, params
 					);
-				new WebMarkupContainer(l, "editnoteimage").add(new AttributeModifier("src", true, new UrlModel()));
 				BugeaterSession session = (BugeaterSession)Session.get();
 				boolean editable = false;
 				try {
@@ -352,7 +347,7 @@ public class ViewIssuePage extends BugeaterPage
 		new IssueAttachmentsPanel(this, "attachments", model);
 	}
 	
-	class AssignedUserModel extends MutableDetachableModel<IUserBean>
+	class AssignedUserModel implements IModel<IUserBean>
 	{
 		private static final long serialVersionUID = 1L;
 		
@@ -365,10 +360,6 @@ public class ViewIssuePage extends BugeaterPage
 		private IModel<Issue>issueModel;
 		private UserService service;
 
-		/**
-		 * @see wicket.model.AbstractDetachableModel#onAttach()
-		 */
-		@Override
 		protected IUserBean load()
 		{
 			service =
@@ -377,39 +368,17 @@ public class ViewIssuePage extends BugeaterPage
 			return service.getUserById(issueModel.getObject().getAssignedUserID());
 		}
 
-		/**
-		 * @see wicket.model.IModel#detach()
-		 */
-		@Override
 		public void detach()
 		{
 			issueModel.detach();
 		}
-	}	
-	
-	private class UrlModel extends AbstractReadOnlyModel<String>
-	{
-		private static final long serialVersionUID = 1L;
-
-		/**
-		 * @see wicket.model.Model#getObject()
-		 */
-		@Override
-		public String getObject()
+		
+		public IUserBean getObject()
 		{
-			return
-				((BugeaterApplication)Application.get()).getServerContextPath() +
-				"/images/edit.png";
+			return load();
 		}
-
-		/**
-		 * @see wicket.model.Model#toString()
-		 */
-		@Override
-		public String toString()
-		{
-			return getObject();
-		}
+		
+		public void setObject(IUserBean bean) {}
 	}
 }
 

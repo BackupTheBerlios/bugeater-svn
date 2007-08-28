@@ -6,13 +6,14 @@ import bugeater.service.IssueService;
 import bugeater.web.BugeaterApplication;
 
 import wicket.Application;
+import wicket.model.IModel;
 
 /**
  * A model used to provide an Issue object to the component.
  * 
  * @author pchapman
  */
-public class IssueModel extends MutableDetachableModel<Issue>
+public class IssueModel implements IModel<Issue>
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -34,28 +35,20 @@ public class IssueModel extends MutableDetachableModel<Issue>
 	 */
 	public IssueModel(Issue issue)
 	{
-		super(issue);
-		this.issueid = issue == null ? null : issue.getId();
+		super();
+		setObject(issue);
 	}
 
 	// MEMBERS
 	
 	private Long issueid;
+	private transient Issue issue;
 
-	/**
-	 * @see bugeater.web.model.MutableDetachableModel#detach()
-	 */
-	@Override
 	public void detach()
 	{
-		issueid = getObject().getId();
-		super.detach();
+		issue = null;
 	}
 
-	/**
-	 * @see bugeater.web.model.MutableDetachableModel#load()
-	 */
-	@Override
 	protected Issue load()
 	{
 		if (issueid == null) {
@@ -65,5 +58,19 @@ public class IssueModel extends MutableDetachableModel<Issue>
 				(IssueService)((BugeaterApplication)Application.get()).getSpringBean("issueService");
 			return iService.load(issueid);
 		}
+	}
+	
+	public Issue getObject()
+	{
+		if (issue == null && issueid != null) {
+			issue = load();
+		}
+		return issue;
+	}
+	
+	public void setObject(Issue issue)
+	{
+		this.issue = issue;
+		issueid = issue == null ? null : issue.getId();
 	}
 }

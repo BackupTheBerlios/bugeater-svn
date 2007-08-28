@@ -8,6 +8,7 @@ import bugeater.service.IssueService;
 import bugeater.web.BugeaterApplication;
 
 import wicket.Application;
+import wicket.model.IModel;
 
 /**
  * Provides a list of all issues associated with a user.  How the issue is
@@ -16,7 +17,7 @@ import wicket.Application;
  * 
  * @author pchapman
  */
-public class UserIssuesListModel extends AbstractDetachableEntityListModel<Issue>
+public class UserIssuesListModel implements IModel<List<Issue>>
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -41,13 +42,25 @@ public class UserIssuesListModel extends AbstractDetachableEntityListModel<Issue
 	private AssociationType associationType;
 	
 	private String userID;
+	private transient List<Issue> issues;
 
 	// METHODS
 	
-	/**
-	 * @see wicket.model.AbstractDetachableModel#onAttach()
-	 */
-	@Override
+	public void detach()
+	{
+		issues = null;	
+	}	
+	
+	public List<Issue> getObject()
+	{
+		if (issues == null && userID != null) {
+			issues = load();
+		}
+		return issues;
+	}
+	
+	public void setObject(List<Issue> list) {}
+	
 	protected List<Issue> load()
 	{
 		List<Issue> issues = null;

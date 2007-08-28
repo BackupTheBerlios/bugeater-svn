@@ -6,13 +6,14 @@ import bugeater.service.NoteService;
 import bugeater.web.BugeaterApplication;
 
 import wicket.Application;
+import wicket.model.IModel;
 
 /**
  * A model used to provide an Note object to the component.
  * 
  * @author pchapman
  */
-public class NoteModel extends MutableDetachableModel<Note>
+public class NoteModel implements IModel<Note>
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -34,28 +35,20 @@ public class NoteModel extends MutableDetachableModel<Note>
 	 */
 	public NoteModel(Note note)
 	{
-		super(note);
-		this.noteid = note == null ? null : note.getId();
+		super();
+		setObject(note);
 	}
 
 	// MEMBERS
 	
 	private Long noteid;
+	private transient Note note;
 
-	/**
-	 * @see bugeater.web.model.MutableDetachableModel#detach()
-	 */
-	@Override
 	public void detach()
 	{
-		noteid = getObject().getId();
-		super.detach();
+		note = null;
 	}
 
-	/**
-	 * @see bugeater.web.model.MutableDetachableModel#load()
-	 */
-	@Override
 	protected Note load()
 	{
 		if (noteid == null) {
@@ -65,5 +58,19 @@ public class NoteModel extends MutableDetachableModel<Note>
 		} else {
 			return null;
 		}
+	}
+	
+	public Note getObject()
+	{
+		if (note == null && noteid != null) {
+			note = load();
+		}
+		return note;
+	}
+	
+	public void setObject(Note note)
+	{
+		this.note = note;
+		noteid = note == null ? null : note.getId();
 	}
 }

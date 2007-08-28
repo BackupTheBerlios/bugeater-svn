@@ -9,6 +9,7 @@ import java.util.Set;
 import org.hibernate.ObjectNotFoundException;
 
 import wicket.Application;
+import wicket.model.IModel;
 
 import bugeater.domain.Issue;
 import bugeater.domain.Note;
@@ -20,7 +21,7 @@ import bugeater.web.BugeaterApplication;
 /**
  * A model which will provide a list of issues based on text search criteria.
  */
-public class TextSearchModel extends AbstractDetachableEntityListModel<Issue>
+public class TextSearchModel implements IModel<List<Issue>>
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -56,8 +57,18 @@ public class TextSearchModel extends AbstractDetachableEntityListModel<Issue>
 	}
 	
 	private List<Long> ids;
+	private transient List<Issue> issues;
+	
+	public List<Issue> getObject()
+	{
+		if (issues == null && ids != null) {
+			issues = load();
+		}
+		return issues;
+	}
+	
+	public void setObject(List<Issue> list) {}
 
-	@Override
 	protected List<Issue> load()
 	{
 		List<Issue>list = new ArrayList<Issue>();
@@ -79,5 +90,10 @@ public class TextSearchModel extends AbstractDetachableEntityListModel<Issue>
 			}
 		}
 		return list;
+	}
+	
+	public void detach()
+	{
+		issues = null;
 	}
 }

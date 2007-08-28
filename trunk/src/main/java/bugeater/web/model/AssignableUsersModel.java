@@ -13,13 +13,14 @@ import bugeater.service.UserService;
 import bugeater.web.BugeaterApplication;
 
 import wicket.Application;
+import wicket.model.IModel;
 
 /**
  * A model that provides a list of users that an issue may be assigned to.
  * 
  * @author pchapman
  */
-public class AssignableUsersModel extends AbstractDetachableEntityListModel<IUserBean>
+public class AssignableUsersModel implements IModel<List<IUserBean>>
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -30,8 +31,21 @@ public class AssignableUsersModel extends AbstractDetachableEntityListModel<IUse
 	{
 		super();
 	}
+	
+	private transient List<IUserBean> list;
+	
+	public void detach() {}
+	
+	public List<IUserBean> getObject()
+	{
+		if (list == null) {
+			list = load();
+		}
+		return list;
+	}
+	
+	public void setObject(List<IUserBean> list) {}
 
-	@Override
 	protected List<IUserBean> load()
 	{
 		List<IUserBean> list = null;

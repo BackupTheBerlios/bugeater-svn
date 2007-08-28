@@ -12,7 +12,6 @@ import wicket.Session;
 import wicket.markup.html.link.Link;
 import wicket.markup.html.panel.Panel;
 import wicket.model.IModel;
-import wicket.model.Model;
 
 /**
  * Provides a clickable image that will either add the user to an issue's
@@ -24,7 +23,8 @@ public class WatchIssueLink extends Panel<Issue>
 {
 	private static final long serialVersionUID = 1L;
 	
-	private IModel<Boolean>watchedModel;
+	private Link link1;
+	private Link link2;
 	
 	/**
 	 * @param parent The parent.
@@ -63,68 +63,40 @@ public class WatchIssueLink extends Panel<Issue>
 		BugeaterSession sess = (BugeaterSession)Session.get();
 		String userID = sess.getUserBean().getId();
 		Issue i = getModelObject();
-		final Long issueID = i.getId();
 		final boolean assigned = userID.equals(i.getAssignedUserID());
-		watchedModel = new Model<Boolean>(i.getWatchers().contains(userID));
-		Link link = new Link(this, "watchIssueLink")
+		link1 = new Link(this, "watchIssueLink")
 		{
 			private static final long serialVersionUID = 1L;
 			public void onClick()
 			{
-				IssueService service =
-					(IssueService)((BugeaterApplication)Application.get()).getSpringBean("issueService");
-				Issue i = service.load(issueID);
-				BugeaterSession sess = (BugeaterSession)Session.get();
-				if (watchedModel.getObject()) {
-					i.getWatchers().remove(sess.getUserBean().getId());
-				} else {
-					i.getWatchers().add(sess.getUserBean().getId());
-				}
-				watchedModel.setObject(watchedModel.getObject());
-				service.save(i);
+				toggleWatch(true);
 			}
 		};
-		new StaticImage(link, "watchIssueImg", new UrlModel());
-		setVisible(!assigned);
+		link1.setVisible(!assigned);
+		link2 = new Link(this, "noWatchIssueLink")
+		{
+			private static final long serialVersionUID = 1L;
+			public void onClick()
+			{
+				toggleWatch(false);
+			}
+		};
+		link2.setVisible(assigned);
 	}
 	
-	private class UrlModel implements IModel<String>
+	private void toggleWatch(boolean watch)
 	{
-		private static final long serialVersionUID = 1L;
-		
-		public void onAttach() {}
-		
-		public void detach()
-		{
-			watchedModel.detach();
+		IssueService service =
+			(IssueService)((BugeaterApplication)Application.get()).getSpringBean("issueService");
+		Issue i = getModelObject();
+		BugeaterSession sess = (BugeaterSession)Session.get();
+		if (watch) {
+			i.getWatchers().add(sess.getUserBean().getId());
+		} else {
+			i.getWatchers().remove(sess.getUserBean().getId());
 		}
-
-		/**
-		 * @see wicket.model.IModel#getObject()
-		 */
-		public String getObject()
-		{
-			return
-				((BugeaterApplication)Application.get()).getServerContextPath() +
-				"/images/" + (watchedModel.getObject() ? "no" : "") +
-				"watch.png";
-		}
-
-		/**
-		 * @see wicket.model.IModel#setObject(T)
-		 */
-		public void setObject(String object)
-		{
-			// Not implemented
-		}
-
-		/**
-		 * @see wicket.model.Model#toString()
-		 */
-		@Override
-		public String toString()
-		{
-			return getObject();
-		}
+		service.save(i);
+		link1.setVisible(!watch);
+		link2.setVisible(watch);
 	}
 }

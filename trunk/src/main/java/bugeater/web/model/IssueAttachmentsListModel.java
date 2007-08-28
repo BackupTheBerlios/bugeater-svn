@@ -16,8 +16,7 @@ import wicket.model.IModel;
  * 
  * @author pchapman
  */
-public class IssueAttachmentsListModel
-	extends AbstractDetachableEntityListModel<Attachment>
+public class IssueAttachmentsListModel implements IModel<List<Attachment>>
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -35,8 +34,9 @@ public class IssueAttachmentsListModel
 	{
 		return issueModel;
 	}
+	
+	private transient List<Attachment> list;
 
-	@Override
 	protected List<Attachment> load()
 	{
 		List<Attachment> list = null;
@@ -53,4 +53,19 @@ public class IssueAttachmentsListModel
 		}
 		return list;
 	}
+	
+	public void detach()
+	{
+		issueModel.detach();
+	}
+	
+	public List<Attachment> getObject()
+	{
+		if (list == null) {
+			list = load();
+		}
+		return list;
+	}
+	
+	public void setObject(List<Attachment> list) {}
 }

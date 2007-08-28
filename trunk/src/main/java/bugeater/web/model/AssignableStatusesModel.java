@@ -7,8 +7,7 @@ import wicket.model.IModel;
 import bugeater.domain.Issue;
 import bugeater.domain.IssueStatus;
 
-public class AssignableStatusesModel
-	extends AbstractDetachableEntityListModel<IssueStatus>
+public class AssignableStatusesModel implements IModel<List<IssueStatus>>
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -18,16 +17,13 @@ public class AssignableStatusesModel
 	}
 	
 	private IModel<Issue>issueModel;
-	/**
-	 * @see bugeater.web.model.AbstractDetachableEntityListModel#getNestedModel()
-	 */
-	@Override
-	public IModel getNestedModel()
+	private transient List<IssueStatus> list;
+	
+	public void detach()
 	{
-		return issueModel;
+		issueModel.detach();
 	}
 
-	@Override
 	protected List<IssueStatus> load()
 	{
 		IssueStatus currentStatus =
@@ -40,4 +36,14 @@ public class AssignableStatusesModel
 		}
 		return list;
 	}
+	
+	public List<IssueStatus> getObject()
+	{
+		if (list == null) {
+			list = load();
+		}
+		return list;
+	}
+	
+	public void setObject(List<IssueStatus> list) {}
 }
