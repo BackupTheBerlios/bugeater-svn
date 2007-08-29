@@ -73,7 +73,7 @@ public class AssignableUsersModel implements IModel<List<IUserBean>>
 					}
 				}
 		);
-		list.add(0, null);
+//		list.add(0, null);
 		return list;
 	}
 }

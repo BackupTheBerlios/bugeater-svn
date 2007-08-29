@@ -17,6 +17,9 @@ public class UserBeanChoiceRenderer implements IChoiceRenderer<IUserBean>
 	 */
 	public Object getDisplayValue(IUserBean object)
 	{
+		if (object == null) {
+			return null;
+		}
 		return object.getFullname();
 	}
 
@@ -25,6 +28,9 @@ public class UserBeanChoiceRenderer implements IChoiceRenderer<IUserBean>
 	 */
 	public String getIdValue(IUserBean object, int index)
 	{
+		if (object == null) {
+			return null;
+		}
 		return object.getId();
 	}
 }
