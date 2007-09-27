@@ -117,7 +117,7 @@ public class ViewIssuePage extends BugeaterPage
 	}
 	
 	@SpringBean
-	private UserService userService;
+	private transient UserService userService;
 	public void setUserService(UserService service)
 	{
 		this.userService = service;
@@ -202,9 +202,7 @@ public class ViewIssuePage extends BugeaterPage
 			@Override
 			protected void onSelectionChanged(IUserBean newSelection)
 			{
-				if (newSelection != null) {
-					issueService.save(model.getObject());
-				}
+				issueService.save(model.getObject());
 			}
 
 			/**
@@ -358,15 +356,6 @@ public class ViewIssuePage extends BugeaterPage
 		}
 		
 		private IModel<Issue>issueModel;
-		private UserService service;
-
-		protected IUserBean load()
-		{
-			service =
-				(UserService)((BugeaterApplication)Application.get())
-				.getSpringBean("userService");
-			return service.getUserById(issueModel.getObject().getAssignedUserID());
-		}
 
 		public void detach()
 		{
@@ -375,10 +364,18 @@ public class ViewIssuePage extends BugeaterPage
 		
 		public IUserBean getObject()
 		{
-			return load();
+			UserService service =
+				(UserService)((BugeaterApplication)Application.get())
+				.getSpringBean("userService");
+			return service.getUserById(issueModel.getObject().getAssignedUserID());
 		}
 		
-		public void setObject(IUserBean bean) {}
+		public void setObject(IUserBean bean)
+		{
+			issueModel.getObject().setAssignedUserID(
+				bean == null ? null : bean.getId()
+			);
+		}
 	}
 }
 

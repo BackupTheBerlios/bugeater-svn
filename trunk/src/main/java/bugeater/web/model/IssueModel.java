@@ -35,8 +35,7 @@ public class IssueModel implements IModel<Issue>
 	 */
 	public IssueModel(Issue issue)
 	{
-		super();
-		setObject(issue);
+		this(issue == null ? null : issue.getId());
 	}
 
 	// MEMBERS
@@ -49,21 +48,12 @@ public class IssueModel implements IModel<Issue>
 		issue = null;
 	}
 
-	protected Issue load()
-	{
-		if (issueid == null) {
-			return null;
-		} else {
-			IssueService iService =
-				(IssueService)((BugeaterApplication)Application.get()).getSpringBean("issueService");
-			return iService.load(issueid);
-		}
-	}
-	
 	public Issue getObject()
 	{
 		if (issue == null && issueid != null) {
-			issue = load();
+			IssueService iService =
+				(IssueService)((BugeaterApplication)Application.get()).getSpringBean("issueService");
+			return iService.load(issueid);
 		}
 		return issue;
 	}
