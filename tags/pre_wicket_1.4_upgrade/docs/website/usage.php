@@ -1,0 +1,126 @@
+<?php include_once("header.php"); ?>
+<h1>Using Bugeater</h1>
+<h3>Table of Contents</h3>
+<ul>
+	<li><a href="#categorization">Categorization of Issues</a></li>
+	<li><a href="#watching_issues">Watching Issues for Changes</a></li>
+	<li><a href="#roles">User Roles</a></li>
+	<li><a href="#statuses">Issue Status</a></li>
+	<li><a href="#notes">Notes</a></li>
+	<li><a href="#attachments">Attachments</a></li>
+</ul>
+<h3><a id="categorization">Categorization of Issues</a></h3>
+<p>
+	Issues are categorized by project and category (type).  Project is a
+	software project.  This could be the name of the software, or a subsystem in
+	a software project.  The category could be a bug (defect), a request for new
+	functionallity, or a request for a change in existing functionallity.  Both
+	the list of projects and the categories may be modified by the administrator
+	of the Bugeater system.
+</p>
+<h3><a id="watching_issues">Watching Issues for Changes</a></h3>
+<p>
+	Issues may be tracked by any user.  All the user has to do is click on the
+	watch icon <img src="images/watch.png"/>.  The user will then be notified
+	through email any time a new note is entered for the issue or the issue's
+	status has changed.  If a user no longer wants to be notified of changes, he
+	may click on the no-watch icon <img src="images/nowatch.png"/>. The creator
+	of an issue and the user to which the issue is assigned are automatically
+	assigned to the issue's list of watchers.
+</p>
+<h3><a id="roles">User Roles</a></h3>
+<p>
+	There are several roles to which a users may be assigned.  A user may (and
+	should) be assigned to more than one role.  For instance. all users, no
+	matter what other roles they fill, must also fill the user role.
+	<ul>
+		<li>
+			<em>Administrator</em> - The administrator has the ability to maintain
+			lists of categories, projects, and project release versions.
+		</li>
+		<li>
+			<em>Developer</em> - A software developer is responsible for making
+			changes in the software's code.  Developers may have issues assigned
+			to them. They may also create new issues.
+		</li>
+		<li>
+			<em>Manager</em> - The manager of a software development or testing
+			(quality assurance) team.  Managers may have issues assigned to them
+			They may also create new issues.
+		</li>
+		<li>
+			<em>Tester</em> - The tester is responsible for testing changes to
+			ensure that they work as indicated by the reported issues and that no
+			new bugs where created while fixing/implementing the reported issues.
+			Testers may have issues assigned to them.  They may also create new
+			issues.
+		</li>
+		<li>
+			<em>User</em> - The user is anyone with access to the site.  Users may
+			log in, view issues, search for them. and watch issues.  However, they
+			may not create issues, nor may they have issues assigned to them.
+		</li>
+	</ul>
+</p>
+<h3><a id="statuses">Issue Status</a></h3>
+<p>
+	Issues may be assigned one of several statuses that indicate what progress
+	has been made to resolve them.
+	<ul>
+		<li>
+			<em>Active</em> - Indicates that a developer is currently working to
+			fix, or implement the issue.
+		</li>
+		<li>
+			<em>Closed Duplicate</em> - Indicates that an issue was closed and
+			will not be fixed or implemented because it duplicates another issue
+			that has already been recorded.
+		</li>
+		<li>
+			<em>Closed Fixed</em> - Indicates that an issue was closed because it
+			has been fixed or implemented.
+		</li>
+		<li>
+			<em>Closed No Fix</em> - Indicates that an issue was closed and will
+			not be fixed.  The reason that the issue will not be fixed or
+			implemented should be noted in the issue.
+		</li>
+		<li>
+			<em>Open</em> - Indicates that an issue is open and has not yet been
+			worked.  This is the default status of a new issue.
+		</li>
+		<li>
+			<em>Testing</em> - Indicates that an issue has been fixed or
+			implemented and is being tested to ensure it works as it should and
+			that no new bugs where created in the process.
+		</li>
+	</ul>
+</p>
+<h3><a id="notes">Notes</a></h3>
+<p>
+	Notes may be added to an issue at any time.  Notes are also required each
+	time the status of an issue is changed.  The date and time the note is
+	created as well as the creator of the issue is tracked.  Notes are shown on
+	the issue view page in chronological order.
+</p>
+<p>
+	Notes can be formatted using a wiki-like syntax.  The wiki syntax is regular
+	text with symbols inserted in such a way as to give bugtracker hints about
+	how the text should be formatted.  For example:
+	<code>__My Bold Statement__</code> will show as <b>My Bold Statement</b> and
+	<code>~~My Italics Text~~</code> will show as <i>My Italics Text</i>. Other,
+	more complex formatting such as text size, color, and even tables are
+	available.  See the <a href="note_formatting.php">note formatting
+	instructions</a> for more detail.
+</p>
+<h3><a id="attachments">Attachments</a></h3>
+<p>
+	Files of any type may be attached to an issue for others to download and
+	reference.  Good examples of attachments might be screenshots showing a bug,
+	documents that describe how new functionality is to work in detail, or any
+	other file that can lend understanding about the issue.  Attachments can be
+	uploaded on the issue view page.  Once a new issue has been created,
+	bugtracker shows the new issue in the view page.  Therefore, attachments
+	can be uploaded right after a new issue has been created.
+</p>
+<?php include_once("footer.php"); ?>
