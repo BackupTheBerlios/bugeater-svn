@@ -2,25 +2,24 @@ package bugeater.web.page;
 
 import java.util.List;
 
-import bugeater.domain.Issue;
+import org.apache.wicket.PageParameters;
+import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.AbstractReadOnlyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+
 import bugeater.service.IssueService;
 import bugeater.service.SecurityRole;
 import bugeater.web.BugeaterConstants;
-
-import wicket.MarkupContainer;
-import wicket.PageParameters;
-import wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
-import wicket.markup.html.basic.Label;
-import wicket.markup.html.form.Button;
-import wicket.markup.html.form.Form;
-import wicket.markup.html.form.TextField;
-import wicket.markup.html.link.Link;
-import wicket.markup.html.list.ListItem;
-import wicket.markup.html.list.ListView;
-import wicket.markup.html.panel.FeedbackPanel;
-import wicket.model.IModel;
-import wicket.model.Model;
-import wicket.spring.injection.SpringBean;
 
 /**
  * Allows the user to administer lookup lists for the application
@@ -28,14 +27,14 @@ import wicket.spring.injection.SpringBean;
  * @author pchapman
  */
 @AuthorizeInstantiation({SecurityRole.ADMINISTRATOR})
-public class AdministrationPage extends BugeaterPage<Issue>
+public class AdministrationPage extends BugeaterPage
 {
 	private static final long serialVersionUID = 1L;
 	
 	public AdministrationPage()
 	{
 		super();
-		new AddForm(this, "addForm");
+		new AddForm("addForm");
 	}
 	
 	@SpringBean
@@ -49,25 +48,25 @@ public class AdministrationPage extends BugeaterPage<Issue>
 	{
 		private static final long serialVersionUID = 1L;
 		
-		AddForm(MarkupContainer container, String id)
+		AddForm(String id)
 		{
-			super(container, id);
-			new FeedbackPanel(this, "formFeedback");
+			super(id);
+			new FeedbackPanel("formFeedback");
 			
-			new ListView<String>(this, "categoryList", new CategoriesModel())
+			new ListView<String>("categoryList", new CategoriesModel())
 			{
 				private static final long serialVersionUID = 1L;
 				public void populateItem(ListItem<String> item)
 				{
-					new Label(
-							item, "categoryLabel",
-							item.getModelObjectAsString()
-						);
+					item.add(new Label(
+							"categoryLabel",
+							item.getModelObject()
+						));
 				}
 			};
 			final IModel<String> catModel = new Model<String>();
-			new TextField<String>(this, "categoryField", catModel);
-			new Button(this, "addCategoryBtn")
+			new TextField<String>("categoryField", catModel);
+			new Button("addCategoryBtn")
 			{
 				private static final long serialVersionUID = 1L;
 				public void onSubmit()
@@ -80,13 +79,13 @@ public class AdministrationPage extends BugeaterPage<Issue>
 				}
 			};
 			
-			new ListView<String>(this, "projectList", new ProjectsModel())
+			add(new ListView<String>("projectList", new ProjectsModel())
 			{
 				private static final long serialVersionUID = 1L;
 				public void populateItem(ListItem<String> item)
 				{
 					final String project = item.getModelObject();
-					Link link = new Link(item, "editReleaseLink")
+					Link link = new Link("editReleaseLink")
 					{
 						private static final long serialVersionUID = 1L;
 						@SuppressWarnings("unchecked")
@@ -100,12 +99,13 @@ public class AdministrationPage extends BugeaterPage<Issue>
 							setResponsePage(ReleaseAdminPage.class, params);
 						}
 					};
-					new Label(link, "projectLabel", project);
+					item.add(link);
+					link.add(new Label("projectLabel", project));
 				}
-			};
+			});
 			final IModel<String> projModel = new Model<String>();
-			new TextField<String>(this, "projectField", projModel);
-			new Button(this, "addProjectBtn")
+			add(new TextField<String>("projectField", projModel));
+			add(new Button("addProjectBtn")
 			{
 				private static final long serialVersionUID = 1L;
 				public void onSubmit()
@@ -116,11 +116,11 @@ public class AdministrationPage extends BugeaterPage<Issue>
 						projModel.setObject(null);
 					}
 				}
-			};
+			});
 		}
 	}
 	
-	private class CategoriesModel extends Model<List <String>>
+	private class CategoriesModel extends AbstractReadOnlyModel<List <String>>
 	{
 		private static final long serialVersionUID = 1L;
 		
@@ -134,7 +134,7 @@ public class AdministrationPage extends BugeaterPage<Issue>
 		}
 	}
 	
-	private class ProjectsModel extends Model<List <String>>
+	private class ProjectsModel extends AbstractReadOnlyModel<List <String>>
 	{
 		private static final long serialVersionUID = 1L;
 		

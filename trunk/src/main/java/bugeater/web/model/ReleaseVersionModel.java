@@ -1,12 +1,11 @@
 package bugeater.web.model;
 
-import bugeater.domain.ReleaseVersion;
+import org.apache.wicket.Application;
+import org.apache.wicket.model.IModel;
 
+import bugeater.domain.ReleaseVersion;
 import bugeater.service.ReleaseVersionService;
 import bugeater.web.BugeaterApplication;
-
-import wicket.Application;
-import wicket.model.IModel;
 
 /**
  * A model used to provide an ReleaseVersion object to the component.

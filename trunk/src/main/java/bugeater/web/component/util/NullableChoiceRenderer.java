@@ -1,6 +1,6 @@
 package bugeater.web.component.util;
 
-import wicket.markup.html.form.ChoiceRenderer;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
 
 /**
  * Returns reasonable text for a null value.

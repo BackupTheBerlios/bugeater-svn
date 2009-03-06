@@ -7,20 +7,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.wicket.Application;
+import org.apache.wicket.model.IModel;
+
 import bugeater.bean.IUserBean;
 import bugeater.service.SecurityRole;
 import bugeater.service.UserService;
 import bugeater.web.BugeaterApplication;
-
-import wicket.Application;
-import wicket.model.IModel;
 
 /**
  * A model that provides a list of users that an issue may be assigned to.
  * 
  * @author pchapman
  */
-public class AssignableUsersModel implements IModel<List<IUserBean>>
+public class AssignableUsersModel implements IModel<List<? extends IUserBean>>
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -36,7 +36,7 @@ public class AssignableUsersModel implements IModel<List<IUserBean>>
 	
 	public void detach() {}
 	
-	public List<IUserBean> getObject()
+	public List<? extends IUserBean> getObject()
 	{
 		if (list == null) {
 			list = load();
@@ -44,7 +44,7 @@ public class AssignableUsersModel implements IModel<List<IUserBean>>
 		return list;
 	}
 	
-	public void setObject(List<IUserBean> list) {}
+	public void setObject(List<? extends IUserBean> list) {}
 
 	protected List<IUserBean> load()
 	{

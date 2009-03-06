@@ -3,10 +3,10 @@ package bugeater.web.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import bugeater.domain.Note;
-import bugeater.domain.Issue;
+import org.apache.wicket.model.IModel;
 
-import wicket.model.IModel;
+import bugeater.domain.Issue;
+import bugeater.domain.Note;
 
 /**
  * Provides a list of all notes associated with an issue.

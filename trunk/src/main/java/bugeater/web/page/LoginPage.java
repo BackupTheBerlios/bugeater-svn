@@ -4,32 +4,26 @@ import java.security.Principal;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.Application;
+import org.apache.wicket.Session;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.PasswordTextField;
+import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.protocol.http.WebRequestCycle;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+
 import bugeater.service.AuthenticationException;
 import bugeater.service.AuthenticationService;
 import bugeater.web.BugeaterSession;
-
-import wicket.Application;
-import wicket.MarkupContainer;
-import wicket.Session;
-
-import wicket.markup.html.form.Form;
-import wicket.markup.html.form.PasswordTextField;
-import wicket.markup.html.form.TextField;
-import wicket.markup.html.form.validation.FormComponentFeedbackBorder;
-
-import wicket.model.IModel;
-import wicket.model.Model;
-
-import wicket.protocol.http.WebApplication;
-import wicket.protocol.http.WebRequestCycle;
-
-import wicket.spring.injection.SpringBean;
 
 /**
  * A page which allows the user to log in.
@@ -54,27 +48,23 @@ public class LoginPage extends BugeaterPage
 	public LoginPage()
 	{
 		super();
-		new LoginForm(this, "form");
+		add(new LoginForm("form"));
 	}
 	
 	private class LoginForm extends Form
 	{
 		private static final long serialVersionUID = 1L;
 		
-		public LoginForm(MarkupContainer parent, String wicketID)
+		public LoginForm(String wicketID)
 		{
-			super(parent, wicketID);
+			super(wicketID);
 
-			new FormComponentFeedbackBorder(LoginForm.this, "feedback");
+			add(new FormComponentFeedbackBorder("feedback"));
 			
 			loginModel = new Model<String>();
-			new TextField<String>(
-					LoginForm.this, "username", loginModel
-				);
+			add(new TextField<String>("username", loginModel));
 			passModel = new Model<String>();
-			new PasswordTextField(
-					LoginForm.this, "password", passModel
-				);
+			add(new PasswordTextField("password", passModel));
 		}
 		
 		private IModel<String>loginModel;
@@ -92,12 +82,11 @@ public class LoginPage extends BugeaterPage
 			return s == null ? "" : s;
 		}
 		
-		@SuppressWarnings("unchecked")
 		public void onSubmit()
 		{
 			try {
 				// Attempt authentication
-				WebRequestCycle cycle = WebRequestCycle.get();
+				WebRequestCycle cycle = (WebRequestCycle) WebRequestCycle.get();
 				HttpServletRequest request = cycle.getWebRequest().getHttpServletRequest();
 				HttpServletResponse response = cycle.getWebResponse().getHttpServletResponse();
 				ServletContext context = ((WebApplication)Application.get()).getServletContext();
@@ -106,7 +95,7 @@ public class LoginPage extends BugeaterPage
 							request, response, context, getLogin(), getPassword()
 						);
 				if (p != null) {
-					// The authentication succeded.  Set it in the session.
+					// The authentication succeeded.  Set it in the session.
 					((BugeaterSession)Session.get()).setPrincipal(p);
 					
 					// If login has been called because the user was not yet

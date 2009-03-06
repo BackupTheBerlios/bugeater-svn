@@ -3,7 +3,8 @@ package bugeater.web.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import wicket.model.IModel;
+import org.apache.wicket.model.IModel;
+
 import bugeater.domain.Issue;
 import bugeater.domain.IssueStatus;
 

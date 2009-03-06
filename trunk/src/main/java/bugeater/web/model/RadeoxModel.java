@@ -1,12 +1,11 @@
 package bugeater.web.model;
 
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.radeox.api.engine.RenderEngine;
 import org.radeox.api.engine.context.RenderContext;
 import org.radeox.engine.BaseRenderEngine;
 import org.radeox.engine.context.BaseRenderContext;
-
-import wicket.model.IModel;
-import wicket.model.Model;
 
 /**
  * A model that gets String input from the nested model and passes it though

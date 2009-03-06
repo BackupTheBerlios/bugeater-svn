@@ -2,14 +2,14 @@ package bugeater.web.page;
 
 import java.util.List;
 
+import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+
 import bugeater.domain.Issue;
 import bugeater.service.SecurityRole;
 import bugeater.web.component.IssuesListPanel;
-
-import wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
-import wicket.markup.html.basic.Label;
-import wicket.model.IModel;
-import wicket.model.Model;
 
 /**
  * A page which lists issues in the model passed to it.
@@ -17,7 +17,7 @@ import wicket.model.Model;
  * @author pchapman
  */
 @AuthorizeInstantiation({SecurityRole.USER})
-public class IssuesListPage extends BugeaterPage<List<Issue>>
+public class IssuesListPage extends BugeaterPage
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -44,9 +44,9 @@ public class IssuesListPage extends BugeaterPage<List<Issue>>
 		)
 	{
 		super(model);
-		new Label(
-				this, "descLabel", listDescriptionModel
-			).setEscapeModelStrings(true);
-		new IssuesListPanel(this, "issuesList", model);
+		add(new Label(
+				"descLabel", listDescriptionModel
+			).setEscapeModelStrings(true));
+		add(new IssuesListPanel("issuesList", model));
 	}
 }

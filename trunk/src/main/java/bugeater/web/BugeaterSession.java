@@ -4,22 +4,20 @@ import java.security.Principal;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.Application;
+import org.apache.wicket.Request;
+import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.protocol.http.WebRequestCycle;
+import org.apache.wicket.protocol.http.WebSession;
+
 import bugeater.bean.IUserBean;
 import bugeater.service.AuthenticationService;
 import bugeater.service.UserService;
-
-import wicket.Application;
-import wicket.Request;
-
-import wicket.protocol.http.WebApplication;
-import wicket.protocol.http.WebRequestCycle;
-import wicket.protocol.http.WebSession;
 
 /**
  * A session object used by the web application to track session state.
@@ -38,9 +36,14 @@ public class BugeaterSession extends WebSession
 	 * @param userService The services used to load the user object when this
 	 *                    session is deserialized.
 	 */
+	@Deprecated
 	BugeaterSession(WebApplication webapp, Request request)
 	{
 		super(webapp, request);
+	}
+	
+	BugeaterSession(Request request) {
+		super(request);
 	}
 	
 	private transient AuthenticationService authService;
@@ -61,7 +64,7 @@ public class BugeaterSession extends WebSession
 	public Principal getPrincipal()
 	{
 		if (principal == null) {
-			WebRequestCycle cycle = WebRequestCycle.get();
+			WebRequestCycle cycle = (WebRequestCycle) WebRequestCycle.get();
 			HttpServletRequest request = cycle.getWebRequest().getHttpServletRequest();
 			HttpServletResponse response = cycle.getWebResponse().getHttpServletResponse();
 			ServletContext context = ((WebApplication)Application.get()).getServletContext();

@@ -20,11 +20,13 @@
 	  in production or development.  Production turns off some some things that
 	  are useful for debugging, but not for production.
       When deploying for production, comment this parameter out.
-	-->
+      
+      use Application#getConfigurationType() instead
 	<context-param>
 		<param-name>configuration</param-name>
 		<param-value>development</param-value>
 	</context-param>
+    -->
 	
 	<!-- Filters -->
 	<filter>
@@ -33,18 +35,14 @@
 			org.springframework.orm.hibernate3.support.OpenSessionInViewFilter
 		</filter-class>
 	</filter>
-
+	
     <filter>
         <filter-name>BugeaterApplication</filter-name>
-        <filter-class>wicket.protocol.http.WicketFilter</filter-class>
+        <filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
         <init-param>
             <param-name>applicationClassName</param-name>
             <param-value>bugeater.web.BugeaterApplication</param-value>
         </init-param>
-		<init-param>
-		  <param-name>filterPath</param-name>
-		  <param-value></param-value>
-		</init-param>
     </filter>
 
 	<!-- Filter Mappings -->
@@ -65,20 +63,14 @@
 		</listener-class>
 	</listener>
 	
-	<!--
-	Wicket's servlet handles most requests.  Info provided by
-	bugeater.web.BugeaterApplication is used to determine
-	what info is used to initialize the servlet.
-	-->
-	<servlet>
-		<servlet-name>WicketServlet</servlet-name>
-		<servlet-class>wicket.protocol.http.WicketServlet</servlet-class>
-		<init-param>
-			<param-name>applicationClassName</param-name>
-			<param-value>
-				bugeater.web.BugeaterApplication
-			</param-value>
-		</init-param>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
+	<resource-ref>
+        <description>DataSource Reference</description>
+        <res-ref-name>jdbc/bugeater</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+    </resource-ref>
+    
+    <login-config>
+        <realm-name>SIMIS Realm</realm-name>
+    </login-config>
 </web-app>

@@ -3,13 +3,13 @@ package bugeater.web.model;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.wicket.Application;
+import org.apache.wicket.model.IModel;
+
 import bugeater.domain.Attachment;
 import bugeater.domain.Issue;
 import bugeater.service.AttachmentService;
 import bugeater.web.BugeaterApplication;
-
-import wicket.Application;
-import wicket.model.IModel;
 
 /**
  * A model that provides a list of attachments for an issue.

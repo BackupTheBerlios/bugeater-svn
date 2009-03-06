@@ -3,6 +3,17 @@ package bugeater.web.component;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.wicket.Application;
+import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.IChoiceRenderer;
+import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+
 import bugeater.bean.IUserBean;
 import bugeater.domain.Issue;
 import bugeater.domain.IssueStatus;
@@ -15,18 +26,6 @@ import bugeater.web.model.ReleaseVersionModel;
 import bugeater.web.model.ReleaseVersionsListModel;
 import bugeater.web.model.UserIssuesListModel;
 import bugeater.web.page.IssuesListPage;
-
-import wicket.Application;
-import wicket.MarkupContainer;
-import wicket.markup.html.form.Button;
-import wicket.markup.html.form.DropDownChoice;
-import wicket.markup.html.form.Form;
-import wicket.markup.html.form.IChoiceRenderer;
-import wicket.markup.html.link.Link;
-import wicket.markup.html.panel.Panel;
-import wicket.model.IModel;
-import wicket.model.Model;
-import wicket.spring.injection.SpringBean;
 
 /**
  * A panel which allows the user to provide search criteria for finding issues.
@@ -41,10 +40,10 @@ public class SearchPanel extends Panel
 	 * @param parent
 	 * @param id
 	 */
-	public SearchPanel(MarkupContainer parent, String id)
+	public SearchPanel(String id)
 	{
-		super(parent, id);
-		new SearchForm(this, "searchForm");
+		super(id);
+		add(new SearchForm("searchForm"));
 	}
 }
 
@@ -62,13 +61,13 @@ class SearchForm extends Form
 		this.issueService = service;
 	}
 
-	public SearchForm(MarkupContainer parent, String id)
+	public SearchForm(String id)
 	{
-		super(parent, id);
+		super(id);
 
 		// Search by current status
-		new DropDownChoice<IssueStatus>(
-				this, "status", new Model<IssueStatus>(),
+		add(new DropDownChoice<IssueStatus>(
+				"status", new Model<IssueStatus>(),
 				Arrays.asList(IssueStatus.values())
 			)
 		{
@@ -102,10 +101,10 @@ class SearchForm extends Form
 						);
 				}
 			}
-		};
+		});
 		
 		// All pending issues link
-		new Link(this, "pendingIssuesLink")
+		add(new Link("pendingIssuesLink")
 		{
 			private static final long serialVersionUID = 1L;
 			public void onClick()
@@ -117,11 +116,11 @@ class SearchForm extends Form
 							)
 					);
 			}
-		};
+		});
 		
 		// Search by release version
-		new DropDownChoice<ReleaseVersion>(
-				this, "release",
+		add(new DropDownChoice(
+				"release",
 				new ReleaseVersionModel((Long)null),
 				new ReleaseVersionsListModel(SortOrder.Descending)
 			)
@@ -141,14 +140,14 @@ class SearchForm extends Form
 			 * @see wicket.markup.html.form.DropDownChoice#onSelectionChanged(java.lang.Object)
 			 */
 			@Override
-			protected void onSelectionChanged(ReleaseVersion newSelection)
+			protected void onSelectionChanged(Object newSelection)
 			{
 				if (newSelection != null) {
 					setResponsePage(
 							new IssuesListPage(
 									new ReleaseVersionSearchModel(
 											new ReleaseVersionModel(
-													newSelection
+													(ReleaseVersion)newSelection
 											)
 										),
 									"Issues assigned to be released in " +
@@ -180,12 +179,12 @@ class SearchForm extends Form
 						return object.getId().toString();
 					}
 				}
-		);
+		));
 		
 		
 		// Search by project
-		new DropDownChoice<String>(
-				this, "project",
+		add(new DropDownChoice<String>(
+				"project",
 				new Model<String>(null),
 				issueService.getProjectsList()
 			)
@@ -220,11 +219,11 @@ class SearchForm extends Form
 						);
 				}
 			}
-		};
+		});
 		
 		// Search by assignee
-		new DropDownChoice<IUserBean>(
-				this, "assignee",
+		add(new DropDownChoice<IUserBean>(
+				"assignee",
 				searchUserModel = new Model<IUserBean>(),
 				new AssignableUsersModel(), new UserBeanChoiceRenderer()
 			)
@@ -260,20 +259,20 @@ class SearchForm extends Form
 						);
 				}
 			}
-		};
+		});
 			
 		// Search by status change
-		new DropDownChoice<IssueStatus>(
-				this, "statusChanged",
+		add(new DropDownChoice<IssueStatus>(
+				"statusChanged",
 				searchStatusChangeModel = new Model<IssueStatus>(),
 				Arrays.<IssueStatus>asList(IssueStatus.values())
-			);
-		new DropDownChoice<IUserBean>(
-				this, "changedBy",
+			));
+		add(new DropDownChoice<IUserBean>(
+				"changedBy",
 				searchUserModel = new Model<IUserBean>(),
 				new AssignableUsersModel()
-			);
-		new Button(this, "statusChangeSearch")
+			));
+		add(new Button("statusChangeSearch")
 		{
 			private static final long serialVersionUID = 1L;
 			public void onSubmit()
@@ -292,7 +291,7 @@ class SearchForm extends Form
 							)
 					);
 			}
-		};
+		});
 	}
 	
 	private IModel<IssueStatus>searchStatusChangeModel;

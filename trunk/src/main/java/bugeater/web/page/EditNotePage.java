@@ -1,5 +1,16 @@
 package bugeater.web.page;
 
+import org.apache.wicket.PageParameters;
+import org.apache.wicket.Session;
+import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextArea;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.string.StringValueConversionException;
+
 import bugeater.bean.IUserBean;
 import bugeater.domain.Issue;
 import bugeater.domain.IssueStatus;
@@ -12,18 +23,6 @@ import bugeater.web.BugeaterSession;
 import bugeater.web.model.IssueModel;
 import bugeater.web.model.NoteModel;
 
-import wicket.MarkupContainer;
-import wicket.PageParameters;
-import wicket.Session;
-import wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
-import wicket.markup.html.form.Form;
-import wicket.markup.html.form.TextArea;
-import wicket.markup.html.panel.FeedbackPanel;
-import wicket.model.IModel;
-import wicket.model.Model;
-import wicket.spring.injection.SpringBean;
-import wicket.util.string.StringValueConversionException;
-
 /**
  * Allows the user to create a new note either as a stand-alone note, or as
  * part of the issue status change process.
@@ -34,7 +33,7 @@ import wicket.util.string.StringValueConversionException;
 	SecurityRole.ADMINISTRATOR, SecurityRole.DEVELOPER,
 	SecurityRole.MANAGER, SecurityRole.TESTER
 })
-public class EditNotePage extends BugeaterPage<Issue>
+public class EditNotePage extends BugeaterPage
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -84,7 +83,6 @@ public class EditNotePage extends BugeaterPage<Issue>
 		init(arg0, new NoteModel((Long)null), newStatus);
 	}
 
-	@SuppressWarnings("unchecked")
 	public EditNotePage(PageParameters params)
 	{
 		super(params);
@@ -141,25 +139,26 @@ public class EditNotePage extends BugeaterPage<Issue>
 			IModel<Issue> model, IModel<Note> noteModel, IssueStatus newStatus
 		)
 	{
-		setModel(model);
+		setDefaultModel(model);
+		issueModel = model;
 		this.newStatus = newStatus;
-		new AddNoteForm(this, "addNoteForm", noteModel);
+		add(new AddNoteForm("addNoteForm", noteModel));
 	}
 	
 	class AddNoteForm extends Form<Note>
 	{
 		private static final long serialVersionUID = 1L;
 		
-		AddNoteForm(MarkupContainer container, String id, IModel<Note> noteModel)
+		AddNoteForm(String id, IModel<Note> noteModel)
 		{
-			super(container, id, noteModel);
-			new FeedbackPanel(this, "formFeedback");
+			super(id, noteModel);
+			add(new FeedbackPanel("formFeedback"));
 			textModel = new Model<String>();
 			Note n = noteModel.getObject();
 			if (n != null) {
 				textModel.setObject(n.getText());
 			}
-			new TextArea<String>(this, "text", textModel).setRequired(true);
+			add(new TextArea<String>("text", textModel).setRequired(true));
 		}
 		
 		private IModel<String>textModel;
@@ -174,13 +173,13 @@ public class EditNotePage extends BugeaterPage<Issue>
 					// Create a plain ordinary note
 					note =
 						new Note()
-						.setIssue(EditNotePage.this.getModelObject())
+						.setIssue(issueModel.getObject())
 						.setText(textModel.getObject())
 						.setUserID(userBean.getId());
 				} else {
 					// Change status with the given note text
 					note = issueService.changeStatus(
-							EditNotePage.this.getModelObject(), userBean,
+							issueModel.getObject(), userBean,
 							newStatus, textModel.getObject()
 						).getNote();
 				}
@@ -196,4 +195,6 @@ public class EditNotePage extends BugeaterPage<Issue>
 			setResponsePage(ViewIssuePage.class, params);
 		}
 	}
+	
+	private IModel<Issue> issueModel;
 }

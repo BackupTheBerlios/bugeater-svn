@@ -1,12 +1,11 @@
 package bugeater.web.model;
 
-import bugeater.domain.Note;
+import org.apache.wicket.Application;
+import org.apache.wicket.model.IModel;
 
+import bugeater.domain.Note;
 import bugeater.service.NoteService;
 import bugeater.web.BugeaterApplication;
-
-import wicket.Application;
-import wicket.model.IModel;
 
 /**
  * A model used to provide an Note object to the component.

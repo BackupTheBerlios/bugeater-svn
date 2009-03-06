@@ -8,8 +8,36 @@
   <artifactId>bugeater</artifactId>
   <name>Bug Tracking Webapp</name>
   <packaging>war</packaging>
-  <version>0.1.7</version>
+  <version>0.2.0</version>
   <build>
+    <resources>
+        <resource>
+            <filtering>false</filtering>
+            <directory>src/main/resources</directory>
+        </resource>
+        <resource>
+            <filtering>false</filtering>
+            <directory>src/main/java</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+            <excludes>
+                <exclude>**/*.java</exclude>
+            </excludes>
+        </resource>
+    </resources>
+    <testResources>
+        <testResource>
+            <filtering>false</filtering>
+            <directory>src/test/java</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+            <excludes>
+                <exclude>**/*.java</exclude>
+            </excludes>
+        </testResource>
+    </testResources>
     <plugins>
       <plugin>
         <artifactId>maven-eclipse-plugin</artifactId>
@@ -45,10 +73,10 @@
     </plugins>
   </build>
   <repositories>
-    <repository>
+    <!--<repository>
     	<id>Wicket</id>
     	<url>http://maven.sateh.com/wicket/ </url>
-    </repository>
+    </repository>-->
   </repositories>
   <dependencies>
 
@@ -77,8 +105,8 @@
 		<version>3.2.0.cr1</version>
 	</dependency>
     <dependency>
-        <groupId>lucene</groupId>
-        <artifactId>lucene</artifactId>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-core</artifactId>
         <version>1.9.1</version>
         <type>jar</type>
     </dependency>
@@ -107,48 +135,52 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring</artifactId>
-      <version>2.0.1</version>
+      <version>2.5.2</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
-      <artifactId>spring-hibernate3</artifactId>
-      <version>2.0.1</version>
+      <artifactId>spring-orm</artifactId>
+      <version>2.5.2</version>
     </dependency>
 	<!-- main wicket framework api -->
     <dependency>
-        <groupId>wicket</groupId>
+        <groupId>org.apache.wicket</groupId>
         <artifactId>wicket</artifactId>
-        <version>2.0-SNAPSHOT</version>
+        <version>1.4-SNAPSHOT</version>
     </dependency>
     <dependency>
-        <groupId>wicket</groupId>
+        <groupId>org.apache.wicket</groupId>
         <artifactId>wicket-auth-roles</artifactId>
-        <version>2.0-SNAPSHOT</version>
+        <version>1.4-SNAPSHOT</version>
     </dependency>
     <dependency>
-        <groupId>wicket</groupId>
+        <groupId>org.apache.wicket</groupId>
         <artifactId>wicket-extensions</artifactId>
-        <version>2.0-SNAPSHOT</version>
+        <version>1.4-SNAPSHOT</version>
     </dependency>
     <dependency>
-        <groupId>wicket</groupId>
+        <groupId>org.apache.wicket</groupId>
         <artifactId>wicket-spring</artifactId>
-        <version>2.0-SNAPSHOT</version>
+        <version>1.4-SNAPSHOT</version>
     </dependency>
-
-    <!-- Testing Dependencies needed only for testing and debugging -->
+    <dependency>
+        <groupId>org.apache.wicket</groupId>
+        <artifactId>wicket-datetime</artifactId>
+        <version>1.4-SNAPSHOT</version>
+    </dependency>
     <dependency>
       <groupId>commons-dbcp</groupId>
       <artifactId>commons-dbcp</artifactId>
-      <version>1.2.1</version>
-      <scope>test</scope>
+      <version>1.2.2</version>
     </dependency>
     <dependency>
-      <groupId>jetty</groupId>
+      <groupId>org.mortbay.jetty</groupId>
       <artifactId>jetty</artifactId>
-      <version>4.2.9</version>
-      <scope>test</scope>
+      <version>6.1.12</version>
+      <scope>provided</scope>
     </dependency>
+
+    <!-- Testing Dependencies needed only for testing and debugging -->
     <dependency>
       <groupId>jetty</groupId>
       <artifactId>jasper-runtime</artifactId>
@@ -183,11 +215,11 @@
       <version>2.3</version>
       <scope>provided</scope>
     </dependency>
-    <dependency>
+    <!--<dependency>
       <groupId>resin</groupId>
       <artifactId>resin</artifactId>
       <version>3.0.15</version>
       <scope>provided</scope>
-    </dependency>
+    </dependency>-->
   </dependencies>
 </project>

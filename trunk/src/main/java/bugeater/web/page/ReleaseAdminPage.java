@@ -5,32 +5,31 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.PageParameters;
+import org.apache.wicket.extensions.yui.calendar.DatePicker;
+import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.string.StringValueConversionException;
+
 import bugeater.bean.ReleaseVersionBean;
 import bugeater.domain.ReleaseVersion;
 import bugeater.service.ReleaseVersionService;
 import bugeater.service.SortOrder;
 import bugeater.web.BugeaterConstants;
 import bugeater.web.model.ReleaseVersionsListModel;
-
-import wicket.AttributeModifier;
-import wicket.MarkupContainer;
-import wicket.PageParameters;
-import wicket.extensions.markup.html.datepicker.DatePicker;
-import wicket.markup.html.WebMarkupContainer;
-import wicket.markup.html.basic.Label;
-import wicket.markup.html.form.Button;
-import wicket.markup.html.form.Form;
-import wicket.markup.html.form.TextField;
-import wicket.markup.html.link.Link;
-import wicket.markup.html.list.ListItem;
-import wicket.markup.html.list.ListView;
-import wicket.markup.html.panel.FeedbackPanel;
-import wicket.model.CompoundPropertyModel;
-import wicket.model.IModel;
-import wicket.model.Model;
-import wicket.model.ResourceModel;
-import wicket.spring.injection.SpringBean;
-import wicket.util.string.StringValueConversionException;
 
 /**
  * @author pchapman
@@ -46,7 +45,6 @@ public class ReleaseAdminPage extends BugeaterPage
 	/**
 	 * @param arg0
 	 */
-	@SuppressWarnings("unchecked")
 	public ReleaseAdminPage(PageParameters params)
 	{
 		super(params);
@@ -95,9 +93,9 @@ public class ReleaseAdminPage extends BugeaterPage
 	
 	private void init(ReleaseVersionBean bean)
 	{
-		new Label(this, "projectLabel", bean.getProject());
-		new ListView<ReleaseVersion>(
-				this, "releaseList",
+		add(new Label("projectLabel", bean.getProject()));
+		add(new ListView<ReleaseVersion>(
+				"releaseList",
 				new ReleaseVersionsListModel(
 						bean.getProject(), SortOrder.Ascending
 					)
@@ -109,7 +107,7 @@ public class ReleaseAdminPage extends BugeaterPage
 			{
 				ReleaseVersion rv = item.getModelObject();
 				final Long rvID = rv.getId();
-				Link link = new Link(item, "editReleaseLink")
+				Link link = new Link("editReleaseLink")
 				{
 					private static final long serialVersionUID = 1L;
 					public void onClick()
@@ -122,25 +120,26 @@ public class ReleaseAdminPage extends BugeaterPage
 						setResponsePage(ReleaseAdminPage.class, params);
 					}
 				};
-				new Label(link, "versionLabel", rv.getVersionNumber());
-				new Label(
-						item, "scheduledDateLabel",
+				item.add(link);
+				link.add(new Label("versionLabel", rv.getVersionNumber()));
+				item.add(new Label(
+						"scheduledDateLabel",
 						DATE_FORMAT.format(
 								rv.getScheduleReleaseDate().getTime()
 							)
-					);
-				new Label(
-						item, "actualDateLabel",
+					));
+				item.add(new Label(
+						"actualDateLabel",
 						(
 								rv.getActualReleaseDate() == null ? "" :
 							DATE_FORMAT.format(
 									rv.getActualReleaseDate().getTime()
 								)
 						)
-					);
+					));
 			}
-		};
-		new ReleaseAdminForm(this, "form", bean);
+		});
+		add(new ReleaseAdminForm("form", bean));
 	}
 	
 	private class ReleaseAdminForm extends Form
@@ -148,12 +147,9 @@ public class ReleaseAdminPage extends BugeaterPage
 		private static final long serialVersionUID = 1L;
 		
 		@SuppressWarnings("unchecked")
-		ReleaseAdminForm(
-				MarkupContainer container, String wicketID,
-				ReleaseVersionBean bean
-			)
+		ReleaseAdminForm(String wicketID, ReleaseVersionBean bean)
 		{
-			super(container, wicketID, new CompoundPropertyModel(bean));
+			super(wicketID, new CompoundPropertyModel(bean));
 			this.bean = bean;
 			
 			// Instructions
@@ -163,11 +159,11 @@ public class ReleaseAdminPage extends BugeaterPage
 			} else {
 				sModel = new ResourceModel("instructions.edit");
 			}
-			new FeedbackPanel(this, "formFeedback");
-			new Label(this, "instructions", sModel);
+			add(new FeedbackPanel("formFeedback"));
+			add(new Label("instructions", sModel));
 			
 			// Version number
-			new TextField(this, "versionNumber").setRequired(true);
+			add(new TextField("versionNumber").setRequired(true));
 			
 			// Scheduled release date
 			sdModel = new Model<String>();
@@ -175,9 +171,10 @@ public class ReleaseAdminPage extends BugeaterPage
 				sdModel.setObject(SHORT_DATE_FORMAT.format(bean.getScheduledReleaseDate().getTime()));
 			}
 			TextField field =
-				new TextField<String>(this, "scheduledReleaseDate", sdModel);
+				new TextField<String>("scheduledReleaseDate", sdModel);
+			add(field);
 			field.setRequired(true);
-			new DatePicker(this, "scheduledReleaseDatePicker", field);
+			add(new DatePicker());
 			
 			// Actual date
 			adModel = new Model<String>();
@@ -185,9 +182,10 @@ public class ReleaseAdminPage extends BugeaterPage
 				adModel.setObject(SHORT_DATE_FORMAT.format(bean.getActualReleaseDate().getTime()));
 			}
 			WebMarkupContainer cont =
-				new WebMarkupContainer(this, "actualWicketDateInput");
-			field = new TextField<String>(cont, "actualReleaseDate", adModel);
-			new DatePicker(cont, "actualReleaseDatePicker", field);
+				new WebMarkupContainer("actualWicketDateInput");
+			add(cont);
+			cont.add(field = new TextField<String>("actualReleaseDate", adModel));
+			cont.add(new DatePicker());
 			cont.setRenderBodyOnly(true);
 			cont.setVisible(bean.getId() != null);
 			
@@ -197,13 +195,14 @@ public class ReleaseAdminPage extends BugeaterPage
 			} else {
 				s = getString("submit.edit");
 			}
-			Button b = new Button(this, "submit")
+			Button b = new Button("submit")
 			{
 				private static final long serialVersionUID = 1L;
 				public void onSubmit() {
 					doSave();
 				}
 			};
+			add(b);
 			b.add(new AttributeModifier("value", true, new Model<String>(s)));
 		}
 		

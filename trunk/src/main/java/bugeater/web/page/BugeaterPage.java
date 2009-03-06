@@ -4,6 +4,21 @@ import java.security.Principal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.Application;
+import org.apache.wicket.PageMap;
+import org.apache.wicket.PageParameters;
+import org.apache.wicket.Session;
+import org.apache.wicket.authorization.Action;
+import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeAction;
+import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.hibernate.ObjectNotFoundException;
 
 import bugeater.domain.Issue;
@@ -15,30 +30,13 @@ import bugeater.web.BugeaterConstants;
 import bugeater.web.BugeaterSession;
 import bugeater.web.model.TextSearchModel;
 
-import wicket.Application;
-import wicket.MarkupContainer;
-import wicket.PageMap;
-import wicket.PageParameters;
-import wicket.Session;
-import wicket.authorization.Action;
-import wicket.authorization.strategies.role.annotations.AuthorizeAction;
-import wicket.markup.html.WebPage;
-import wicket.markup.html.form.Button;
-import wicket.markup.html.form.Form;
-import wicket.markup.html.form.TextField;
-import wicket.markup.html.link.BookmarkablePageLink;
-import wicket.markup.html.link.Link;
-import wicket.model.IModel;
-import wicket.model.Model;
-import wicket.spring.injection.SpringBean;
-
 /**
  * The base page for the Bugeater application.  This class can be used to
  * provide site-wide look and feel to the pages.
  * 
  * @author pchapman
  */
-public abstract class BugeaterPage<T> extends WebPage<T>
+public abstract class BugeaterPage extends WebPage
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -54,7 +52,7 @@ public abstract class BugeaterPage<T> extends WebPage<T>
 	/**
 	 * @param arg0
 	 */
-	public BugeaterPage(IModel <T>arg0)
+	public BugeaterPage(IModel<?> arg0)
 	{
 		super(arg0);
 		init();
@@ -73,7 +71,7 @@ public abstract class BugeaterPage<T> extends WebPage<T>
 	 * @param arg0
 	 * @param arg1
 	 */
-	public BugeaterPage(PageMap arg0, IModel <T>arg1)
+	public BugeaterPage(PageMap arg0, IModel<?> arg1)
 	{
 		super(arg0, arg1);
 		init();
@@ -115,17 +113,17 @@ public abstract class BugeaterPage<T> extends WebPage<T>
 	private final void init()
 	{
 		boolean isUser = isUserInRole(SecurityRole.User);
-		new BookmarkablePageLink(this, "bugeaterLink", Home.class).setEnabled(isUser);
-		new BookmarkablePageLink(this, "homeLink", Home.class).setVisible(isUser);
-		new BookmarkablePageLink(this, "searchLink", SearchPage.class).setVisible(isUser);
-		new BookmarkablePageLink(this, "addLink", AddIssuePage.class).setVisible(
+		add(new BookmarkablePageLink("bugeaterLink", Home.class).setEnabled(isUser));
+		add(new BookmarkablePageLink("homeLink", Home.class).setVisible(isUser));
+		add(new BookmarkablePageLink("searchLink", SearchPage.class).setVisible(isUser));
+		add(new BookmarkablePageLink("addLink", AddIssuePage.class).setVisible(
 				isUserInRole(SecurityRole.Administrator) ||
 				isUserInRole(SecurityRole.Developer) ||
 				isUserInRole(SecurityRole.Manager) ||
 				isUserInRole(SecurityRole.Tester)
-			);
-		new AdministrationLink(this, "adminLink");
-		new Link(this, "loginLink")
+			));
+		add(new AdministrationLink("adminLink"));
+		add(new Link("loginLink")
 		{
 			private static final long serialVersionUID = 1L;
 			@SuppressWarnings("unchecked")
@@ -133,8 +131,8 @@ public abstract class BugeaterPage<T> extends WebPage<T>
 			{
 				setResponsePage(LoginPage.class);
 			}
-		}.setVisible(((BugeaterSession)Session.get()).getPrincipal() == null);
-		new Link(this, "logoutLink")
+		}.setVisible(((BugeaterSession)Session.get()).getPrincipal() == null));
+		add(new Link("logoutLink")
 		{
 			private static final long serialVersionUID = 1L;
 			@SuppressWarnings("unchecked")
@@ -143,28 +141,28 @@ public abstract class BugeaterPage<T> extends WebPage<T>
 				Session.get().invalidate();
 				setResponsePage(Home.class);
 			}
-		}.setVisible(isUser);
-		new IssueByIDForm(this, "issueByIDForm").setVisible(isUser);
+		}.setVisible(isUser));
+		add(new IssueByIDForm("issueByIDForm").setVisible(isUser));
 		PageParameters params = new PageParameters();
 		params.add(BugeaterConstants.PARAM_NAME_CONTENT_URL, "/static/about.html");
-		new BookmarkablePageLink(this, "aboutLink", StaticContentPage.class, params);
+		add(new BookmarkablePageLink("aboutLink", StaticContentPage.class, params));
 		params = new PageParameters();
 		params.add(BugeaterConstants.PARAM_NAME_CONTENT_URL, "/static/usage.html");
-		new BookmarkablePageLink(this, "usageLink", StaticContentPage.class, params);
+		add(new BookmarkablePageLink("usageLink", StaticContentPage.class, params));
 	}
 	
 	private class IssueByIDForm extends Form
 	{
 		private static final long serialVersionUID = 1L;
 		
-		public IssueByIDForm(MarkupContainer parent, String id)
+		public IssueByIDForm(String id)
 		{
-			super(parent, id);
+			super(id);
 			
 			// Issue by ID
 			idModel = new Model<String>();
-			new TextField<String>(this, "issueByIDField", idModel);
-			new Button(this, "issueByID")
+			new TextField<String>("issueByIDField", idModel);
+			new Button("issueByID")
 			{
 				private static final long serialVersionUID = 1L;
 				public void onSubmit()
@@ -184,9 +182,9 @@ public abstract class BugeaterPage<T> extends WebPage<T>
 			
 			// Search by text
 			new TextField<String>(
-					this, "searchText", searchTextModel = new Model<String>()
+					"searchText", searchTextModel = new Model<String>()
 				);		
-			new Button(this, "textSearch")
+			new Button("textSearch")
 			{
 				private static final long serialVersionUID = 1L;
 				public void onSubmit()
@@ -214,9 +212,9 @@ public abstract class BugeaterPage<T> extends WebPage<T>
 	{
 		private static final long serialVersionUID = 1L;
 		
-		public AdministrationLink(MarkupContainer parent, String id)
+		public AdministrationLink(String id)
 		{
-			super(parent, id);
+			super(id);
 		}
 
 		/**

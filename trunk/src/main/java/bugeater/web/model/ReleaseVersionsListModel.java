@@ -3,9 +3,9 @@ package bugeater.web.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import wicket.Application;
-import wicket.model.IModel;
-import wicket.model.Model;
+import org.apache.wicket.Application;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 
 import bugeater.domain.ReleaseVersion;
 import bugeater.service.ReleaseVersionService;

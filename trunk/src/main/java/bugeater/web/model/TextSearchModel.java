@@ -6,10 +6,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.wicket.Application;
+import org.apache.wicket.model.IModel;
 import org.hibernate.ObjectNotFoundException;
-
-import wicket.Application;
-import wicket.model.IModel;
 
 import bugeater.domain.Issue;
 import bugeater.domain.Note;

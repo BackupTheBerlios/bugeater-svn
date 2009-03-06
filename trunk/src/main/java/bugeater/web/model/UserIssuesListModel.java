@@ -3,12 +3,12 @@ package bugeater.web.model;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.wicket.Application;
+import org.apache.wicket.model.IModel;
+
 import bugeater.domain.Issue;
 import bugeater.service.IssueService;
 import bugeater.web.BugeaterApplication;
-
-import wicket.Application;
-import wicket.model.IModel;
 
 /**
  * Provides a list of all issues associated with a user.  How the issue is

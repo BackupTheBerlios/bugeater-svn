@@ -7,13 +7,13 @@ import javax.servlet.ServletException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.Application;
+import org.apache.wicket.Session;
+import org.apache.wicket.authorization.strategies.role.IRoleCheckingStrategy;
+import org.apache.wicket.authorization.strategies.role.Roles;
+
 import bugeater.service.AuthenticationService;
 import bugeater.service.SecurityRole;
-
-import wicket.Application;
-import wicket.Session;
-import wicket.authorization.strategies.role.IRoleCheckingStrategy;
-import wicket.authorization.strategies.role.Roles;
 
 /**
  * A class that provides the wicket auth api an indication of whether the

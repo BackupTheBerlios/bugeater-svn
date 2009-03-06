@@ -2,6 +2,17 @@ package bugeater.web.page;
 
 import java.util.Arrays;
 
+import org.apache.wicket.PageParameters;
+import org.apache.wicket.Session;
+import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
+import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.RequiredTextField;
+import org.apache.wicket.markup.html.form.TextArea;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+
 import bugeater.bean.CreateIssueBean;
 import bugeater.domain.Issue;
 import bugeater.domain.Priority;
@@ -9,18 +20,6 @@ import bugeater.service.IssueService;
 import bugeater.service.SecurityRole;
 import bugeater.web.BugeaterConstants;
 import bugeater.web.BugeaterSession;
-
-import wicket.MarkupContainer;
-import wicket.PageParameters;
-import wicket.Session;
-import wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
-import wicket.markup.html.form.DropDownChoice;
-import wicket.markup.html.form.Form;
-import wicket.markup.html.form.TextArea;
-import wicket.markup.html.form.TextField;
-import wicket.markup.html.panel.FeedbackPanel;
-import wicket.model.CompoundPropertyModel;
-import wicket.spring.injection.SpringBean;
 
 /**
  * A web page in which a new issue can be created.
@@ -41,7 +40,7 @@ public class AddIssuePage extends BugeaterPage
 	public AddIssuePage()
 	{
 		super();
-		new AddIssueForm(this, "addIssueForm");
+		add(new AddIssueForm("addIssueForm"));
 	}
 	
 	@SpringBean
@@ -58,10 +57,10 @@ public class AddIssuePage extends BugeaterPage
 		private CreateIssueBean issueBean;
 		
 		@SuppressWarnings("unchecked")
-		public AddIssueForm(MarkupContainer parent, String id)
+		public AddIssueForm(String id)
 		{
-			super(parent, id);
-			new FeedbackPanel(this, "formFeedback");
+			super(id);
+			add(new FeedbackPanel("formFeedback"));
 			issueBean =
 				new CreateIssueBean()
 				.setCreator(
@@ -69,35 +68,27 @@ public class AddIssuePage extends BugeaterPage
 				);
 			setModel(new CompoundPropertyModel(issueBean));
 
-			new TextField<String>(
-					AddIssueForm.this, "summary"
-				).setRequired(true);
+			add(new RequiredTextField<String>("summary"));
 			
-			new DropDownChoice<String>(
-					AddIssueForm.this, "project",
-					issueService.getProjectsList()
-				).setRequired(true);
+			add(new DropDownChoice<String>(
+					"project", issueService.getProjectsList()
+				).setRequired(true));
 			
-			new DropDownChoice<String>(
-					AddIssueForm.this, "category",
-					issueService.getCategoriesList()
-				).setRequired(true);
+			add(new DropDownChoice<String>(
+					"category", issueService.getCategoriesList()
+				).setRequired(true));
 
-			new DropDownChoice<Priority>(
-					AddIssueForm.this, "priority",
-					Arrays.<Priority>asList(Priority.values())
-				).setRequired(true);
+			add(new DropDownChoice<Priority>(
+					"priority", Arrays.<Priority>asList(Priority.values())
+				).setRequired(true));
 			
-			new TextArea<String>(
-					AddIssueForm.this, "description"
-				).setRequired(true);
+			add(new TextArea<String>("description").setRequired(true));
 		}
 
 		/**
 		 * @see wicket.markup.html.form.Form#onSubmit()
 		 */
 		@Override
-		@SuppressWarnings("unchecked")
 		protected void onSubmit()
 		{
 			Issue issue = issueService.createIssue(issueBean);

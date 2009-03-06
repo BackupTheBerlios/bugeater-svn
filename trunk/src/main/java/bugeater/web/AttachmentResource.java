@@ -4,14 +4,13 @@ import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.Application;
+import org.apache.wicket.markup.html.DynamicWebResource;
+import org.apache.wicket.util.time.Time;
+import org.apache.wicket.util.value.ValueMap;
+
 import bugeater.domain.Attachment;
 import bugeater.service.AttachmentService;
-
-import wicket.Application;
-import wicket.markup.html.DynamicWebResource;
-
-import wicket.util.time.Time;
-import wicket.util.value.ValueMap;
 
 /**
  * A resource that provides attachments from the holding dir.

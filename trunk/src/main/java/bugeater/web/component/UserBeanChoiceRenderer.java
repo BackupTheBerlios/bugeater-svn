@@ -1,7 +1,8 @@
 package bugeater.web.component;
 
+import org.apache.wicket.markup.html.form.IChoiceRenderer;
+
 import bugeater.bean.IUserBean;
-import wicket.markup.html.form.IChoiceRenderer;
 
 /**
  * A choice renderer that renders an IUserBean as the user's full name.

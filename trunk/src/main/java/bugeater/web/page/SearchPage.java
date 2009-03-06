@@ -1,9 +1,9 @@
 package bugeater.web.page;
 
+import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
+
 import bugeater.service.SecurityRole;
 import bugeater.web.component.SearchPanel;
-
-import wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 
 /**
  * A page that will allow the user to search for issues.
@@ -21,6 +21,6 @@ public class SearchPage extends BugeaterPage
 	public SearchPage()
 	{
 		super();
-		new SearchPanel(this, "searchPanel");
+		add(new SearchPanel("searchPanel"));
 	}
 }

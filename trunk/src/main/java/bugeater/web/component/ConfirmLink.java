@@ -1,10 +1,9 @@
 package bugeater.web.component;
 
-import wicket.AttributeModifier;
-import wicket.MarkupContainer;
-import wicket.markup.html.link.Link;
-import wicket.model.IModel;
-import wicket.model.Model;
+import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 
 /**
  * A link which will get a confirmation from the user before it is followed.
@@ -18,9 +17,9 @@ public abstract class ConfirmLink<T> extends Link<T>
 	 * @param parent
 	 * @param id
 	 */
-	public ConfirmLink(MarkupContainer parent, String id)
+	public ConfirmLink(String id)
 	{
-		super(parent, id);
+		super(id);
 		addOnClick();
 	}
 
@@ -29,9 +28,9 @@ public abstract class ConfirmLink<T> extends Link<T>
 	 * @param id
 	 * @param object
 	 */
-	public ConfirmLink(MarkupContainer parent, String id, IModel<T> object)
+	public ConfirmLink(String id, IModel<T> object)
 	{
-		super(parent, id, object);
+		super(id, object);
 		addOnClick();
 	}
 
