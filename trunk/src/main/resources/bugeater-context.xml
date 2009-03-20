@@ -27,9 +27,16 @@
         <property name="locations">
         	<!-- The properties files to look in for keys -->
             <list>
+				<!-- Standard configuration compiled into war -->
                 <value>classpath:configure.properties</value>
+				<!-- A configuration located on the filesystem outside the war -->
+				<value>file:///etc/bugeater/configure.properties</value>
+				<!-- A configuration path that is useful for testing/debugging purposes -->
+				<value>classpath:configure.${user.name}.properties</value>
             </list>
         </property>
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+		<property name="ignoreResourceNotFound" value="true"/>
     </bean>
    
    	<!-- BeanPostprocessor to enforce @Required annotation on bean setter methods -->
@@ -164,12 +171,16 @@
 	-->
     <bean id="mailService" class="bugeater.service.impl.MailServiceImpl">
     	<property name="fromAddressString">
-    		<value>bugeater@localhost.localdomain</value>
+    		<value>${notification.from.email}</value>
     	</property>
-		<property name="mailServer"><value>${mail.server}</value></property>
+		<property name="mailLogin"><value>${smtp.login}</value></property>
+		<property name="mailPassword"><value>${smtp.password}</value></property>
+		<property name="mailServer"><value>${smtp.server}</value></property>
 		<property name="notificationEmailAddressString">
-			<value>${notification.email}</value>
+			<value>${notification.to.email}</value>
 		</property>
+		<property name="port"><value>${smtp.port}</value></property>
+		<property name="sslUsed" value="${smtp.usessl}"/>
     </bean>
 	
     <bean id="attachmentService" class="bugeater.service.impl.AttachmentServiceImpl">

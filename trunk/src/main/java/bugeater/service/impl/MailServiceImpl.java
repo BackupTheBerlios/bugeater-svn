@@ -5,8 +5,10 @@ import java.util.Properties;
 import java.util.Queue;
 import java.util.ResourceBundle;
 
+import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.Message.RecipientType;
@@ -14,10 +16,11 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Application;
 import org.apache.wicket.PageParameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Required;
 
 import bugeater.domain.Issue;
 import bugeater.domain.Note;
@@ -47,7 +50,7 @@ public class MailServiceImpl implements MailService
 	
 	// MEMBERS
 	
-	private static final Log logger = LogFactory.getLog(MailServiceImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(MailServiceImpl.class);
 	
 	private InternetAddress fromAddress;
 	public InternetAddress getFromAddress()
@@ -59,7 +62,7 @@ public class MailServiceImpl implements MailService
 		try {
 			fromAddress = new InternetAddress(s);
 		} catch (AddressException ae) {
-			logger.error(ae);
+			logger.error("Error parsing from address, {}", s, ae);
 		}
 	}
 	
@@ -67,25 +70,55 @@ public class MailServiceImpl implements MailService
 	 * A thread that will be used to deliver emails.
 	 */
 	private MailServiceThread mailServiceThread;
-	private MailServiceThread getMailServiceThread()
+	MailServiceThread getMailServiceThread()
 	{
 		if (mailServiceThread == null) {
-			mailServiceThread = new MailServiceThread(serverName);
+			mailServiceThread = new MailServiceThread();
 			logger.debug("New mail service thread created.");
 			mailServiceThread.start();
 		}
 		return mailServiceThread;
 	}
+
+    private String login;
+    @Required
+    public void setMailLogin(String login)
+    {
+        this.login = login;
+    }
+
+    private String pass;
+    @Required
+    public void setMailPassword(String pass)
+    {
+        this.pass = pass;
+    }
+    
+    private Integer port;
+    public void setPort(Integer port) {
+    	this.port = port;
+    }
 	
 	/* Spring injected */
 	private String serverName;
 	/**
 	 * The name of the mail server.
 	 */
+    @Required
 	public void setMailServer(String serverName)
 	{
 		this.serverName = serverName;
 	}
+    
+    private boolean usessl = false;
+    public void setSslUsed(boolean sslUsed) {
+    	usessl = sslUsed;
+    }
+//    
+//    private boolean usetls = false;
+//    public void setTlsUsed(boolean sslTLS) {
+//    	usetls = sslTLS;
+//    }
 	
 	private InternetAddress notifyAddress;
 	public InternetAddress getNotificationEmailAddress()
@@ -94,10 +127,14 @@ public class MailServiceImpl implements MailService
 	}
 	public void setNotificationEmailAddressString(String s)
 	{
-		try {
-			notifyAddress = new InternetAddress(s);
-		} catch (AddressException ae) {
-			logger.error(ae);
+		if (s == null || s.length() == 0) {
+			notifyAddress = null;
+		} else {
+			try {
+				notifyAddress = new InternetAddress(s);
+			} catch (AddressException ae) {
+				logger.error("Error parsing notification email {}", s, ae);
+			}
 		}
 	}
 
@@ -139,13 +176,15 @@ public class MailServiceImpl implements MailService
 				BugeaterConstants.PARAM_NAME_ISSUE_ID,
 				String.valueOf(issue.getId())
 			);
-		
-		sb.append("To view the complete issue, browse to ");
-		BugeaterApplication app = (BugeaterApplication)Application.get();
-		sb.append(app.buildFullyQualifiedPath(ViewIssuePage.class, params));
-		sb.append("\n\n");
-		
-		addRow(sb, resource, "issue.id", issue.getId().toString());
+				
+		// ID is null when testing
+		if (issue.getId() != null) {
+			sb.append("To view the complete issue, browse to ");
+			BugeaterApplication app = (BugeaterApplication)Application.get();
+			sb.append(app.buildFullyQualifiedPath(ViewIssuePage.class, params));
+			sb.append("\n\n");
+			addRow(sb, resource, "issue.id", issue.getId().toString());
+		}
 		sb.append('\n');
 		addRow(sb, resource, "issue.summary", issue.getSummary());
 		sb.append('\n');
@@ -209,8 +248,8 @@ public class MailServiceImpl implements MailService
 		)
 	{
 		try {
+			// From address is added before message is queued
 			MimeMessage msg = createEmptyMessage();
-			msg.addFrom(new InternetAddress[]{getFromAddress()});
 			msg.setSubject(subject);
 			msg.setText(text);
 			for (String watcherid : i.getWatchers()) {
@@ -238,7 +277,7 @@ public class MailServiceImpl implements MailService
 				queueMessage(msg);
 			}
 		} catch (MessagingException me) {
-			logger.error(me);
+			logger.error("Error sending message", me);
 		}
 	}
 	
@@ -249,9 +288,10 @@ public class MailServiceImpl implements MailService
 	{
 		try {
 			message.setFrom(getFromAddress());
+			message.saveChanges();
 			getMailServiceThread().queueMessage(message);
 		} catch (MessagingException me) {
-			logger.error(me);
+			logger.error("Error queing message", me);
 		}
 	}
 
@@ -268,7 +308,7 @@ public class MailServiceImpl implements MailService
 		/**
 		 * Creates a new instance.
 		 */
-		MailServiceThread(String serverName)
+		MailServiceThread()
 		{
 			super("SIMIS Mail Service");
 			Runtime.getRuntime().addShutdownHook(
@@ -282,8 +322,38 @@ public class MailServiceImpl implements MailService
 				);
 			// Create some properties and get the default Session
 	        Properties props = new Properties();
+	        props.setProperty("mail.transport.protocol", "smtp");
+	        props.setProperty("mail.host", serverName);
 	        props.put("mail.smtp.host", serverName);
-	        session = Session.getDefaultInstance(props, null);
+	        props.put("mail.debug", Boolean.valueOf(logger.isDebugEnabled()).toString());
+			if (port != null) {
+				props.put("mail.smtp.port", port.toString());
+				props.put("mail.smtp.socketFactory.port", port.toString());
+			}
+//			props.put("mail.smtp.starttls.enable", Boolean.valueOf(usetls).toString());
+            if (login != null && login.length() > 0) {
+                props.put("mail.smtp.auth", "true");
+//                if (usessl || usetls) {
+                if (usessl) {
+                	// This configuration has been tested against gmail.  Other transports have not been tested.
+                    props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory"); 
+                    props.put("mail.smtp.socketFactory.fallback", "false");
+                    props.put("mail.smtp.quitwait", "false");
+                	session = Session.getDefaultInstance(props, new Authenticator()
+                	{
+						@Override
+						protected PasswordAuthentication getPasswordAuthentication()
+						{
+							return new PasswordAuthentication(login, pass);
+						}
+                	});
+                }
+            } else {
+                props.put("mail.smtp.auth", Boolean.FALSE.toString());
+    	        session = Session.getDefaultInstance(props, null);
+            }
+            session.setDebug(logger.isDebugEnabled());
+            logger.debug("Properties: {}", props);
 		}
 		
 		// MEMBERS
@@ -292,6 +362,7 @@ public class MailServiceImpl implements MailService
 		private Queue <Message>messageQueue = new LinkedList<Message>();
 		private boolean runFlag = true;
 		private Session session;
+		
 		/** The mail session */
 		Session getSession()
 		{
@@ -358,46 +429,16 @@ public class MailServiceImpl implements MailService
 		public void run()
 		{
 			Message message;
-			Transport transport = null;
 			// Run while the runFlag is true.  If runFlag is false, this thread
 			// will continue to run until there are no more messages in the
 			// queue.
 			while (isRunning() || getQueueCount() > 0) {
 				// Get the next message to send or null if there are none.
 				message = popMessage();
-				if (message == null) {
-					// Disconnect from the server (if required) and sleep for
-					// a while, waiting for new messages to come in.
-					if (transport != null) {
-						try {
-							transport.close();
-						} catch (MessagingException me) {
-							logger.error(me);
-						}
-						transport = null;
-					}
-					try {
-						sleep(1000);
-					} catch (InterruptedException ie) {}
-				} else {
-					if (transport == null) {
-						// Instantiate a transport and keep it around for as
-						// long as we have emails to send.
-						try {
-							transport = session.getTransport("smtp");
-							transport.connect();
-						} catch (Exception e) {
-							logger.error(
-									"Unable to get a mail transport and/or connect to the server.", e
-								);
-							return;
-						}
-					}
+				if (message != null) {
 					// Send the email
 					try {
-						transport.sendMessage(
-								message, message.getAllRecipients()
-							);
+						Transport.send(message);
 					} catch (MessagingException me) {
 						logger.error(
 								"Unable to send the message: " + message, me

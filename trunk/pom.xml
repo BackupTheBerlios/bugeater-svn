@@ -207,6 +207,12 @@
     	<version>8.1-407.jdbc3</version>
     	<scope>test</scope>
     </dependency>
+	<dependency>
+		<groupId>junit</groupId>
+		<artifactId>junit</artifactId>
+		<version>4.0</version>
+    	<scope>test</scope>
+	</dependency>
 
     <!-- Provided Dependencies (will be provided by the servlet container)-->
     <dependency>
@@ -215,11 +221,5 @@
       <version>2.3</version>
       <scope>provided</scope>
     </dependency>
-    <!--<dependency>
-      <groupId>resin</groupId>
-      <artifactId>resin</artifactId>
-      <version>3.0.15</version>
-      <scope>provided</scope>
-    </dependency>-->
   </dependencies>
 </project>
