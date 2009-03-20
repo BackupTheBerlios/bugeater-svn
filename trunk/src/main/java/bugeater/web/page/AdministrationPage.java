@@ -8,6 +8,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
@@ -34,7 +35,7 @@ public class AdministrationPage extends BugeaterPage
 	public AdministrationPage()
 	{
 		super();
-		new AddForm("addForm");
+		add(new AddForm("addForm"));
 	}
 	
 	@SpringBean
@@ -44,16 +45,16 @@ public class AdministrationPage extends BugeaterPage
 		this.issueService = service;
 	}
 	
-	class AddForm extends Form
+	class AddForm extends Form<Void>
 	{
 		private static final long serialVersionUID = 1L;
 		
 		AddForm(String id)
 		{
 			super(id);
-			new FeedbackPanel("formFeedback");
+			add(new FeedbackPanel("formFeedback"));
 			
-			new ListView<String>("categoryList", new CategoriesModel())
+			add(new ListView<String>("categoryList", new CategoriesModel())
 			{
 				private static final long serialVersionUID = 1L;
 				public void populateItem(ListItem<String> item)
@@ -63,10 +64,10 @@ public class AdministrationPage extends BugeaterPage
 							item.getModelObject()
 						));
 				}
-			};
+			});
 			final IModel<String> catModel = new Model<String>();
-			new TextField<String>("categoryField", catModel);
-			new Button("addCategoryBtn")
+			add(new TextField<String>("categoryField", catModel));
+			add(new Button("addCategoryBtn")
 			{
 				private static final long serialVersionUID = 1L;
 				public void onSubmit()
@@ -77,7 +78,7 @@ public class AdministrationPage extends BugeaterPage
 						catModel.setObject(null);
 					}
 				}
-			};
+			});
 			
 			add(new ListView<String>("projectList", new ProjectsModel())
 			{
@@ -85,20 +86,12 @@ public class AdministrationPage extends BugeaterPage
 				public void populateItem(ListItem<String> item)
 				{
 					final String project = item.getModelObject();
-					Link link = new Link("editReleaseLink")
-					{
-						private static final long serialVersionUID = 1L;
-						@SuppressWarnings("unchecked")
-						public void onClick()
-						{
-							PageParameters params = new PageParameters();
-							params.add(
-									BugeaterConstants.PARAM_NAME_PROJECT,
-									project
-								);
-							setResponsePage(ReleaseAdminPage.class, params);
-						}
-					};
+					PageParameters params = new PageParameters();
+					params.add(
+							BugeaterConstants.PARAM_NAME_PROJECT,
+							project
+						);
+					Link<Void> link = new BookmarkablePageLink<Void>("editReleaseLink", ReleaseAdminPage.class, params);
 					item.add(link);
 					link.add(new Label("projectLabel", project));
 				}
@@ -111,7 +104,7 @@ public class AdministrationPage extends BugeaterPage
 				public void onSubmit()
 				{
 					String s = projModel.getObject();
-					if (s != null || s.length() > 0) {
+					if (s != null && s.length() > 0) {
 						AdministrationPage.this.issueService.addProject(s);
 						projModel.setObject(null);
 					}

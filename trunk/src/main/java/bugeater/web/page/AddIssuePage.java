@@ -9,6 +9,7 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.form.TextArea;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -50,7 +51,7 @@ public class AddIssuePage extends BugeaterPage
 		this.issueService = service;
 	}
 
-	class AddIssueForm extends Form
+	class AddIssueForm extends Form<Void>
 	{
 		private static final long serialVersionUID = 1L;
 		
@@ -83,6 +84,7 @@ public class AddIssuePage extends BugeaterPage
 				).setRequired(true));
 			
 			add(new TextArea<String>("description").setRequired(true));
+			add(new BookmarkablePageLink<Void>("formattinglink", NoteFormattingPage.class));
 		}
 
 		/**

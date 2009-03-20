@@ -1,7 +1,7 @@
 package bugeater.bean;
 
 import java.io.Serializable;
-import java.util.Calendar;
+import java.util.Date;
 
 import bugeater.domain.ReleaseVersion;
 
@@ -30,22 +30,26 @@ public class ReleaseVersionBean implements Serializable
 	public ReleaseVersionBean(ReleaseVersion release)
 	{
 		super();
-		setActualReleaseDate(release.getActualReleaseDate());
+		if (release.getActualReleaseDate() == null) {
+			setActualReleaseDate(null);
+		} else {
+			setActualReleaseDate(new Date(release.getActualReleaseDate().getTime()));
+		}
 		setId(release.getId());
 		setProject(release.getProject());
-		setScheduledReleaseDate(release.getScheduleReleaseDate());
+		setScheduledReleaseDate(new Date(release.getScheduleReleaseDate().getTime()));
 		setVersionNumber(release.getVersionNumber());
 	}
 	
-	private Calendar actualReleaseDate;
+	private Date actualReleaseDate;
 	/**
 	 * The date the release was made.
 	 */
-	public Calendar getActualReleaseDate()
+	public Date getActualReleaseDate()
 	{
 		return actualReleaseDate;
 	}
-	public ReleaseVersionBean setActualReleaseDate(Calendar date)
+	public ReleaseVersionBean setActualReleaseDate(Date date)
 	{
 		this.actualReleaseDate = date;
 		return this;
@@ -77,15 +81,15 @@ public class ReleaseVersionBean implements Serializable
 		return this;
 	}
 	
-	private Calendar scheduledReleaseDate;
+	private Date scheduledReleaseDate;
 	/**
 	 * The date scheduled for the release.
 	 */
-	public Calendar getScheduledReleaseDate()
+	public Date getScheduledReleaseDate()
 	{
 		return scheduledReleaseDate;
 	}
-	public ReleaseVersionBean setScheduledReleaseDate(Calendar date)
+	public ReleaseVersionBean setScheduledReleaseDate(Date date)
 	{
 		this.scheduledReleaseDate = date;
 		return this;

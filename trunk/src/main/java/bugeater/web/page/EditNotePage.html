@@ -5,7 +5,7 @@
 	        	<p>
 	        		Enter the note text below.  The note is entered using wiki
 	        		style formatting.
-   					<a href="static/note_formatting.html" target="_blank">
+   					<a href="#" target="_blank" wicket:id="formattinglink">
    						Click here for note formatting help.
    					</a>
 	        	</p>
@@ -13,6 +13,7 @@
 				<textarea cols="100" rows="15" wicket:id="text"></textarea>
 				<p/>
 	        	<input type="submit" value="Save"/>
+	        	<input type=button value="Cancel" onClick="history.go(-1)">
     	    </form>
 		</wicket:extend>
 	</body>

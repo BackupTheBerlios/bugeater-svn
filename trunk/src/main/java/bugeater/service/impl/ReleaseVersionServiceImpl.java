@@ -1,5 +1,6 @@
 package bugeater.service.impl;
 
+import java.sql.Date;
 import java.util.List;
 
 import bugeater.bean.ReleaseVersionBean;
@@ -67,8 +68,12 @@ public class ReleaseVersionServiceImpl implements ReleaseVersionService
 			release = load(bean.getId());
 		}
 		// Synchronized the members
-		release.setActualReleaseDate(bean.getActualReleaseDate());
-		release.setScheduleReleaseDate(bean.getScheduledReleaseDate());
+		if (bean.getActualReleaseDate() == null) {
+			release.setActualReleaseDate(null);
+		} else {
+			release.setActualReleaseDate(new Date(bean.getActualReleaseDate().getTime()));
+		}
+		release.setScheduleReleaseDate(new Date(bean.getScheduledReleaseDate().getTime()));
 		release.setVersionNumber(bean.getVersionNumber());
 		// Save the object.
 		rvDao.save(release);

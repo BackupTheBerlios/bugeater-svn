@@ -51,6 +51,7 @@ public class IssuesListPanel extends Panel
 					new BookmarkablePageLink(
 							"viewIssueLink", ViewIssuePage.class, params
 						);
+				item.add(link);
 				link.add(new Label("summaryLabel", i.getSummary()));
 				item.add(new Label("projectLabel", i.getProject()));
 				item.add(new Label("priorityLabel", i.getPriority().toString()));

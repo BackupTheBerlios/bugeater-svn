@@ -210,6 +210,7 @@ public class MailServiceImpl implements MailService
 	{
 		try {
 			MimeMessage msg = createEmptyMessage();
+			msg.addFrom(new InternetAddress[]{getFromAddress()});
 			msg.setSubject(subject);
 			msg.setText(text);
 			for (String watcherid : i.getWatchers()) {
@@ -217,6 +218,15 @@ public class MailServiceImpl implements MailService
 						RecipientType.TO,
 						new InternetAddress(
 								userService.getUserById(watcherid).getEmail()
+							)
+					);
+			}
+			// The assigned user is always a watcher
+			if (i.getAssignedUserID() != null && (! i.getWatchers().contains(i.getAssignedUserID()))) {
+				msg.addRecipient(
+						RecipientType.TO,
+						new InternetAddress(
+								userService.getUserById(i.getAssignedUserID()).getEmail()
 							)
 					);
 			}

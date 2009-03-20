@@ -70,7 +70,10 @@
         <res-auth>Container</res-auth>
     </resource-ref>
     
+    <!-- The following is used for single-sign-on -->
+    <!--
     <login-config>
         <realm-name>SIMIS Realm</realm-name>
     </login-config>
+    -->
 </web-app>

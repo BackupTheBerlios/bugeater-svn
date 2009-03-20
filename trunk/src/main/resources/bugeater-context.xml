@@ -1,10 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
-<!--
-	This is the configuration file for Spring.  It tells spring how to
-	initialize hibernate and what beans it is to provide in Context.
--->
-<beans>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jndi="http://www.springframework.org/schema/jndi"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+    http://www.springframework.org/schema/beans/spring-beans.xsd 
+    http://www.springframework.org/schema/aop 
+    http://www.springframework.org/schema/aop/spring-aop.xsd 
+    http://www.springframework.org/schema/tx  
+    http://www.springframework.org/schema/tx/spring-tx.xsd 
+    http://www.springframework.org/schema/jndi 
+    http://www.springframework.org/schema/jndi/spring-jndi.xsd 
+    http://www.springframework.org/schema/util 
+    http://www.springframework.org/schema/util/spring-util.xsd"
+>
     <!--
     	Configurer that replaces ${...} placeholders with values from
     	properties files.
@@ -21,6 +32,8 @@
         </property>
     </bean>
    
+   	<!-- BeanPostprocessor to enforce @Required annotation on bean setter methods -->
+	<bean class="org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor" />
 
 	<!-- JDBC Data Source Config -->
 <!--
@@ -73,10 +86,14 @@
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+                <prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
+                <prop key="hibernate.cache.use_query_cache">true</prop>
+                <prop key="hibernate.cache.use_second_level_cache">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+				<prop key="hibernate.jdbc.batch_size">0</prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
                 <prop key="show_sql">true</prop>
                 <prop key="use_outer_join">true</prop>
-                <prop key="hibernate.cache.use_second_level_cache">true</prop>
-                <prop key="hibernate.cache.use_query_cache">true</prop>
             </props>
         </property>
         
@@ -86,19 +103,10 @@
     <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
         <property name="sessionFactory"><ref bean="sessionFactory"/></property>
     </bean>
+    <!-- Annotation driven transaction demarkation -->
+    <tx:annotation-driven/>
     
     <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
-    
-    <bean id="transactionInterceptor" class="org.springframework.transaction.interceptor.TransactionInterceptor">
-        <property name="transactionManager" ref="transactionManager"/>
-        <property name="transactionAttributeSource">
-            <bean class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource"/>
-        </property>
-    </bean>
-    
-    <bean class="org.springframework.transaction.interceptor.TransactionAttributeSourceAdvisor">
-        <property name="transactionInterceptor" ref="transactionInterceptor"/>
-    </bean>
 
 	<!-- Configuration of DAOs -->
 	
@@ -130,6 +138,7 @@
 	  -->
     <bean id="userService" class="bugeater.simpleuser.UserServiceImpl">
         <property name="sessionFactory" ref="sessionFactory"/>
+        <property name="transactionManager" ref="transactionManager"/>
     </bean>
 
 	<!--

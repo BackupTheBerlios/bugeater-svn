@@ -22,8 +22,10 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import bugeater.web.page.AddIssuePage;
 import bugeater.web.page.Home;
+import bugeater.web.page.NoteFormattingPage;
 import bugeater.web.page.SearchPage;
-import bugeater.web.page.StaticContentPage;
+import bugeater.web.page.AboutPage;
+import bugeater.web.page.UsagePage;
 import bugeater.web.page.ViewIssuePage;
 
 /**
@@ -148,10 +150,12 @@ public class BugeaterApplication extends WebApplication
         
         
         // Mount pages
+        mountBookmarkablePage("/about", AboutPage.class);
         mountBookmarkablePage("/addissue", AddIssuePage.class);
+        mountBookmarkablePage("/formatting", NoteFormattingPage.class);
         mountBookmarkablePage("/myissues", Home.class);
         mountBookmarkablePage("/searchissues", SearchPage.class);
-        mountBookmarkablePage("/staticcontent", StaticContentPage.class);
+        mountBookmarkablePage("/usage", UsagePage.class);
         mountBookmarkablePage("/viewissue", ViewIssuePage.class);
         
         // Do super's init.

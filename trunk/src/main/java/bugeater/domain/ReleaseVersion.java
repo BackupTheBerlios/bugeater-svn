@@ -1,6 +1,6 @@
 package bugeater.domain;
 
-import java.util.Calendar;
+import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -36,15 +36,15 @@ public class ReleaseVersion
 	}
 	
 	@Column(name = "actual_release_date", nullable=true)
-	private Calendar actualReleaseDate;
+	private Date actualReleaseDate;
 	/**
 	 * The date the release was made.
 	 */
-	public Calendar getActualReleaseDate()
+	public Date getActualReleaseDate()
 	{
 		return actualReleaseDate;
 	}
-	public ReleaseVersion setActualReleaseDate(Calendar date)
+	public ReleaseVersion setActualReleaseDate(Date date)
 	{
 		this.actualReleaseDate = date;
 		return this;
@@ -95,15 +95,15 @@ public class ReleaseVersion
 	}
 	
 	@Column(name = "scheduled_release_date", nullable=false)
-	private Calendar scheduledReleaseDate;
+	private Date scheduledReleaseDate;
 	/**
 	 * The date scheduled for the release.
 	 */
-	public Calendar getScheduleReleaseDate()
+	public Date getScheduleReleaseDate()
 	{
 		return scheduledReleaseDate;
 	}
-	public ReleaseVersion setScheduleReleaseDate(Calendar date)
+	public ReleaseVersion setScheduleReleaseDate(Date date)
 	{
 		this.scheduledReleaseDate = date;
 		return this;

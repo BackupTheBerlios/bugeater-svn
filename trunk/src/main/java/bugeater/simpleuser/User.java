@@ -5,6 +5,7 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -35,6 +36,12 @@ public class User
 	public User()
 	{
 		super();
+	}
+	
+	public User(String login, String password) {
+		super();
+		this.login = login;
+		this.password = password;
 	}
 	
 	// MEMBERS
@@ -69,12 +76,9 @@ public class User
 		return this;
 	}
 
-	@Id
+	@Id @GeneratedValue
 	@Column(name="user_id")
 	private Long id;
-	/**
-	 * @see bugeater.bean.IUserBean#getId()
-	 */
 	public Long getId()
 	{
 		return id;

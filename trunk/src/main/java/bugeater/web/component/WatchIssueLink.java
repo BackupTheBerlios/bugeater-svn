@@ -22,8 +22,8 @@ public class WatchIssueLink extends Panel
 {
 	private static final long serialVersionUID = 1L;
 	
-	private Link link1;
-	private Link link2;
+	private Link<Void> link1;
+	private Link<Void> link2;
 	
 	/**
 	 * @param parent The parent.
@@ -64,7 +64,8 @@ public class WatchIssueLink extends Panel
 		String userID = sess.getUserBean().getId();
 		Issue i = issueModel.getObject();
 		final boolean assigned = userID.equals(i.getAssignedUserID());
-		add(link1 = new Link("watchIssueLink")
+		final boolean watched = i.getWatchers().contains(userID);
+		add(link1 = new Link<Void>("watchIssueLink")
 		{
 			private static final long serialVersionUID = 1L;
 			public void onClick()
@@ -73,10 +74,10 @@ public class WatchIssueLink extends Panel
 			}
 			
 			public boolean isVisible() {
-				return !assigned;
+				return !assigned && !watched;
 			}
 		});
-		add(link2 = new Link("noWatchIssueLink")
+		add(link2 = new Link<Void>("noWatchIssueLink")
 		{
 			private static final long serialVersionUID = 1L;
 			public void onClick()
@@ -85,7 +86,7 @@ public class WatchIssueLink extends Panel
 			}
 			
 			public boolean isVisible() {
-				return assigned;
+				return !assigned && watched;
 			}
 		});
 	}

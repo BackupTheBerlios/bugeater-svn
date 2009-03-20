@@ -57,7 +57,12 @@ public class BugeaterRoleCheckingStrategy implements IRoleCheckingStrategy
 		
 		SecurityRole role;
 		for (String roleName : roles) {
-			role = SecurityRole.valueOf(roleName);
+			try {
+				role = SecurityRole.valueOf(roleName);
+			} catch (IllegalArgumentException e) {
+				logger.warn("Role \"{}\" is invalid.");
+				return false;
+			}
 			try {
 				if (
 						role != null &&

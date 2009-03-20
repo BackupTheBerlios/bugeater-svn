@@ -5,6 +5,7 @@ import org.apache.wicket.Session;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -159,6 +160,7 @@ public class EditNotePage extends BugeaterPage
 				textModel.setObject(n.getText());
 			}
 			add(new TextArea<String>("text", textModel).setRequired(true));
+			add(new BookmarkablePageLink<Void>("formattinglink", NoteFormattingPage.class));
 		}
 		
 		private IModel<String>textModel;

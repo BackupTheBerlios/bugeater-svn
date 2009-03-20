@@ -26,7 +26,6 @@ import bugeater.service.AuthenticationService;
 import bugeater.service.IssueService;
 import bugeater.service.SecurityRole;
 import bugeater.web.BugeaterApplication;
-import bugeater.web.BugeaterConstants;
 import bugeater.web.BugeaterSession;
 import bugeater.web.model.TextSearchModel;
 
@@ -113,29 +112,27 @@ public abstract class BugeaterPage extends WebPage
 	private final void init()
 	{
 		boolean isUser = isUserInRole(SecurityRole.User);
-		add(new BookmarkablePageLink("bugeaterLink", Home.class).setEnabled(isUser));
-		add(new BookmarkablePageLink("homeLink", Home.class).setVisible(isUser));
-		add(new BookmarkablePageLink("searchLink", SearchPage.class).setVisible(isUser));
-		add(new BookmarkablePageLink("addLink", AddIssuePage.class).setVisible(
+		add(new BookmarkablePageLink<Void>("bugeaterLink", Home.class).setEnabled(isUser));
+		add(new BookmarkablePageLink<Void>("homeLink", Home.class).setVisible(isUser));
+		add(new BookmarkablePageLink<Void>("searchLink", SearchPage.class).setVisible(isUser));
+		add(new BookmarkablePageLink<Void>("addLink", AddIssuePage.class).setVisible(
 				isUserInRole(SecurityRole.Administrator) ||
 				isUserInRole(SecurityRole.Developer) ||
 				isUserInRole(SecurityRole.Manager) ||
 				isUserInRole(SecurityRole.Tester)
 			));
 		add(new AdministrationLink("adminLink"));
-		add(new Link("loginLink")
+		add(new Link<Void>("loginLink")
 		{
 			private static final long serialVersionUID = 1L;
-			@SuppressWarnings("unchecked")
 			public void onClick()
 			{
 				setResponsePage(LoginPage.class);
 			}
 		}.setVisible(((BugeaterSession)Session.get()).getPrincipal() == null));
-		add(new Link("logoutLink")
+		add(new Link<Void>("logoutLink")
 		{
 			private static final long serialVersionUID = 1L;
-			@SuppressWarnings("unchecked")
 			public void onClick()
 			{
 				Session.get().invalidate();
@@ -143,15 +140,11 @@ public abstract class BugeaterPage extends WebPage
 			}
 		}.setVisible(isUser));
 		add(new IssueByIDForm("issueByIDForm").setVisible(isUser));
-		PageParameters params = new PageParameters();
-		params.add(BugeaterConstants.PARAM_NAME_CONTENT_URL, "/static/about.html");
-		add(new BookmarkablePageLink("aboutLink", StaticContentPage.class, params));
-		params = new PageParameters();
-		params.add(BugeaterConstants.PARAM_NAME_CONTENT_URL, "/static/usage.html");
-		add(new BookmarkablePageLink("usageLink", StaticContentPage.class, params));
+		add(new BookmarkablePageLink<Void>("aboutLink", AboutPage.class));
+		add(new BookmarkablePageLink<Void>("usageLink", UsagePage.class));
 	}
 	
-	private class IssueByIDForm extends Form
+	private class IssueByIDForm extends Form<Void>
 	{
 		private static final long serialVersionUID = 1L;
 		
@@ -161,8 +154,8 @@ public abstract class BugeaterPage extends WebPage
 			
 			// Issue by ID
 			idModel = new Model<String>();
-			new TextField<String>("issueByIDField", idModel);
-			new Button("issueByID")
+			add(new TextField<String>("issueByIDField", idModel));
+			add(new Button("issueByID")
 			{
 				private static final long serialVersionUID = 1L;
 				public void onSubmit()
@@ -178,13 +171,13 @@ public abstract class BugeaterPage extends WebPage
 					} catch (NumberFormatException nfe) {
 					} catch (ObjectNotFoundException onfe) {}
 				}
-			};
+			});
 			
 			// Search by text
-			new TextField<String>(
+			add(new TextField<String>(
 					"searchText", searchTextModel = new Model<String>()
-				);		
-			new Button("textSearch")
+				));		
+			add(new Button("textSearch")
 			{
 				private static final long serialVersionUID = 1L;
 				public void onSubmit()
@@ -200,7 +193,7 @@ public abstract class BugeaterPage extends WebPage
 								)
 						);
 				}
-			};
+			});
 		}
 		
 		private IModel<String> idModel;
@@ -208,7 +201,7 @@ public abstract class BugeaterPage extends WebPage
 	}
 	
 	@AuthorizeAction(action=Action.RENDER, roles={SecurityRole.ADMINISTRATOR})
-	private class AdministrationLink extends Link
+	private class AdministrationLink extends Link<Void>
 	{
 		private static final long serialVersionUID = 1L;
 		
@@ -221,7 +214,6 @@ public abstract class BugeaterPage extends WebPage
 		 * @see wicket.markup.html.link.Link#onClick()
 		 */
 		@Override
-		@SuppressWarnings("unchecked")
 		public void onClick()
 		{
 			setResponsePage(AdministrationPage.class);

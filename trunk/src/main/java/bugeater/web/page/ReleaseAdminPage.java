@@ -1,12 +1,11 @@
 package bugeater.web.page;
 
 import java.text.DateFormat;
-import java.text.ParseException;
-import java.util.Calendar;
-import java.util.Date;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.PageParameters;
+import org.apache.wicket.datetime.StyleDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.yui.calendar.DatePicker;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -19,7 +18,6 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.string.StringValueConversionException;
@@ -38,8 +36,6 @@ import bugeater.web.model.ReleaseVersionsListModel;
 public class ReleaseAdminPage extends BugeaterPage
 {
 	private static final DateFormat DATE_FORMAT = DateFormat.getDateInstance();
-	private static final DateFormat SHORT_DATE_FORMAT =
-		DateFormat.getDateInstance(DateFormat.SHORT);
 	private static final long serialVersionUID = 1L;
 	
 	/**
@@ -142,7 +138,7 @@ public class ReleaseAdminPage extends BugeaterPage
 		add(new ReleaseAdminForm("form", bean));
 	}
 	
-	private class ReleaseAdminForm extends Form
+	private class ReleaseAdminForm extends Form<ReleaseVersionBean>
 	{
 		private static final long serialVersionUID = 1L;
 		
@@ -150,7 +146,6 @@ public class ReleaseAdminPage extends BugeaterPage
 		ReleaseAdminForm(String wicketID, ReleaseVersionBean bean)
 		{
 			super(wicketID, new CompoundPropertyModel(bean));
-			this.bean = bean;
 			
 			// Instructions
 			IModel<String>sModel;
@@ -166,34 +161,26 @@ public class ReleaseAdminPage extends BugeaterPage
 			add(new TextField("versionNumber").setRequired(true));
 			
 			// Scheduled release date
-			sdModel = new Model<String>();
-			if (bean.getScheduledReleaseDate() != null) {
-				sdModel.setObject(SHORT_DATE_FORMAT.format(bean.getScheduledReleaseDate().getTime()));
-			}
 			TextField field =
-				new TextField<String>("scheduledReleaseDate", sdModel);
+				new DateTextField("scheduledReleaseDate", null, new StyleDateConverter("S-", true));
 			add(field);
 			field.setRequired(true);
-			add(new DatePicker());
+			field.add(new DatePicker());
 			
 			// Actual date
-			adModel = new Model<String>();
-			if (bean.getActualReleaseDate() != null) {
-				adModel.setObject(SHORT_DATE_FORMAT.format(bean.getActualReleaseDate().getTime()));
-			}
 			WebMarkupContainer cont =
 				new WebMarkupContainer("actualWicketDateInput");
 			add(cont);
-			cont.add(field = new TextField<String>("actualReleaseDate", adModel));
-			cont.add(new DatePicker());
+			cont.add(field = new DateTextField("actualReleaseDate", null, new StyleDateConverter("S-", true)));
+			field.add(new DatePicker());
 			cont.setRenderBodyOnly(true);
 			cont.setVisible(bean.getId() != null);
 			
 			String s;
 			if (bean.getId() == null) {
-				s = getString("submit.add");
+				s = "submit.add";
 			} else {
-				s = getString("submit.edit");
+				s = "submit.edit";
 			}
 			Button b = new Button("submit")
 			{
@@ -203,42 +190,12 @@ public class ReleaseAdminPage extends BugeaterPage
 				}
 			};
 			add(b);
-			b.add(new AttributeModifier("value", true, new Model<String>(s)));
+			b.add(new AttributeModifier("value", true, new ResourceModel(s)));
 		}
-		
-		private ReleaseVersionBean bean;
-		private IModel<String> sdModel;
-		private IModel<String> adModel;
-		
-		@SuppressWarnings("unchecked")
+				
 		private void doSave()
 		{
-			String s = sdModel.getObject();
-			Calendar c = null;
-			try {
-				Date d = SHORT_DATE_FORMAT.parse(s);
-				c = Calendar.getInstance();
-				c.setTime(d);
-			} catch (ParseException pe) {
-				error(getString("error.invalid.date"));
-				return;
-			}
-			bean.setScheduledReleaseDate(c);
-
-			c = null;
-			s = adModel.getObject();
-			if (s != null && s.length() > 0) {
-				try {
-					Date d = SHORT_DATE_FORMAT.parse(s);
-					c = Calendar.getInstance();
-					c.setTime(d);
-				} catch (ParseException pe) {
-					error(getString("error.invalid.date"));
-					return;
-				}
-			}
-			bean.setActualReleaseDate(c);
-			
+			ReleaseVersionBean bean = getModel().getObject();
 			releaseVersionService.save(bean);
 			PageParameters params = new PageParameters();
 			params.put(BugeaterConstants.PARAM_NAME_PROJECT, bean.getProject());

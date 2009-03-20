@@ -1,8 +1,6 @@
-<html>
-	<head>
-		<title>Using Bugeater</title>
-	</head>
+<html xmlns:wicket="http://wicket.sourceforge.net/">
 	<body>
+        <wicket:extend>
 		<h1>Using Bugeater</h1>
 		<h3>Table of Contents</h3>
 		<ul>
@@ -121,7 +119,7 @@
 			<b>My Bold Statement</b> and <code>~~My Italics Text~~</code> will
 			show as <i>My Italics Text</i>.  Other, more complex formatting
 			such as text size, color, and even tables are available.  See the
-			<a href="static/note_formatting.html" target="_blank">note
+			<a href="#" target="_blank" wicket:id="formattinglink">note
 			formatting instructions</a> for more detail.
 		</p>
 		<h3><a id="attachments">Attachments</a></h3>
@@ -135,5 +133,6 @@
 			shows the new issue in the view page.  Therefore, attachments can
 			be uploaded right after a new issue has been created.
 		</p>
+	</wicket:extend>
 	</body>
 </html>
