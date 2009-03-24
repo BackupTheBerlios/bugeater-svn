@@ -59,6 +59,11 @@ public class IssueAttachmentsListModel implements IModel<List<Attachment>>
 		issueModel.detach();
 	}
 	
+	public void refresh() {
+		// ensure the next call will update the list.
+		list = null;
+	}
+	
 	public List<Attachment> getObject()
 	{
 		if (list == null) {

@@ -15,6 +15,7 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
 
@@ -35,6 +36,8 @@ public class IssueAttachmentsPanel extends Panel
 {
 	private static final long serialVersionUID = 1L;
 	private static final Log logger = LogFactory.getLog(IssueAttachmentsPanel.class);
+	
+	private IssueAttachmentsListModel listmodel;
 	
 	/**
 	 * @param parent The parent in which the panel belongs.
@@ -73,9 +76,8 @@ public class IssueAttachmentsPanel extends Panel
 	{
 		super(id, model);
 		issueModel = model;
-		add(new ListView<Attachment>(
-				"attachmentsList", new IssueAttachmentsListModel(issueModel)
-			)
+		listmodel = new IssueAttachmentsListModel(issueModel);
+		add(new ListView<Attachment>("attachmentsList", listmodel)
 		{
 			private static final long serialVersionUID = 1L;
 			public void populateItem(ListItem <Attachment>item)
@@ -108,19 +110,21 @@ public class IssueAttachmentsPanel extends Panel
 	
 	class AddAttachmentForm extends Form
 	{
+		private IModel<FileUpload> fumodel;
 		private static final long serialVersionUID = 1L;
 
 		public AddAttachmentForm(String id)
 		{
 			super(id);
-			add(uploadField = new FileUploadField("attachmentFile"));
+			fumodel = new Model<FileUpload>();
+			add(uploadField = new FileUploadField("attachmentFile", fumodel));
 		}
 		
 		private FileUploadField uploadField;
 		
 		public void onSubmit()
 		{
-			FileUpload upload = uploadField.getFileUpload();
+			FileUpload upload = fumodel.getObject();
 			if (upload != null) {
 				Attachment a =
 					new Attachment()
@@ -131,6 +135,7 @@ public class IssueAttachmentsPanel extends Panel
 					InputStream is = upload.getInputStream();
 					aService.save(a, is);
 					is.close();
+					listmodel.refresh();
 				} catch (IOException ioe) {
 					logger.error(ioe);
 				}
