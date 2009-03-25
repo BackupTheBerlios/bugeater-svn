@@ -10,6 +10,8 @@ import org.apache.wicket.Application;
 import org.apache.wicket.PageMap;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.Session;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeAction;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.basic.Label;
@@ -164,54 +166,72 @@ public class ViewIssuePage extends BugeaterPage
 		add(new Label("project"));
 		add(new Label("category"));
 		
-		add(new DropDownChoice<Priority>("priority", Arrays.<Priority>asList(Priority.values()))
-		{
-			private static final long serialVersionUID = 1L;
-			
-			/**
-			 * @see wicket.markup.html.form.DropDownChoice#onSelectionChanged(java.lang.Object)
-			 */
+		DropDownChoice<?> choice;
+
+//		add(new DropDownChoice<Priority>("priority", Arrays.<Priority>asList(Priority.values()))
+//		{
+//			private static final long serialVersionUID = 1L;
+//			
+//			/**
+//			 * @see wicket.markup.html.form.DropDownChoice#onSelectionChanged(java.lang.Object)
+//			 */
+//			@Override
+//			protected void onSelectionChanged(Priority newSelection)
+//			{
+//				issueService.save(model.getObject());
+//			}
+//
+//			/**
+//			 * @see wicket.markup.html.form.DropDownChoice#wantOnSelectionChangedNotifications()
+//			 */
+//			@Override
+//			protected boolean wantOnSelectionChangedNotifications()
+//			{
+//				return true;
+//			}
+//		}.setEnabled(canEditIssue));
+		choice = new DropDownChoice<Priority>("priority", Arrays.<Priority>asList(Priority.values()));
+		choice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 			@Override
-			protected void onSelectionChanged(Priority newSelection)
-			{
+			protected void onUpdate(AjaxRequestTarget target) {
 				issueService.save(model.getObject());
 			}
-
-			/**
-			 * @see wicket.markup.html.form.DropDownChoice#wantOnSelectionChangedNotifications()
-			 */
-			@Override
-			protected boolean wantOnSelectionChangedNotifications()
-			{
-				return true;
-			}
-		}.setEnabled(canEditIssue));
+		});
+		choice.setEnabled(canEditIssue);
+		add(choice);
 		
-		DropDownChoice choice = new DropDownChoice<IUserBean>(
-				"assignedTo", new AssignedUserModel(model),
-				new AssignableUsersModel(), new UserBeanChoiceRenderer()
-			)
-		{
-			private static final long serialVersionUID = 1L;
-			
-			/**
-			 * @see wicket.markup.html.form.DropDownChoice#onSelectionChanged(java.lang.Object)
-			 */
+//		choice = new DropDownChoice<IUserBean>(
+//				"assignedTo", new AssignedUserModel(model),
+//				new AssignableUsersModel(), new UserBeanChoiceRenderer()
+//			)
+//		{
+//			private static final long serialVersionUID = 1L;
+//			
+//			/**
+//			 * @see wicket.markup.html.form.DropDownChoice#onSelectionChanged(java.lang.Object)
+//			 */
+//			@Override
+//			protected void onSelectionChanged(IUserBean newSelection)
+//			{
+//				issueService.save(model.getObject());
+//			}
+//
+//			/**
+//			 * @see wicket.markup.html.form.DropDownChoice#wantOnSelectionChangedNotifications()
+//			 */
+//			@Override
+//			protected boolean wantOnSelectionChangedNotifications()
+//			{
+//				return true;
+//			}
+//		};
+		choice = new DropDownChoice<IUserBean>("assignedTo", new AssignedUserModel(model), new AssignableUsersModel());
+		choice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 			@Override
-			protected void onSelectionChanged(IUserBean newSelection)
-			{
+			protected void onUpdate(AjaxRequestTarget target) {
 				issueService.save(model.getObject());
 			}
-
-			/**
-			 * @see wicket.markup.html.form.DropDownChoice#wantOnSelectionChangedNotifications()
-			 */
-			@Override
-			protected boolean wantOnSelectionChangedNotifications()
-			{
-				return true;
-			}
-		};
+		});
 		choice.setChoiceRenderer(new NullableChoiceRenderer());
 		choice.setEnabled(canEditIssue);
 		choice.setNullValid(true);
@@ -244,34 +264,41 @@ public class ViewIssuePage extends BugeaterPage
 			}
 		}.setEnabled(canEditIssue));
 
-		choice = new DropDownChoice(
-				"releaseVersion",
-				new ReleaseVersionsListModel(
-						new PropertyModel<String>(model, "project"), true,
-						SortOrder.Descending
-					)
-			)
-		{
-			private static final long serialVersionUID = 1L;
-			
-			/**
-			 * @see wicket.markup.html.form.DropDownChoice#onSelectionChanged(java.lang.Object)
-			 */
+//		choice = new DropDownChoice(
+//				"releaseVersion",
+//				new ReleaseVersionsListModel(
+//						new PropertyModel<String>(model, "project"), true,
+//						SortOrder.Descending
+//					)
+//			)
+//		{
+//			private static final long serialVersionUID = 1L;
+//			
+//			/**
+//			 * @see wicket.markup.html.form.DropDownChoice#onSelectionChanged(java.lang.Object)
+//			 */
+//			@Override
+//			protected void onSelectionChanged(Object newSelection)
+//			{
+//				issueService.save(model.getObject());
+//			}
+//
+//			/**
+//			 * @see wicket.markup.html.form.DropDownChoice#wantOnSelectionChangedNotifications()
+//			 */
+//			@Override
+//			protected boolean wantOnSelectionChangedNotifications()
+//			{
+//				return true;
+//			}
+//		};
+		choice = new DropDownChoice("releaseVersion", new ReleaseVersionsListModel(new PropertyModel<String>(model, "project"), true, SortOrder.Descending));
+		choice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 			@Override
-			protected void onSelectionChanged(Object newSelection)
-			{
+			protected void onUpdate(AjaxRequestTarget target) {
 				issueService.save(model.getObject());
 			}
-
-			/**
-			 * @see wicket.markup.html.form.DropDownChoice#wantOnSelectionChangedNotifications()
-			 */
-			@Override
-			protected boolean wantOnSelectionChangedNotifications()
-			{
-				return true;
-			}
-		};
+		});
 		choice.setChoiceRenderer(new NullableChoiceRenderer());
 		choice.setNullValid(true);
 		choice.setEnabled(canEditIssue);
