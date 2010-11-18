@@ -1,6 +1,7 @@
 package bugeater.web.page;
 
 import java.security.Principal;
+import java.util.ResourceBundle;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -11,6 +12,7 @@ import org.apache.wicket.Session;
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeAction;
 import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
@@ -18,6 +20,7 @@ import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.hibernate.ObjectNotFoundException;
 
@@ -121,7 +124,9 @@ public abstract class BugeaterPage extends WebPage
 				isUserInRole(SecurityRole.Manager) ||
 				isUserInRole(SecurityRole.Tester)
 			));
-		add(new AdministrationLink("adminLink"));
+		add(new BookmarkablePageLink<Void>("adminLink", AdministrationPage.class).setVisible(
+				isUserInRole(SecurityRole.Administrator)
+			));
 		add(new Link<Void>("loginLink")
 		{
 			private static final long serialVersionUID = 1L;
@@ -142,6 +147,13 @@ public abstract class BugeaterPage extends WebPage
 		add(new IssueByIDForm("issueByIDForm").setVisible(isUser));
 		add(new BookmarkablePageLink<Void>("aboutLink", AboutPage.class));
 		add(new BookmarkablePageLink<Void>("usageLink", UsagePage.class));
+		add(new Label("versionLabel", version));
+	}
+	
+	private static final String version;
+	static {
+    	ResourceBundle bundle = ResourceBundle.getBundle("bugeaterversion");
+    	version = bundle.getString("application.version");
 	}
 	
 	private class IssueByIDForm extends Form<Void>
@@ -198,26 +210,5 @@ public abstract class BugeaterPage extends WebPage
 		
 		private IModel<String> idModel;
 		private IModel<String> searchTextModel;
-	}
-	
-	@AuthorizeAction(action=Action.RENDER, roles={SecurityRole.ADMINISTRATOR})
-	private class AdministrationLink extends Link<Void>
-	{
-		private static final long serialVersionUID = 1L;
-		
-		public AdministrationLink(String id)
-		{
-			super(id);
-		}
-
-		/**
-		 * @see wicket.markup.html.link.Link#onClick()
-		 */
-		@Override
-		public void onClick()
-		{
-			setResponsePage(AdministrationPage.class);
-		}
-		
 	}
 }

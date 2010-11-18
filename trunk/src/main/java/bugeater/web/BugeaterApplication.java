@@ -21,6 +21,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import bugeater.web.page.AddIssuePage;
+import bugeater.web.page.AdministrationPage;
 import bugeater.web.page.Home;
 import bugeater.web.page.NoteFormattingPage;
 import bugeater.web.page.SearchPage;
@@ -65,7 +66,7 @@ public class BugeaterApplication extends WebApplication
 		return new BugeaterSession(request);
 	}
 	
-	/* (non-Javadoc)
+	/**
 	 * @see org.apache.wicket.protocol.http.WebApplication#getConfigurationType()
 	 */
 	@Override
@@ -152,6 +153,7 @@ public class BugeaterApplication extends WebApplication
         // Mount pages
         mountBookmarkablePage("/about", AboutPage.class);
         mountBookmarkablePage("/addissue", AddIssuePage.class);
+        mountBookmarkablePage("/admin", AdministrationPage.class);
         mountBookmarkablePage("/formatting", NoteFormattingPage.class);
         mountBookmarkablePage("/myissues", Home.class);
         mountBookmarkablePage("/searchissues", SearchPage.class);
